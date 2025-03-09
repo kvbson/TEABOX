@@ -1,22 +1,81 @@
 // import { FaRegStar, FaStar, FaStarHalfAlt } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { ToastContainer } from "react-toastify";
 import './App.css';
+import { errorHandler } from './utils/errorHandler';
 const SERVER_URL = 'http://localhost:5000';
 
+interface UserGame {
+   appid: number;
+   name: string;
+   playtime_forever: number;
+   playtime_2weeks?: number; // Optional field
+  
+ };
+
+export const FetchGameData = async (gameId: number) => {
+  return errorHandler(await fetch(`${SERVER_URL}/api/steam/game-data/${gameId}`));
+};
+
 export const FetchRecentGames = async (steamId: string) => {
-   const response = await fetch(`${SERVER_URL}/api/steam/recent/${steamId}`);
-   return response.json();
-   
+  return errorHandler(await fetch(`${SERVER_URL}/api/steam/recent/${steamId}`));
 };
 
 function App() {
+const [userGames, setUserGames] = useState<UserGame[]>([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      const games = await FetchRecentGames('76561198271038475');
+      setUserGames(games.response.games);
+      // games.response.games.map(async (game: UserGame) => {
+      // return FetchGameData(game.appid);
+      // }); 
+    }
+    fetchGames();
+   
+  }, [])
 
 
   return (
+    
     <div className="App">
-            <button onClick={() => {
-        FetchRecentGames('76561198271038475')
-      }}></button>
-    </div>
+<ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        draggable
+        style={{
+          fontSize: '10px',
+          maxWidth: '200px',
+          height: 'auto',
+        }}
+      />
+       <h1>Recently Played Games:</h1>
+       {userGames.length > 0 ? (
+         <ul>
+           {userGames.map((game) => (
+             <li key={game.appid}>
+               {/* {image[game.appid] ? (
+               <img src={ image[game.appid]} />
+               ) : ''} */}
+               <h3>
+                 {game.name} ID: {game.appid}
+               </h3>
+                {/* {score[game.appid] !== undefined && <StarRating score={score[game.appid]} />} */}
+               <p>Total Playtime: {Math.floor(game.playtime_forever / 60)} hours</p>
+               {game.playtime_2weeks && (
+                 <p>Playtime (Last 2 Weeks): {Math.floor(game.playtime_2weeks / 60)} hours</p>
+               )}
+               {/* {reviews[game.appid] ? (
+                 <p>Latest review: {reviews[game.appid]}</p>
+               ) : ''}  */}
+             </li>
+           ))}
+         </ul>
+       ) : (
+         <p>No recently played games found.</p>
+       )}
+     </div>
   );
 }
 
