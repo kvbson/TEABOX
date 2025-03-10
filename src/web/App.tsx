@@ -10,11 +10,11 @@ interface UserGame {
   playtime_2weeks?: number;
 }
 
-const fetchGameData = async (appId: number) => await callServer<'gameData'>('gameData', { appId });
+const fetchGameData = async (appId: number) => await callServer('gameData', { appId });
 
-const fetchRecentGames = async (steamId: string) => await callServer<'recentGames'>('recentGames', { steamId });
+const fetchRecentGames = async (steamId: string) => await callServer('recentGames', { steamId });
 
-const fetchOwnedGames = async (steamId: string) => await callServer<'ownedGames'>('ownedGames', { steamId });
+const fetchOwnedGames = async (steamId: string) => await callServer('ownedGames', { steamId });
 
 function App() {
   const [userGames, setUserGames] = useState<UserGame[]>([]);

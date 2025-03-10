@@ -4,6 +4,7 @@ export const HTTP_STATUS_OK = 200;
 export const HTTP_STATUS_NOT_FOUND = 404;
 export const HTTP_STATUS_UNAUTHORIZED = 401;
 
+const SERVER_URL = 'http://localhost:5000';
 interface ModeParams {
   recentGames: { steamId: string };
   ownedGames: { steamId: string };
@@ -11,8 +12,7 @@ interface ModeParams {
   playtime: { steamId: string; appId: number };
 }
 
-const urls: Record<keyof ModeParams | 'server', string> = {
-  server: 'http://localhost:5000',
+const urls: Record<keyof ModeParams, string> = {
   recentGames: '/api/steam/user/recentGames/',
   playtime: '/api/steam/user/playtime/',
   gameData: '/api/steam/game-data/',
@@ -21,8 +21,14 @@ const urls: Record<keyof ModeParams | 'server', string> = {
 
 const TOAST_ID = "error-toast";
 
-export const callServer = async <M extends keyof ModeParams, T = Record<string, any> | null>(mode: keyof ModeParams, params: ModeParams[M]): Promise<T | null> => {
-  const fullUrl = `${urls.server}${urls[mode]}${Object.keys(params).map(key => `:${key}`).join('/')}`;
+export const callServer = async <T extends Record<string, any> | null, M extends keyof ModeParams>(
+  mode: M,
+  params: ModeParams[M]
+): Promise<T | null> => {
+  const fullUrl = `${SERVER_URL}${urls[mode]}${Object.keys(params)
+    .map((key) => `${params[key as keyof typeof params]}`)
+    .join('/')}`;
+
   try {
     const response = await fetch(fullUrl);
     const status = response.status;
@@ -54,3 +60,4 @@ export const callServer = async <M extends keyof ModeParams, T = Record<string, 
 
   return null;
 };
+

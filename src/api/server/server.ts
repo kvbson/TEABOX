@@ -1,9 +1,9 @@
 import cors from 'cors';
 import express from "express";
-import gameData from './routes/GameData';
-import userPlaytime from './routes/user/GetPlaytime';
-import userRecentGames from './routes/user/GetRecentGames';
-import userOwnedGames from './routes/user/GetOwnedGames';
+import gameData from '../routes/GameData';
+import userPlaytime from '../routes/user/GetPlaytime';
+import userRecentGames from '../routes/user/GetRecentGames';
+import userOwnedGames from '../routes/user/GetOwnedGames';
 const app = express();
 const PORT = 5000;
 const prefix = '/api/steam';
@@ -28,6 +28,12 @@ const shutdown = () => {
     console.log("Server closed.");
     process.exit(0);
   });
+
+    // Force exit if server is not shut down within 5 seconds
+    setTimeout(() => {
+      console.log('Forcefully shutting down the server.');
+      process.exit(1);
+    }, 5000);
 };
 
 process.on("SIGINT", shutdown);

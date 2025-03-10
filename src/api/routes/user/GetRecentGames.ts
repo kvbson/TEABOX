@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { fetchSteamData } from '../../utils/fetchSteamData';
+import { fetchSteamData } from '../../server/utils/fetchSteamData';
 
  /**
   * Parameters:
@@ -14,6 +14,7 @@ userRecentGames.get('/user/recentGames/:steamId', async (req, res) => {
     steamid: steamId,
     format: 'json',
   };
+  console.log(params);
 
   try {
     const data = await fetchSteamData('IPlayerService/GetRecentlyPlayedGames/v0001/', params);

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { fetchSteamData } from '../../utils/fetchSteamData';
+import { fetchSteamData } from '../../server/utils/fetchSteamData';
 
  /**
   * Parameters:
