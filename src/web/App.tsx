@@ -1,0 +1,76 @@
+import { useEffect, useState } from 'react';
+import { ToastContainer } from "react-toastify";
+import './App.css';
+import { callServer } from '../utils/callServer';
+
+interface UserGame {
+  appid: number;
+  name: string;
+  playtime_forever: number;
+  playtime_2weeks?: number;
+}
+
+const fetchGameData = async (gameId: number) => {
+  return await callServer<UserGame>('gameData', gameId);  
+};
+
+const fetchRecentGames = async (steamId: string) => {
+  return await callServer('userPref', steamId);
+};
+
+function App() {
+  const [userGames, setUserGames] = useState<UserGame[]>([]);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        const gamesData = await fetchRecentGames('76561198271038475');
+        console.log(gamesData)
+        if (gamesData?.response?.games) {
+          setUserGames(gamesData.response.games);
+
+          const gameDetails = await Promise.all(
+            gamesData.response.games.map((game: any) => fetchGameData(game.appid))
+          );
+
+          console.log("Game Details:", gameDetails);
+        }
+      } catch (error) {
+        console.error("Error in fetchGames:", error);
+      }
+    };
+
+    fetchGames();
+  }, []);
+
+  return (
+    <div className="App">
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        draggable
+        style={{ fontSize: '10px', maxWidth: '200px', height: 'auto' }}
+      />
+      <h1>Recently Played Games:</h1>
+      {userGames.length > 0 ? (
+        <ul>
+          {userGames.map((game) => (
+            <li key={game.appid}>
+              <h3>
+                {game.name} ID: {game.appid}
+              </h3>
+              <p>Total Playtime: {Math.floor(game.playtime_forever / 60)} hours</p>
+              {game.playtime_2weeks && (
+                <p>Playtime (Last 2 Weeks): {Math.floor(game.playtime_2weeks / 60)} hours</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No recently played games found.</p>
+      )}
+    </div>
+  );
+}
+
+export default App;

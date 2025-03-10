@@ -10,6 +10,17 @@ app.use(express.json());
 app.use('/api/steam', userPreferences);
 app.use('/api/steam', gameData);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)
 })
+
+const shutdown = () => {
+  console.log("Shutting down server...");
+  server.close(() => {
+    console.log("Server closed.");
+    process.exit(0);
+  });
+};
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

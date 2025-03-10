@@ -4,11 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "npx tsx api/server/server.ts"
+    "dev": "concurrently \"vite\" \"npx tsx api/server/server.ts\""
   },
   "dependencies": {
     "axios": "^1.8.2",
