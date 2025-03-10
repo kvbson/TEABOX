@@ -12,7 +12,7 @@ interface UserGame {
   playtime_2weeks?: number;
 }
 
-const fetchGameData = async (appId: number) => await callServer('gameData', { appId });
+const fetchGameData = async (appId: number) => await callServer<UserGame>('gameData', { appId });
 
 const fetchRecentGames = async (steamId: string) => await callServer('recentGames', { steamId });
 

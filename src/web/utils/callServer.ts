@@ -22,7 +22,7 @@ const urls: Record<keyof ModeParams, string> = {
 
 const TOAST_ID = "error-toast";
 
-export const callServer = async <T extends Record<string, any> | null, M extends keyof ModeParams>(
+export const callServer = async <T extends Record<string, any> | null, M extends keyof ModeParams = keyof ModeParams>(
   mode: M,
   params: ModeParams[M]
 ): Promise<T | null> => {
