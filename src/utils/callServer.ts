@@ -4,19 +4,25 @@ export const HTTP_STATUS_OK = 200;
 export const HTTP_STATUS_NOT_FOUND = 404;
 export const HTTP_STATUS_UNAUTHORIZED = 401;
 
-export type Modes = 'userPref' | 'gameData';
+interface ModeParams {
+  recentGames: { steamId: string };
+  ownedGames: { steamId: string };
+  gameData: { appId: number };
+  playtime: { steamId: string; appId: number };
+}
 
-const urls: Record<Modes | 'server', string> = {
+const urls: Record<keyof ModeParams | 'server', string> = {
   server: 'http://localhost:5000',
-  userPref: '/api/steam/user/recentGames/',
+  recentGames: '/api/steam/user/recentGames/',
+  playtime: '/api/steam/user/playtime/',
   gameData: '/api/steam/game-data/',
+  ownedGames: '/api/steam/ownedGames/'
 };
 
 const TOAST_ID = "error-toast";
 
-export const callServer = async <T extends Record<string, any> | null>(mode: Modes, id: number | string): Promise<T | null> => {
-  const fullUrl = `${urls.server}${urls[mode]}${id}`;
-  console.log(fullUrl);
+export const callServer = async <M extends keyof ModeParams, T = Record<string, any> | null>(mode: keyof ModeParams, params: ModeParams[M]): Promise<T | null> => {
+  const fullUrl = `${urls.server}${urls[mode]}${Object.keys(params).map(key => `:${key}`).join('/')}`;
   try {
     const response = await fetch(fullUrl);
     const status = response.status;

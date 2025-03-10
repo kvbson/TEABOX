@@ -10,13 +10,11 @@ interface UserGame {
   playtime_2weeks?: number;
 }
 
-const fetchGameData = async (gameId: number) => {
-  return await callServer<UserGame>('gameData', gameId);  
-};
+const fetchGameData = async (appId: number) => await callServer<'gameData'>('gameData', { appId });
 
-const fetchRecentGames = async (steamId: string) => {
-  return await callServer('userPref', steamId);
-};
+const fetchRecentGames = async (steamId: string) => await callServer<'recentGames'>('recentGames', { steamId });
+
+const fetchOwnedGames = async (steamId: string) => await callServer<'ownedGames'>('ownedGames', { steamId });
 
 function App() {
   const [userGames, setUserGames] = useState<UserGame[]>([]);
@@ -25,7 +23,6 @@ function App() {
     const fetchGames = async () => {
       try {
         const gamesData = await fetchRecentGames('76561198271038475');
-        console.log(gamesData)
         if (gamesData?.response?.games) {
           setUserGames(gamesData.response.games);
 

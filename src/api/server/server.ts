@@ -1,15 +1,23 @@
 import cors from 'cors';
 import express from "express";
 import gameData from './routes/GameData';
-import userPreferences from './routes/UserPreferences';
+import userPlaytime from './routes/user/GetPlaytime';
+import userRecentGames from './routes/user/GetRecentGames';
+import userOwnedGames from './routes/user/GetOwnedGames';
 const app = express();
 const PORT = 5000;
+const prefix = '/api/steam';
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/steam', userPreferences);
-app.use('/api/steam', gameData);
 
+//ROUTES
+app.use(prefix, userPlaytime);
+app.use(prefix, gameData);
+app.use(prefix, userRecentGames);
+app.use(prefix, userOwnedGames);
+
+//SERVER
 const server = app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)
 })
