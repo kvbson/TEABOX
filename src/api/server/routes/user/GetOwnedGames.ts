@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import steamApi from '../../clients/steamApiClient';
+import steamApi from '../../clients/steamClients/steamApiClient';
 
 /**
   * Parameters:
@@ -8,8 +8,8 @@ import steamApi from '../../clients/steamApiClient';
 
 const userOwnedGames = Router();
 
-userOwnedGames.get('/user/ownedGames/:steamId', async (req, res) => {
-  const { steamId } = req.params;
+userOwnedGames.get('/user/ownedGames', async (req, res) => {
+  const { steamId } = req.query;
   const params = {
     steamid: steamId,
     format: 'json',

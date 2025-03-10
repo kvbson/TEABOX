@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import steamApi from '../../clients/steamApiClient';
+import steamApi from '../../clients/steamClients/steamApiClient';
 
 /**
   * Parameters:
@@ -9,8 +9,8 @@ import steamApi from '../../clients/steamApiClient';
 
 const userPlaytime = Router();
 
-userPlaytime.get('/user/playtime/:steamId/:appId', async (req, res) => {
-  const { steamId, appId } = req.params;
+userPlaytime.get('/user/playtime', async (req, res) => {
+  const { steamId, appId } = req.query;
   const params = {
     steamid: steamId,
     appid: appId,
