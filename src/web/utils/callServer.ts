@@ -13,6 +13,12 @@ interface ModeParams {
   playtime: { steamId: string; appId: number };
 }
 
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  error?: string;
+}
+
 const urls: Record<keyof ModeParams, string> = {
   recentGames: '/api/steam/user/recentGames/',
   playtime: '/api/steam/user/playtime/',
@@ -22,10 +28,10 @@ const urls: Record<keyof ModeParams, string> = {
 
 const TOAST_ID = "error-toast";
 
-export const callServer = async <T extends Record<string, any> | null, M extends keyof ModeParams = keyof ModeParams>(
+export const callServer = async <T extends { response: Record<string, any> }, M extends keyof ModeParams = keyof ModeParams>(
   mode: M,
   params: ModeParams[M]
-): Promise<T | null> => {
+): Promise<ApiResponse<T | null>> => {
   const fullUrl = `${SERVER_URL}${urls[mode]}${Object.keys(params)
     .map((key) => `${params[key as keyof typeof params]}`)
     .join('/')}`;
@@ -36,11 +42,11 @@ export const callServer = async <T extends Record<string, any> | null, M extends
 
     if (status === HTTP_STATUS_OK) {
       try {
-        return await response.json() as Promise<T>;
+        return await response.json() as Promise<ApiResponse<T | null>>;
       } catch (jsonError) {
         console.error("Error parsing JSON:", jsonError);
         toast.error("Błąd: Niepoprawny format odpowiedzi z serwera.", { toastId: TOAST_ID });
-        return null;
+        return { data: null, status: 500 };
       }
     }
 
@@ -59,6 +65,6 @@ export const callServer = async <T extends Record<string, any> | null, M extends
     toast.error("Błąd: Brak połączenia z serwerem.", { toastId: TOAST_ID });
   }
 
-  return null;
+  return { data: null, status: 0 };
 };
 

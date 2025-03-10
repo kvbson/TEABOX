@@ -1,49 +1,26 @@
-import { useEffect, useState } from 'react';
-import { ToastContainer } from "react-toastify";
-import './App.css';
-import { callServer } from './utils/callServer';
+import { useEffect } from 'react';
+import { toast, ToastContainer } from "react-toastify";
+import { useRecentGames } from './hooks/games';
 
 const testSteamId = '76561198271038475';
 
-interface UserGame {
-  appid: number;
-  name: string;
-  playtime_forever: number;
-  playtime_2weeks?: number;
-}
-
-const fetchGameData = async (appId: number) => await callServer<UserGame>('gameData', { appId });
-
-const fetchRecentGames = async (steamId: string) => await callServer('recentGames', { steamId });
-
-const fetchOwnedGames = async (steamId: string) => await callServer('ownedGames', { steamId });
-
-const fetchPlaytime = async (steamId: string, appId: number) => await callServer('playtime', { appId, steamId });
-
 function App() {
-  const [userGames, setUserGames] = useState<UserGame[]>([]);
+  const { recentGames, loading, error } = useRecentGames(testSteamId);
 
   useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const gamesData = await fetchRecentGames(testSteamId);
-        if (gamesData?.response?.games) {
-          setUserGames(gamesData.response.games);
+    if (error) {
+      toast.error(error);
+    }
+  }, [error]);
 
-          const gameDetails = await Promise.all(
-            gamesData.response.games.map((game: any) => fetchGameData(game.appid))
-          );
-
-          console.log("Game Details: ", gameDetails);
-          console.log("Owned Games: ", await fetchOwnedGames(testSteamId))
-        }
-      } catch (error) {
-        console.error("Error in fetchGames:", error);
-      }
-    };
-
-    fetchGames();
-  }, []);
+  if (loading) {
+    return (
+      <div className="spinner-container">
+        <div className="loading-spinner"></div>
+        <span className="loading-text">Loading games...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="App">
@@ -53,23 +30,24 @@ function App() {
         draggable
         style={{ fontSize: '10px', maxWidth: '200px', height: 'auto' }}
       />
-      <h1>Recently Played Games:</h1>
-      {userGames.length > 0 ? (
+      <h1>Recently Played Games</h1>
+      {recentGames.length > 0 ? (
         <ul>
-          {userGames.map((game) => (
+          {recentGames.map((game) => (
             <li key={game.appid}>
-              <h3>
-                {game.name} ID: {game.appid}
-              </h3>
-              <p>Total Playtime: {Math.floor(game.playtime_forever / 60)} hours</p>
-              {game.playtime_2weeks && (
-                <p>Playtime (Last 2 Weeks): {Math.floor(game.playtime_2weeks / 60)} hours</p>
-              )}
+              <h3>{game.name}</h3>
+              <div>
+                <p>App ID: {game.appid}</p>
+                <p>Total Playtime: {Math.floor(game.playtime_forever / 60)}h</p>
+                {game.playtime_2weeks && (
+                  <p>Recent Playtime: {Math.floor(game.playtime_2weeks / 60)}h</p>
+                )}
+              </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No recently played games found.</p>
+        <p className="no-games">No recently played games found</p>
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { fetchSteamData } from '../../server/utils/fetchSteamData';
+import steamApi from '../../clients/steamApiClient';
 
  /**
   * Parameters:
@@ -18,8 +18,11 @@ userPlaytime.get('/user/playtime/:steamId/:appId', async (req, res) => {
   };
 
   try {
-    const data = await fetchSteamData('IPlayerService/GetSingleGamePlaytime/v0001/', params);
-    res.json(data);
+    const { data } = await steamApi.get('IPlayerService/GetSingleGamePlaytime/v0001/', { params });
+    res.json({
+      success: true,
+      data,
+    });
   } catch (error) {
     res.status(500).json({ error });
   }

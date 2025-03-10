@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import fetch from 'node-fetch';
+import steamStoreApi from '../clients/steamStoreApiClient';
 
  /**
   * Parameters:
@@ -10,10 +10,12 @@ const gameData = Router();
 
 gameData.get('/gameData/:appId', async (req, res) => {
   const { appId } = req.params;
-  const url = `https://store.steampowered.com/api/appdetails?appids=${appId}`;
+  const params = {
+    appid: appId,
+  }
+  const url = `/appdetails`;
   try {
-    const response = await fetch(url);
-    const data = await response.json()
+    const data = await steamStoreApi.get(url, { params });
     res.json(data);
   } catch (error) {
     res.status(500).json({ error });
