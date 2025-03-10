@@ -1,3 +1,17 @@
+  *,
+  *::after,
+  *::before {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html,
+  body {
+    height: 100%;
+    scroll-behavior: smooth;
+  }
+
+
 :root {
   font-family: 'Roboto', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -16,8 +30,6 @@
 body {
   margin: 0;
   display: flex;
-  place-items: center;
-  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
 }
