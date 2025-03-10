@@ -8,7 +8,7 @@ import { fetchSteamData } from '../../server/utils/fetchSteamData';
 
 const userOwnedGames = Router();
 
-userOwnedGames.get('/user/ownedGames/:steamId/:appId', async (req, res) => {
+userOwnedGames.get('/user/ownedGames/:steamId', async (req, res) => {
   const { steamId } = req.params;
   const params = {
     steamid: steamId,

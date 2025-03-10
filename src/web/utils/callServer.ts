@@ -5,6 +5,7 @@ export const HTTP_STATUS_NOT_FOUND = 404;
 export const HTTP_STATUS_UNAUTHORIZED = 401;
 
 const SERVER_URL = 'http://localhost:5000';
+
 interface ModeParams {
   recentGames: { steamId: string };
   ownedGames: { steamId: string };
@@ -15,8 +16,8 @@ interface ModeParams {
 const urls: Record<keyof ModeParams, string> = {
   recentGames: '/api/steam/user/recentGames/',
   playtime: '/api/steam/user/playtime/',
-  gameData: '/api/steam/game-data/',
-  ownedGames: '/api/steam/ownedGames/'
+  gameData: '/api/steam/gameData/',
+  ownedGames: '/api/steam/user/ownedGames/'
 };
 
 const TOAST_ID = "error-toast";

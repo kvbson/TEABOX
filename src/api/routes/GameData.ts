@@ -8,7 +8,7 @@ import fetch from 'node-fetch';
 
 const gameData = Router();
 
-gameData.get('/game-data/:appId', async (req, res) => {
+gameData.get('/gameData/:appId', async (req, res) => {
   const { appId } = req.params;
   const url = `https://store.steampowered.com/api/appdetails?appids=${appId}`;
   try {

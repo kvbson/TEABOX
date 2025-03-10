@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ToastContainer } from "react-toastify";
 import './App.css';
-import { callServer } from '../utils/callServer';
+import { callServer } from './utils/callServer';
+
+const testSteamId = '76561198271038475';
 
 interface UserGame {
   appid: number;
@@ -16,13 +18,15 @@ const fetchRecentGames = async (steamId: string) => await callServer('recentGame
 
 const fetchOwnedGames = async (steamId: string) => await callServer('ownedGames', { steamId });
 
+const fetchPlaytime = async (steamId: string, appId: number) => await callServer('playtime', { appId, steamId });
+
 function App() {
   const [userGames, setUserGames] = useState<UserGame[]>([]);
 
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const gamesData = await fetchRecentGames('76561198271038475');
+        const gamesData = await fetchRecentGames(testSteamId);
         if (gamesData?.response?.games) {
           setUserGames(gamesData.response.games);
 
@@ -30,7 +34,8 @@ function App() {
             gamesData.response.games.map((game: any) => fetchGameData(game.appid))
           );
 
-          console.log("Game Details:", gameDetails);
+          console.log("Game Details: ", gameDetails);
+          console.log("Owned Games: ", await fetchOwnedGames(testSteamId))
         }
       } catch (error) {
         console.error("Error in fetchGames:", error);

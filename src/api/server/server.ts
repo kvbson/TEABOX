@@ -4,6 +4,7 @@ import gameData from '../routes/GameData';
 import userPlaytime from '../routes/user/GetPlaytime';
 import userRecentGames from '../routes/user/GetRecentGames';
 import userOwnedGames from '../routes/user/GetOwnedGames';
+
 const app = express();
 const PORT = 5000;
 const prefix = '/api/steam';

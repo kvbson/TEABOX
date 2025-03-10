@@ -9,7 +9,7 @@ export const fetchSteamData = async <T extends unknown>(endpoint: string, params
       throw new Error('Steam API key not found in environment variables');
     }
     const url = new URL(`https://api.steampowered.com/${endpoint}`);
-
+    
     url.searchParams.append('key', steamAPIKey);
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.append(key, value);
