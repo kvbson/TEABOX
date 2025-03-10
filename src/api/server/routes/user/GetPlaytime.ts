@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import steamApi from '../../clients/steamApiClient';
 
- /**
+/**
   * Parameters:
   * @param steamId user steam id
   * @param appId game id

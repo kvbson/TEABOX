@@ -12,7 +12,6 @@ const prefix = '/api/steam';
 app.use(cors());
 app.use(express.json());
 
-
 //ROUTES
 app.use(prefix, userPlaytime);
 app.use(prefix, gameData);
@@ -21,22 +20,22 @@ app.use(prefix, userOwnedGames);
 
 //SERVER
 const server = app.listen(PORT, () => {
-    console.log(`Server running at ${PORT}`)
-})
+  console.log(`Server running at ${PORT}`);
+});
 
 const shutdown = () => {
-  console.log("Shutting down server...");
+  console.log('Shutting down server...');
   server.close(() => {
-    console.log("Server closed.");
+    console.log('Server closed.');
     process.exit(0);
   });
 
-    // Force exit if server is not shut down within 5 seconds
-    setTimeout(() => {
-      console.log('Forcefully shutting down the server.');
-      process.exit(1);
-    }, 5000);
+  // Force exit if server is not shut down within 5 seconds
+  setTimeout(() => {
+    console.log('Forcefully shutting down the server.');
+    process.exit(1);
+  }, 5000);
 };
 
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);

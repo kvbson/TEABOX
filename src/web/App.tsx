@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from 'react-toastify';
 import { useRecentGames } from './hooks/useRecentGames';
 
 const testSteamId = '76561198271038475';

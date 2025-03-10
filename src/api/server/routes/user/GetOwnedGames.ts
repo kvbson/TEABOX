@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import steamApi from '../../clients/steamApiClient';
 
- /**
+/**
   * Parameters:
   * @param steamId user steam id
   */
@@ -19,14 +19,14 @@ userOwnedGames.get('/user/ownedGames/:steamId', async (req, res) => {
 
   try {
     const { data } = await steamApi.get('IPlayerService/GetOwnedGames/v0001/', {
-      params
+      params,
     });
     res.json({
       success: true,
       data,
     });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch game data' });
+    res.status(500).json({ error });
   }
 });
 

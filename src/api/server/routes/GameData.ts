@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import steamStoreApi from '../clients/steamStoreApiClient';
 
- /**
+/**
   * Parameters:
   * @param appId game id
   */
@@ -12,8 +12,8 @@ gameData.get('/gameData/:appId', async (req, res) => {
   const { appId } = req.params;
   const params = {
     appid: appId,
-  }
-  const url = `/appdetails`;
+  };
+  const url = '/appdetails';
   try {
     const data = await steamStoreApi.get(url, { params });
     res.json(data);

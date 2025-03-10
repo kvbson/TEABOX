@@ -24,10 +24,10 @@ function useRecentGames(steamId: string): UseGamesResult {
       try {
         const { data } = await callServer('recentGames', { steamId });
         if (!data) {
-            throw new Error('Recent games fetch failed')
+          throw new Error('Recent games fetch failed');
         }
         if (Array.isArray(data.response.games)) {
-            setRecentGames(data.response.games);
+          setRecentGames(data.response.games);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
