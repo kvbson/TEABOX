@@ -20,9 +20,11 @@ steamStoreApi.interceptors.request.use(config => {
   return config;
 });
 
-steamStoreApi.interceptors.response.use(response => {
-  console.log(`Received response with status ${response.status}`);
-  return response;
-});
+steamStoreApi.interceptors.response.use(
+  response => {
+    console.log(`[Success] ${response.status} ${response.config.url}`);
+    return response;
+  },
+);
 
 export default steamStoreApi;
