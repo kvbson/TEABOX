@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
-const Toast = ({ error }: {error: string | null}) => {
+const Toast: React.FC<{error: string | null}> = ({ error }) => {
   useEffect(() => {
     if (error) {
       toast.error(error);

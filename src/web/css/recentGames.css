@@ -1,5 +1,15 @@
 .recent-games {
   display: flex;
-    place-items: center;
+  /* flex-direction: column; */
   justify-content: center;
+  padding: 25px;
+}
+
+.recent-games .game {
+  margin: 10px 0;
+  padding: 10px;
+  width: 100%;
+  background-color: #3c2f36;
+  border-radius: 5px;
+  list-style: none;
 }

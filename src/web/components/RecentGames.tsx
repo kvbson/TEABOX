@@ -1,9 +1,9 @@
 import { ToastContainer } from 'react-toastify';
 import { UserGame } from '../hooks/useRecentGames.types';
 
-const RecentGames = ({ recentGames }: {recentGames: UserGame[]}) => {
+const RecentGames: React.FC<{ recentGames: UserGame[] }> = ({ recentGames }) => {
   return (
-   
+  
     <div className="recent-games">
       <ToastContainer
         position="bottom-right"
@@ -11,11 +11,11 @@ const RecentGames = ({ recentGames }: {recentGames: UserGame[]}) => {
         draggable
         style={{ fontSize: '10px', maxWidth: '200px', height: 'auto' }}
       />
-      <h1>Recently Played Games</h1>
       {recentGames.length > 0 ? (
         <ul>
+          <h3>Recently Played Games</h3>
           {recentGames.map((game) => (
-            <li key={game.appid}>
+            <li key={game.appid}  className='game'>
               <h3>{game.name}</h3>
               <div>
                 <p>App ID: {game.appid}</p>
