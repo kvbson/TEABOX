@@ -13,7 +13,7 @@ const initialOptions = [
 ];
 
 const Sidebar: React.FC = () => {
-  const swapyRef = useRef<Swapy | null>(null)
+  const swapyRef = useRef<Swapy | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,20 +21,20 @@ const Sidebar: React.FC = () => {
 
     swapyRef.current = createSwapy(containerRef.current, {
       animation: 'dynamic',
-      dragAxis: 'y'
+      dragAxis: 'y',
     });
 
-  swapyRef.current.onSwapEnd(({ slotItemMap }) => {
-    const sortedIds = Object.values(slotItemMap.asArray).map(({ item }) => item);
-    
-    const sortedOptions = sortedIds.map(id => 
-      initialOptions.find(option => option.id === id)
-    ).filter(Boolean);
+    swapyRef.current.onSwapEnd(({ slotItemMap }) => {
+      const sortedIds = Object.values(slotItemMap.asArray).map(({ item }) => item);
 
-    //Could be saved in User's table in Database in the future
-    const dbSaveJSON = JSON.stringify(sortedOptions);
-    console.log(dbSaveJSON);
-  });
+      const sortedOptions = sortedIds.map(id =>
+        initialOptions.find(option => option.id === id),
+      ).filter(Boolean);
+
+      //Could be saved in User's table in Database in the future
+      const dbSaveJSON = JSON.stringify(sortedOptions);
+      console.log(dbSaveJSON);
+    });
 
     return () => {
       swapyRef.current?.destroy();
@@ -43,13 +43,12 @@ const Sidebar: React.FC = () => {
 
   const options = localStorage.getItem('sidebar-items');
   console.log(options);
-  
 
   return (
     <div className="sidebar">
       <h3>What flavors are the most important?</h3>
       <div ref={containerRef}>
-        {initialOptions.map(({id}) => {
+        {initialOptions.map(({ id }) => {
           const option = initialOptions.find(item => item.id === id);
           return option ? (
             <div className="swapy-slot" data-swapy-slot={id} key={id}>

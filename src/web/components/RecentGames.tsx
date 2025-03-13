@@ -3,7 +3,7 @@ import { UserGame } from '../hooks/useRecentGames.types';
 
 const RecentGames: React.FC<{ recentGames: UserGame[] }> = ({ recentGames }) => {
   return (
-  
+
     <div className="recent-games">
       <ToastContainer
         position="bottom-right"
@@ -15,7 +15,7 @@ const RecentGames: React.FC<{ recentGames: UserGame[] }> = ({ recentGames }) => 
         <ul>
           <h3>Recently Played Games</h3>
           {recentGames.map((game) => (
-            <li key={game.appid}  className='game'>
+            <li key={game.appid} className='game'>
               <h3>{game.name}</h3>
               <div>
                 <p>App ID: {game.appid}</p>

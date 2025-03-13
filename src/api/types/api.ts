@@ -4,7 +4,7 @@ export interface ModeParams {
     gameData: { appId: number };
     playtime: { steamId: string; appId: number };
 }
-  
+
 export interface ApiResponse<T> {
     data: T;
     status?: number;

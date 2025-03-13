@@ -12,9 +12,9 @@ function App() {
   return (
     <div className='App'>
       <Header />
-        <Sidebar />
+      <Sidebar />
       <Toast error={error}/>
-      { loading ? <LoadingSpinner /> : <RecentGames recentGames={[]} />} 
+      { loading ? <LoadingSpinner /> : <RecentGames recentGames={[]} />}
     </div>
   );
 }

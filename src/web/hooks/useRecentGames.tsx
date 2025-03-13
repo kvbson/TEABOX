@@ -11,7 +11,7 @@ const useRecentGames = (steamId: string): UseGamesResult => {
     const fetchData = async () => {
       try {
         const { data } = await callServer('recentGames', { steamId });
-        
+
         if (data?.response?.games && Array.isArray(data.response.games)) {
           setRecentGames(data.response.games);
         } else {
