@@ -1,24 +1,65 @@
-//Prepared for dragndrop
+import React, { useEffect, useRef } from 'react';
+import { createSwapy, Swapy } from 'swapy';
+
 const initialOptions = [
-  { id: 1, text: 'In Library' },
-  { id: 2, text: 'Indie' },
-  { id: 3, text: 'Reviews' },
-  { id: 4, text: 'Players' },
-  { id: 5, text: 'Casual' },
-  { id: 6, text: 'Latest' },
-  { id: 7, text: 'Genre' },
-  { id: 8, text: 'Cost' },
+  { id: '1', text: 'In Library' },
+  { id: '2', text: 'Indie' },
+  { id: '3', text: 'Reviews' },
+  { id: '4', text: 'Players' },
+  { id: '5', text: 'Casual' },
+  { id: '6', text: 'Latest' },
+  { id: '7', text: 'Genre' },
+  { id: '8', text: 'Cost' },
 ];
 
 const Sidebar: React.FC = () => {
+  const swapyRef = useRef<Swapy | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    swapyRef.current = createSwapy(containerRef.current, {
+      animation: 'dynamic',
+      dragAxis: 'y'
+    });
+
+  swapyRef.current.onSwapEnd(({ slotItemMap }) => {
+    const sortedIds = Object.values(slotItemMap.asArray).map(({ item }) => item);
+    
+    const sortedOptions = sortedIds.map(id => 
+      initialOptions.find(option => option.id === id)
+    ).filter(Boolean);
+
+    //Could be saved in User's table in Database in the future
+    const dbSaveJSON = JSON.stringify(sortedOptions);
+    console.log(dbSaveJSON);
+  });
+
+    return () => {
+      swapyRef.current?.destroy();
+    };
+  }, []);
+
+  const options = localStorage.getItem('sidebar-items');
+  console.log(options);
+  
+
   return (
     <div className="sidebar">
       <h3>What flavors are the most important?</h3>
-      <ul>
-        {initialOptions.map(({ id, text }) => {
-          return <li key={id}>{text}</li>;
+      <div ref={containerRef}>
+        {initialOptions.map(({id}) => {
+          const option = initialOptions.find(item => item.id === id);
+          return option ? (
+            <div className="swapy-slot" data-swapy-slot={id} key={id}>
+              <div className="swapy-item" data-swapy-item={id}>
+                {option.text}
+              </div>
+            </div>
+          ) : null;
         })}
-      </ul>
+      </div>
       <p>Drag and drop your preferences to set sorting for the recommendations</p>
     </div>
   );

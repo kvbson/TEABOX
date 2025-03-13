@@ -10,11 +10,11 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
 }
 
-.sidebar ul {
-  list-style: none;
+.swapy-slot {
+  padding: 1px;
 }
 
-.sidebar li {
+.swapy-item {
   padding: 10px 15px;
   margin-bottom: 10px;
   border-radius: 8px;
