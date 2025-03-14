@@ -1,4 +1,6 @@
-export const SERVER_URL = 'http://localhost:5000';
+import { PORT } from "../../../server/server";
+
+export const SERVER_URL = `http://localhost:${PORT}`;
 export const TOAST_ID = 'error-toast';
 
 export const API_ENDPOINTS = {

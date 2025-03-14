@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import steamStoreApi from '../clients/steamClients/steamStoreApiClient';
+import steamStoreApi from '../../clients/steamClients/steamStoreApiClient';
 
 /**
   * Parameters:
