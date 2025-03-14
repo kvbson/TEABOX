@@ -6,12 +6,16 @@ import gameData from './routes/GameData';
 import userRecentGames from './routes/user/GetRecentGames';
 import userOwnedGames from './routes/user/GetOwnedGames';
 import userPlaytime from './routes/user/GetPlaytime';
-import { execSync } from 'child_process';
+import { checkForCerts } from './certs/setupCerts';
 
 const app = express();
-export const PORT = 5000;
 const PREFIX = '/api/steam';
-export const CERTS_DIR = './api/server/certs';
+export const PORT = 5000;
+export const CERTS_DIR = './src/api/server/certs/';
+
+// Certificate filenames
+const CERT_FILE = 'localhost.pem';
+const KEY_FILE = 'localhost-key.pem';
 
 app.use(cors());
 app.use(express.json());
@@ -24,38 +28,44 @@ app.use(PREFIX, userOwnedGames);
 
 //check if certs exist; if not, generate them
 //only for local development; for production we can use Lets encrypt
+async function startServer() {
+  // Check if certs exist; if not, generate them
+  if (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`)) {
+    await checkForCerts(KEY_FILE, CERT_FILE);
+  }
 
+  // SERVER OPTIONS
+  const options = {
+    cert: fs.readFileSync(`${CERTS_DIR}${CERT_FILE}`),
+    key: fs.readFileSync(`${CERTS_DIR}${KEY_FILE}`),
+  };
 
-if (!fs.existsSync(`${CERTS_DIR}/localhost.pem`) || !fs.existsSync(`${CERTS_DIR}//localhost-key.pem`)) {
-  execSync(`npx tsx ${CERTS_DIR}/setupCerts.ts`, { stdio: 'inherit' });
-}
-
-
-//SERVER OPTIONS
-const options = {
-  cert: fs.readFileSync(`${CERTS_DIR}/localhost.pem`),
-  key: fs.readFileSync(`${CERTS_DIR}/localhost-key.pem`),
-};
-
-//SERVER
-const server = https.createServer(options, app);
-server.listen(PORT, () => {
-  console.log(`Server running at ${PORT}`);
-});
-
-const shutdown = () => {
-  console.log('Shutting down server...');
-  server.close(() => {
-    console.log('Server closed.');
-    process.exit(0);
+  // SERVER
+  const server = https.createServer(options, app);
+  server.listen(PORT, () => {
+    console.log(`Server running at https://localhost:${PORT}`);
   });
 
-  // Force exit if server is not shut down within 5 seconds
-  setTimeout(() => {
-    console.log('Forcefully shutting down the server.');
-    process.exit(1);
-  }, 5000);
-};
+  const shutdown = () => {
+    console.log('Shutting down server...');
+    server.close(() => {
+      console.log('Server closed.');
+      process.exit(0);
+    });
 
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+    // Force exit if server is not shut down within 5 seconds
+    setTimeout(() => {
+      console.log('Forcefully shutting down the server.');
+      process.exit(1);
+    }, 5000);
+  };
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+}
+
+// Start the server
+startServer().catch((err) => {
+  console.error('❌ Failed to start server:', err);
+  process.exit(1);
+});
