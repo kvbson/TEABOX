@@ -8,13 +8,13 @@ import useRecentGames from './hooks/useRecentGames';
 const testSteamId = '76561198271038475';
 
 function App() {
-  const { /*recentGames,*/ loading, error } = useRecentGames(testSteamId);
+  const { recentGames, loading, error } = useRecentGames(testSteamId);
   return (
     <div className='App'>
       <Header />
       <Sidebar />
       <Toast error={error}/>
-      { loading ? <LoadingSpinner /> : <RecentGames recentGames={[]} />}
+      { loading ? <LoadingSpinner /> : <RecentGames recentGames={recentGames} />}
     </div>
   );
 }

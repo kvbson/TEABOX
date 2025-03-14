@@ -15,6 +15,7 @@ userPlaytime.get('/user/playtime', async (req, res) => {
     steamid: steamId,
     appid: appId,
     format: 'json',
+    adapter: 'https',
   };
 
   try {

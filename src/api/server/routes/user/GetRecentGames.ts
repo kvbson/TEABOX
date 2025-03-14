@@ -13,6 +13,7 @@ userRecentGames.get('/user/recentGames', async (req, res) => {
   const params = {
     steamid: steamId,
     format: 'json',
+    adapter: 'https',
   };
 
   try {

@@ -1,26 +1,43 @@
+import { execSync } from 'child_process';
 import cors from 'cors';
 import express from 'express';
+import fs from 'fs';
+import https from 'https';
 import gameData from './routes/GameData';
+import userOwnedGames from './routes/user/GetOwnedGames';
 import userPlaytime from './routes/user/GetPlaytime';
 import userRecentGames from './routes/user/GetRecentGames';
-import userOwnedGames from './routes/user/GetOwnedGames';
 
 const app = express();
-const PORT = 5000;
-const prefix = '/api/steam';
+export const PORT = 5000;
+const PREFIX = '/api/steam';
+export const CERTS_DIR = 'D:/TEABOX/src/api/certs';
 
 app.use(cors());
 app.use(express.json());
 
-//ROUTES
-app.use(prefix, userPlaytime);
-app.use(prefix, gameData);
-app.use(prefix, userRecentGames);
-app.use(prefix, userOwnedGames);
+// ROUTES
+app.use(PREFIX, userPlaytime);
+app.use(PREFIX, gameData);
+app.use(PREFIX, userRecentGames);
+app.use(PREFIX, userOwnedGames);
 
-//SERVER
-const server = app.listen(PORT, () => {
-  console.log(`Server running at ${PORT}`);
+// Check if certs exist; if not, generate them
+// Only for local development; for production, use Let's Encrypt
+if (!fs.existsSync(`${CERTS_DIR}/localhost.pem`) || !fs.existsSync(`${CERTS_DIR}/localhost-key.pem`)) {
+  execSync(`npx tsx ${CERTS_DIR}/setupCerts.ts`, { stdio: 'inherit' });
+}
+
+// SERVER OPTIONS
+const options = {
+  cert: fs.readFileSync(`${CERTS_DIR}/localhost.pem`),
+  key: fs.readFileSync(`${CERTS_DIR}/localhost-key.pem`),
+};
+
+// SERVER
+const server = https.createServer(options, app);
+server.listen(PORT, () => {
+  console.log(`Server running at https://localhost:${PORT}`);
 });
 
 const shutdown = () => {
