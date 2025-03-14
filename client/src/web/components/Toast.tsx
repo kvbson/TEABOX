@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
 const Toast: React.FC<{error: string | null}> = ({ error }) => {
