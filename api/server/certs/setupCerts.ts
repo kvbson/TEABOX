@@ -1,7 +1,7 @@
-import fs from 'fs';
+import fs from 'node:fs';
 import { createCA, createCert } from 'mkcert';
-import path from 'path';
-import { CERTS_DIR } from '../server';
+import path from 'node:path';
+import { CERTS_DIR } from '../server.js';
 
 async function generateCertificates(keyFile: string, certFile: string) {
   try {

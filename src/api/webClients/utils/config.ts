@@ -1,4 +1,4 @@
-import { PORT } from '../../../server/server';
+import { PORT } from '../../../../api/server/server';
 
 export const SERVER_URL = `http://localhost:${PORT}`;
 export const TOAST_ID = 'error-toast';

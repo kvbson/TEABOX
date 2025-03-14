@@ -1,5 +1,5 @@
 {
-    "watch": ["src/api/server"],
+    "watch": ["api/server"],
     "ext": "ts,json,js",
     "ignore": ["src/web/**", "**/*.test.ts"],
     "execMap": {

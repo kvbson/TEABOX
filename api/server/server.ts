@@ -1,17 +1,17 @@
 import cors from 'cors';
 import express from 'express';
-import https from 'https';
-import fs from 'fs';
-import gameData from './routes/GameData';
-import userRecentGames from './routes/user/GetRecentGames';
-import userOwnedGames from './routes/user/GetOwnedGames';
-import userPlaytime from './routes/user/GetPlaytime';
-import { checkForCerts } from './certs/setupCerts';
+import https from 'node:https';
+import fs from 'node:fs';
+import { checkForCerts } from './certs/setupCerts.js';
+import gameData from './routes/GameData.js';
+import userOwnedGames from './routes/user/GetOwnedGames.js';
+import userPlaytime from './routes/user/GetPlaytime.js';
+import userRecentGames from './routes/user/GetRecentGames.js';
 
 const app = express();
 const PREFIX = '/api/steam';
 export const PORT = 5000;
-export const CERTS_DIR = './src/api/server/certs/';
+export const CERTS_DIR = './api/server/certs/';
 
 // Certificate filenames
 const CERT_FILE = 'localhost.pem';

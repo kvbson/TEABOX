@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { UseGamesResult, UserGame } from './useRecentGames.types';
-import { callServer } from '../../../../api/clients/webClients/callServer.js';
+import { UseGamesResult, UserGame } from './useRecentGames.types.js';
+import { callServer } from '../../api/webClients/callServer.js';
 
 const useRecentGames = (steamId: string): UseGamesResult => {
   const [recentGames, setRecentGames] = useState<UserGame[]>([]);

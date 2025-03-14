@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import steamApi from '../../../clients/steamClients/steamApiClient';
+import steamApi from '../../clients/steamClients/steamApiClient.js';
 
 /**
   * Parameters:
