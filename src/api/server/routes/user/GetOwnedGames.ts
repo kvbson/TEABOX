@@ -15,7 +15,7 @@ userOwnedGames.get('/user/ownedGames', async (req, res) => {
     format: 'json',
     include_played_free_games: 'true',
     include_appinfo: 'true',
-    adapter: 'https',
+    // adapter: 'https',
   };
 
   try {
