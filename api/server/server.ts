@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import https from 'node:https';
 import fs from 'node:fs';
+import helmet from 'helmet';
 import { checkForCerts } from './certs/setupCerts.js';
 import gameData from './routes/GameData.js';
 import userOwnedGames from './routes/user/GetOwnedGames.js';
@@ -17,8 +18,13 @@ export const CERTS_DIR = './api/server/certs/';
 const CERT_FILE = 'localhost.pem';
 const KEY_FILE = 'localhost-key.pem';
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://localhost:5173', // Your Vite client URL
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
+app.use(helmet());
 
 //ROUTES
 app.use(PREFIX, userPlaytime);

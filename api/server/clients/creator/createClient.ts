@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import dotenv from 'dotenv';
+import https from 'node:https';
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ export const createApiClient = (baseURL: string): AxiosInstance => {
     params: {
       key: process.env.VITE_STEAM_API_KEY,
     },
+    httpsAgent: new https.Agent({
+      rejectUnauthorized: false,
+    }),
   });
 
   api.interceptors.request.use(config => {
