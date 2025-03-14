@@ -11,7 +11,7 @@ import { execSync } from 'child_process';
 const app = express();
 export const PORT = 5000;
 const PREFIX = '/api/steam';
-const CERTS_DIR = './api/server/certs';
+export const CERTS_DIR = './api/server/certs';
 
 app.use(cors());
 app.use(express.json());

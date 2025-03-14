@@ -16,7 +16,6 @@ userPlaytime.get('/user/playtime', async (req, res) => {
     appid: appId,
     format: 'json',
   };
-
   try {
     const { data } = await steamApi.get('IPlayerService/GetSingleGamePlaytime/v0001/', { params });
     res.json({

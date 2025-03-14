@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 import { SERVER_URL, API_ENDPOINTS, TOAST_ID } from './utils/config';
 import { HTTP_STATUS_UNAUTHORIZED, HTTP_STATUS_NOT_FOUND } from './utils/httpsStatus';
 import { ApiResponse, ModeParams } from '../../types/api';
-
 const apiClient = axios.create({
   baseURL: SERVER_URL,
 });

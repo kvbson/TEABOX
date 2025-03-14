@@ -14,9 +14,10 @@ userRecentGames.get('/user/recentGames', async (req, res) => {
     steamid: steamId,
     format: 'json',
   };
-
+  console.log(req, res);
   try {
     const { data } = await steamApi.get('IPlayerService/GetRecentlyPlayedGames/v0001/', { params });
+    console.log(data);
     res.json({
       success: true,
       data,
