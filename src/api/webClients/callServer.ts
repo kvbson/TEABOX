@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { ApiResponse, ModeParams } from '../types/api';
-import { SERVER_URL, API_ENDPOINTS, TOAST_ID } from './utils/config';
-import { HTTP_STATUS_UNAUTHORIZED, HTTP_STATUS_NOT_FOUND } from './utils/httpsStatus';
+import { API_ENDPOINTS, SERVER_URL, TOAST_ID } from './utils/config';
+import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_UNAUTHORIZED } from './utils/httpsStatus';
 
 const errorMessages: Record<number, string> = {
   [HTTP_STATUS_UNAUTHORIZED]: 'Error 401: Unauthorized access.',
@@ -24,7 +24,7 @@ export const callServer = async <T extends { response: Record<string, unknown> }
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include',
+      // credentials: 'include',
     });
 
     if (!response.ok) {
