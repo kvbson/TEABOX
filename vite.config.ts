@@ -3,11 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { defineConfig } from 'vite';
 
-const certsDir = process.env.CERTS_DIR;
-
-if (!certsDir) {
-  console.log('❌ Missing CERTS_DIR parameter in env file.');
-}
+const CERT_FILE = 'localhost.crt';
+const KEY_FILE = 'localhost-key.pem';
+const CERTS_DIR = './api/certs/';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -42,8 +40,8 @@ export default defineConfig({
   },
   server: {
     https: {
-      key: fs.readFileSync(path.join(certsDir as string, 'localhost-key.pem')),
-      cert: fs.readFileSync(path.join(certsDir as string, 'localhost.crt')),
+      key: fs.readFileSync(path.join(CERTS_DIR as string, KEY_FILE)),
+      cert: fs.readFileSync(path.join(CERTS_DIR as string, CERT_FILE)),
       // key: 'api/server/certs/localhost-key.pem',
       // cert: 'api/server/certs/localhost.pem',
     },

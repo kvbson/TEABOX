@@ -12,7 +12,7 @@
     "lint": "eslint --ext [.ts,.tsx] ./src --cache --cache-location ./dist",
     "preview": "vite preview",
     "dev": "concurrently -n CLIENT,SERVER \"vite\" \"npm run dev:server\"",
-    "postinstall": "npx tsx certs/setupCerts.ts"
+    "postinstall": "npx tsx ./api/certs/run.ts && npm run build"
   },
   "dependencies": {
     "react": "^19.0.0",

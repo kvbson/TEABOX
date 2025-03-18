@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import { createCA, createCert } from 'mkcert';
 import path from 'node:path';
-import dotenv from 'dotenv';
 
-dotenv.config();
+export const CERTS_DIR = './api/certs/';
+export const CERT_FILE = 'localhost.crt';
+export const KEY_FILE = 'localhost-key.pem';
 
 async function generateCertificates(keyFile: string, certFile: string) {
   try {
@@ -20,12 +21,8 @@ async function generateCertificates(keyFile: string, certFile: string) {
       domains: ['127.0.0.1', 'localhost'],
       validity: 365,
     });
-    const certsDir = process.env.CERTS_DIR;
-    if (!certsDir) {
-      return console.log('❌ Missing CERTS_DIR parameter in env file.');
-    }
-    fs.writeFileSync(path.join(certsDir, keyFile), cert.key);
-    fs.writeFileSync(path.join(certsDir, certFile), cert.cert);
+    fs.writeFileSync(path.join(CERTS_DIR, keyFile), cert.key);
+    fs.writeFileSync(path.join(CERTS_DIR, certFile), cert.cert);
     console.log('✅ Certificates generated successfully');
   } catch (error) {
     console.error('❌ Error generating certificates:', error);
@@ -39,3 +36,4 @@ export async function checkForCerts(keyFile: string, certFile: string) {
     await generateCertificates(keyFile, certFile);
   }
 }
+
