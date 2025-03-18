@@ -3,16 +3,16 @@ import express from 'express';
 import helmet from 'helmet';
 import fs from 'node:fs';
 import https from 'node:https';
-import { checkForCerts } from './certs/setupCerts.js';
 import gameData from './routes/GameData.js';
 import userOwnedGames from './routes/user/GetOwnedGames.js';
 import userPlaytime from './routes/user/GetPlaytime.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
+import { checkForCerts } from '@api/certs/setupCerts.js';
 
 const app = express();
 const PREFIX = '/api/steam';
 export const PORT = 5000;
-export const CERTS_DIR = './api/server/certs/';
+export const CERTS_DIR = './api/certs/';
 
 // Certificate filenames
 const CERT_FILE = 'localhost.crt';
@@ -37,7 +37,7 @@ app.use(PREFIX, userOwnedGames);
 async function startServer() {
   // Check if certs exist; if not, generate them
   if (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`)) {
-    await checkForCerts();
+    await checkForCerts(KEY_FILE, CERT_FILE);
   }
 
   // SERVER OPTIONS

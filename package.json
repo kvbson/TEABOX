@@ -11,7 +11,8 @@
     "build": "npm run build:client && npm run build:server",
     "lint": "eslint --ext [.ts,.tsx] ./src --cache --cache-location ./dist",
     "preview": "vite preview",
-    "dev": "concurrently -n CLIENT,SERVER \"vite\" \"npm run dev:server\""
+    "dev": "concurrently -n CLIENT,SERVER \"vite\" \"npm run dev:server\"",
+    "postinstall": "npx tsx certs/setupCerts.ts"
   },
   "dependencies": {
     "react": "^19.0.0",
