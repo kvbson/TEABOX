@@ -26,4 +26,4 @@ dist-ssr
 
 #Certs
 localhost-key.pem
-localhost.pem
+localhost.crt
