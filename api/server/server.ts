@@ -15,7 +15,7 @@ export const PORT = 5000;
 export const CERTS_DIR = './api/server/certs/';
 
 // Certificate filenames
-const CERT_FILE = 'localhost.pem';
+const CERT_FILE = 'localhost.crt';
 const KEY_FILE = 'localhost-key.pem';
 
 app.use(cors({
