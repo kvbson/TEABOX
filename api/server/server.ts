@@ -37,7 +37,7 @@ app.use(PREFIX, userOwnedGames);
 async function startServer() {
   // Check if certs exist; if not, generate them
   if (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`)) {
-    await checkForCerts(KEY_FILE, CERT_FILE);
+    await checkForCerts();
   }
 
   // SERVER OPTIONS
