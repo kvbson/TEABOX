@@ -1,7 +1,8 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import fs from 'fs';
 import path from 'path';
-
+import { defineConfig } from 'vite';
+export const CERTS_DIR = 'api/server/certs/';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -32,5 +33,15 @@ export default defineConfig({
       // Ensure Vite ignores the api/ directory
       '/api': path.resolve(__dirname, 'api'),
     },
+  },
+  server: {
+    https: {
+      key: fs.readFileSync(path.join(CERTS_DIR, 'localhost-key.pem')),
+      cert: fs.readFileSync(path.join(CERTS_DIR, 'localhost.crt')),
+      // key: 'api/server/certs/localhost-key.pem',
+      // cert: 'api/server/certs/localhost.pem',
+    },
+    host: 'localhost',
+    port: 5173,
   },
 });

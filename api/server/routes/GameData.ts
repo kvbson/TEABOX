@@ -12,7 +12,6 @@ gameData.get('/gameData/:appId', async (req, res) => {
   const { appId } = req.params;
   const params = {
     appid: appId,
-    adapter: 'https',
   };
   const url = '/appdetails';
   try {

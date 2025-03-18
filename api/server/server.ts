@@ -1,8 +1,8 @@
 import cors from 'cors';
 import express from 'express';
-import https from 'node:https';
-import fs from 'node:fs';
 import helmet from 'helmet';
+import fs from 'node:fs';
+import https from 'node:https';
 import { checkForCerts } from './certs/setupCerts.js';
 import gameData from './routes/GameData.js';
 import userOwnedGames from './routes/user/GetOwnedGames.js';
@@ -15,7 +15,7 @@ export const PORT = 5000;
 export const CERTS_DIR = './api/server/certs/';
 
 // Certificate filenames
-const CERT_FILE = 'localhost.pem';
+const CERT_FILE = 'localhost.crt';
 const KEY_FILE = 'localhost-key.pem';
 
 app.use(cors({

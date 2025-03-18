@@ -12,7 +12,7 @@
 
 .header-left {
   display: flex;
-  align-items: baseline;
+  align-items: flex-end;
   user-select: none;
 }
 

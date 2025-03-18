@@ -9,6 +9,14 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["./src"],
-  "exclude": ["node_modules", "api", "dist"]
+  "include": [
+    "./src",
+    "vite-env.d.ts",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "api",
+    "dist"
+  ]
 }
