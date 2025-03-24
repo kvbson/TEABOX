@@ -3,12 +3,12 @@ import express from 'express';
 import helmet from 'helmet';
 import fs from 'node:fs';
 import https from 'node:https';
-import gameData from './routes/GameData.js';
 import userOwnedGames from './routes/user/GetOwnedGames.js';
 import userPlaytime from './routes/user/GetPlaytime.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
 import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
 import userProfileData from './routes/user/GetProfileData.js';
+import gameInfo from './routes/GetGameInfo.js';
 
 const app = express();
 const PREFIX = '/api/steam';
@@ -24,10 +24,10 @@ app.use(helmet());
 
 //ROUTES
 app.use(PREFIX, userPlaytime);
-app.use(PREFIX, gameData);
 app.use(PREFIX, userRecentGames);
 app.use(PREFIX, userOwnedGames);
 app.use(PREFIX, userProfileData);
+app.use(PREFIX, gameInfo);
 
 async function startServer() {
   // check if certs exist; if not, generate them

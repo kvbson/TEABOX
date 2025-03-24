@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import steamApi from '../../clients/steamClients/steamApiClient.js';
+import { GameInfo } from '@api/types/routes.types.js';
+
+type RecentGames = { response: { total_count: number, games: GameInfo[] }};
 
 /**
   * Parameters:
   * @param steamId user steam id
   */
 
-export const getUserRecentGames = async (steamId: string) => {
+export const getUserRecentGames = async (steamId: string): Promise<RecentGames> => {
   const params = {
     steamid: steamId,
     format: 'json',

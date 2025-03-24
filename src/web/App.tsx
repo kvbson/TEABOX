@@ -11,7 +11,8 @@ const testSteamId2 = '76561198199623266';
 
 function App() {
   const { recentGames, loading, error } = useRecentGames(testSteamId2);
-  useProfileData(testSteamId2);
+  const { profileData } = useProfileData(testSteamId2);
+  console.log(profileData);
   return (
     <div className='App'>
       <Header />

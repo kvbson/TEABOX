@@ -1,12 +1,15 @@
 import { Router } from 'express';
 import steamApi from '../../clients/steamClients/steamApiClient.js';
+import { GameInfo } from '@api/types/routes.types.js';
+
+type OwnedGames = { response: { game_count: number, games: GameInfo[] }};
 
 /**
   * Parameters:
   * @param steamId user steam id
   */
 
-export const getUserOwnedGames = async (steamId: string) => {
+export const getUserOwnedGames = async (steamId: string): Promise<OwnedGames> => {
   const params = {
     steamid: steamId,
     format: 'json',
