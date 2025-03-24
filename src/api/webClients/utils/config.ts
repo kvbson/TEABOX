@@ -6,4 +6,5 @@ export const API_ENDPOINTS = {
   playtime: '/api/steam/user/playtime/',
   gameData: '/api/steam/gameData/',
   ownedGames: '/api/steam/user/ownedGames/',
+  profileData: '/api/steam/user/profileData/',
 };

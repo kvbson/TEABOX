@@ -6,10 +6,7 @@ import steamApi from '../../clients/steamClients/steamApiClient.js';
   * @param steamId user steam id
   */
 
-const userOwnedGames = Router();
-
-userOwnedGames.get('/user/ownedGames', async (req, res) => {
-  const { steamId } = req.query;
+export const getUserOwnedGames = async (steamId: string) => {
   const params = {
     steamid: steamId,
     format: 'json',
@@ -17,10 +14,19 @@ userOwnedGames.get('/user/ownedGames', async (req, res) => {
     include_appinfo: 'true',
   };
 
+  const { data } = await steamApi.get('IPlayerService/GetOwnedGames/v0001/', {
+    params,
+  });
+  return data;
+};
+
+const userOwnedGames = Router();
+
+userOwnedGames.get('/user/ownedGames', async (req, res) => {
+  const { steamId } = req.query;
+
   try {
-    const { data } = await steamApi.get('IPlayerService/GetOwnedGames/v0001/', {
-      params,
-    });
+    const data = await getUserOwnedGames(steamId as string);
     res.json({
       success: true,
       data,

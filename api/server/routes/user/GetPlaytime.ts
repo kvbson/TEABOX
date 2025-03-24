@@ -7,17 +7,26 @@ import steamApi from '../../clients/steamClients/steamApiClient.js';
   * @param appId game id
   */
 
-const userPlaytime = Router();
-
-userPlaytime.get('/user/playtime', async (req, res) => {
-  const { steamId, appId } = req.query;
+export const getUserPlaytime = async (steamId: string, appId: string | number) => {
   const params = {
     steamid: steamId,
     appid: appId,
     format: 'json',
   };
+
+  const { data } = await steamApi.get('IPlayerService/GetSingleGamePlaytime/v0001/', {
+    params,
+  });
+  return data;
+};
+
+const userPlaytime = Router();
+
+userPlaytime.get('/user/playtime', async (req, res) => {
+  const { steamId, appId } = req.query;
+
   try {
-    const { data } = await steamApi.get('IPlayerService/GetSingleGamePlaytime/v0001/', { params });
+    const data = await getUserPlaytime(steamId as string, appId as string);
     res.json({
       success: true,
       data,

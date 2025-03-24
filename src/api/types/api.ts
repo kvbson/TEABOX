@@ -3,6 +3,7 @@ export interface ModeParams {
     ownedGames: { steamId: string };
     gameData: { appId: number };
     playtime: { steamId: string; appId: number };
+    profileData: { steamId: string };
 }
 
 export interface ApiResponse<T> {

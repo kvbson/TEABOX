@@ -8,13 +8,14 @@ import userOwnedGames from './routes/user/GetOwnedGames.js';
 import userPlaytime from './routes/user/GetPlaytime.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
 import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
+import userProfileData from './routes/user/GetProfileData.js';
 
 const app = express();
 const PREFIX = '/api/steam';
 export const PORT = 5000;
 
 app.use(cors({
-  origin: 'https://localhost:5173', // Your Vite client URL
+  origin: 'https://localhost:5173', //vite client url
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -26,11 +27,11 @@ app.use(PREFIX, userPlaytime);
 app.use(PREFIX, gameData);
 app.use(PREFIX, userRecentGames);
 app.use(PREFIX, userOwnedGames);
+app.use(PREFIX, userProfileData);
 
-//check if certs exist; if not, generate them
-//only for local development; for production we can use Lets encrypt
 async function startServer() {
-  // Check if certs exist; if not, generate them
+  // check if certs exist; if not, generate them
+  // only for local development; for production we can use Lets encrypt
   if (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`)) {
     await checkForCerts(KEY_FILE, CERT_FILE);
   }
