@@ -9,6 +9,7 @@ import userRecentGames from './routes/user/GetRecentGames.js';
 import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
 import userProfileData from './routes/user/GetProfileData.js';
 import gameInfo from './routes/GetGameInfo.js';
+import { connectDB, mongoose } from '../db/connections.js';
 
 const app = express();
 const PREFIX = '/api/steam';
@@ -22,12 +23,25 @@ app.use(cors({
 app.use(express.json());
 app.use(helmet());
 
+connectDB();
+
 //ROUTES
 app.use(PREFIX, userPlaytime);
 app.use(PREFIX, userRecentGames);
 app.use(PREFIX, userOwnedGames);
 app.use(PREFIX, userProfileData);
 app.use(PREFIX, gameInfo);
+
+//HEALTH CHECK
+app.get('/health', (_, res) => {
+  res.status(200).json({ status: 'OK', dbState: mongoose.connection.readyState });
+});
+
+//MIDDLEWARE
+app.use((err: Error, _: express.Request, res: express.Response) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Something went wrong!' });
+});
 
 async function startServer() {
   // check if certs exist; if not, generate them
@@ -50,6 +64,8 @@ async function startServer() {
 
   const shutdown = () => {
     console.log('Shutting down server...');
+    mongoose.connection.close(false);
+    console.log('ℹ️ MongoDB connection closed');
     server.close(() => {
       console.log('Server closed.');
       process.exit(0);

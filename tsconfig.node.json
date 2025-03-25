@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
+    "outDir": "./dist/api",
     "rootDir": "./api",
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@api/*": ["./api/*"]
+      "@api/*": ["./api/*"],
     }
   },
   "include": ["./api/**/*.ts"],
