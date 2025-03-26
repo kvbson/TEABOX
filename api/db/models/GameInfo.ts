@@ -84,7 +84,7 @@ const GameInfoSchema = new Schema({
 
 }, { timestamps: true });
 
-//TODO: brakuje - reviews
+//TODO: missing - reviews, playersCount
 
 GameInfoSchema.index({ steamAppId: 1, name: 1 });
 
