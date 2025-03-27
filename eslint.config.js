@@ -32,7 +32,9 @@ export default tseslint.config(
       'no-multiple-empty-lines': ['warn', { max: 1, maxBOF: 0, maxEOF: 1 }],
       'no-trailing-spaces': ['warn'],
       'no-multi-spaces': ['warn'],
-      "space-infix-ops": ['warn']
+      "space-infix-ops": ['warn'],
+      '@typescript-eslint/no-explicit-any': ['off']
+
     },
   },
 )

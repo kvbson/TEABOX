@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type GameInfo = {
     appid: number;
     name: string;
@@ -59,4 +58,5 @@ export type ExtendedGameInfo = {
     background_raw: string;
     content_descriptors?: { ids: number[]; notes: string };
     ratings?: Record<string, any>;
+    app_url?: string;
   };
