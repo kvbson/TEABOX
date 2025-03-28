@@ -9,7 +9,7 @@ export async function updateAllGamesList() {
   await bulkUpsertAllGamesList(games, 500);
 }
 
-export async function bulkUpsertAllGamesList(
+async function bulkUpsertAllGamesList(
   { applist: { apps } }: SteamAppListResponse,
   batchSize = 200,
   throttleDelay = 100,

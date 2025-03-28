@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import { getUserRecentGames } from './GetRecentGames.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
-import { getGameInfo } from '../GetGameInfo.js';
 import { ExtendedGameInfo } from '#api/types/gameInfo.types';
 // import PQueue from 'p-queue';
 
@@ -25,16 +24,17 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
     ]);
 
     // Get unique app IDs from both lists
-    const allAppIds = [
-      ...new Set([
-        ...recentGames.response.games.map(g => g?.appid),
-        ...ownedGames.response.games.map(g => g?.appid),
-      ]),
-    ].filter(Boolean) as number[];
+    // const allAppIds = [
+    //   ...new Set([
+    //     ...recentGames.response.games.map(g => g?.appid),
+    //     ...ownedGames.response.games.map(g => g?.appid),
+    //   ]),
+    // ].filter(Boolean) as number[];
 
     // Fetch game details with rate limiting
     const gameInfoMap: Record<number, ExtendedGameInfo> = {};
-    console.log(await getGameInfo(allAppIds[0]));
+    // await getGameInfo(allAppIds[0]);
+    // await updateAllGamesList();
     // await Promise.all(
     //   allAppIds.map(appId =>
     //     steamApiQueue.add(async () => {

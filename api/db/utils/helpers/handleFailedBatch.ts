@@ -1,4 +1,3 @@
-
 import { BasicGameInfo } from '#types/allGames.types';
 import { AllGamesList } from '#db/models/AllGames';
 import { setTimeout } from 'timers/promises';
