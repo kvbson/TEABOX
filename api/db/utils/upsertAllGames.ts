@@ -4,9 +4,10 @@ import { AllGamesList } from '#db/models/AllGames';
 import { handleFailedBatch } from '#db/utils/helpers/handleFailedBatch';
 import { setTimeout } from 'node:timers/promises';
 
-export async function updateAllGamesList() {
+export async function upsertAllGamesList() {
   const games = await getAllGames();
-  await bulkUpsertAllGamesList(games, 500);
+  const result = await bulkUpsertAllGamesList(games, 500);
+  console.log(`Processed: ${result.totalProcessed};\n Upserted: ${result.upsertedCount};\n Modified ${result.modifiedCount};\n Errors: ${result.errorCount}`);
 }
 
 async function bulkUpsertAllGamesList(
