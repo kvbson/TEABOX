@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import steamApi from '../../clients/steamClients/steamApiClient.js';
-import { GameInfo } from '@api/types/routes.types.js';
+import { GameInfo } from '#types/gameInfo.types';
+import steamApi from '#server/clients/steamClients/steamApiClient';
 
 type OwnedGames = { response: { game_count: number, games: GameInfo[] }};
 

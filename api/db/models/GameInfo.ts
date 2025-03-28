@@ -1,4 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { InferSchemaType, Schema } from 'mongoose';
+
+export type GameInfoSchemaType = InferSchemaType<typeof GameInfoSchema>
 
 const CategorySchema = new Schema({
   id: { type: Number },
@@ -31,8 +33,8 @@ const MoviesSchema = new Schema({
   highlight: Boolean,
 });
 
-// Game Info Model (Core game metadata)
-const GameInfoSchema = new Schema({
+// Game Info
+export const GameInfoSchema = new Schema({
   steamAppId: { type: Number, required: true, unique: true },
   name: { type: String, required: true },
   platforms: {
@@ -82,11 +84,15 @@ const GameInfoSchema = new Schema({
     finalFormatted: String,
   },
 
-}, { timestamps: true });
+},
+{
+  timestamps: true,
+  id: false,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+});
 
-//TODO: missing - reviews, playersCount
-
-GameInfoSchema.index({ steamAppId: 1, name: 1 });
+//TODO: missing - playersCount
 
 export const GameInfo = mongoose.model('GameInfo', GameInfoSchema);
 

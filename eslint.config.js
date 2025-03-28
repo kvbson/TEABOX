@@ -24,7 +24,7 @@ export default tseslint.config(
         { allowConstantExport: true },
       ],
       'indent': ['warn', 2],
-      'max-len': ['error', { code: 130, ignoreComments: true }],
+      // 'max-len': ['error', { code: 130, ignoreComments: true }],
       'quotes': ['error', 'single', { avoidEscape: true }],
       'semi': ['error', 'always'],
       'comma-dangle': ['error', 'always-multiline'],

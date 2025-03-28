@@ -72,7 +72,8 @@ async function startServer() {
     });
 
     // Force exit if server is not shut down within 5 seconds
-    setTimeout(() => {
+    setTimeout(async () => {
+      await mongoose.connection.close(true);
       console.log('Forcefully shutting down the server.');
       process.exit(1);
     }, 5000);

@@ -1,17 +1,27 @@
-import { GameInfo } from '@api/db/models/GameInfo.js';
-import { InferSchemaType } from 'mongoose';
+import { GameInfoSchemaType } from '#db/models/GameInfo';
 
-export type DBResult = {
-    totalProcessed: number,
-    created: number,
-    updated: number,
-    skipped: number,
-    errors: unknown[],
-};
+type UpsertResult = {
+    success: boolean;
+    gameInfoStats: {
+      created: number;
+      updated: number;
+      skipped: number;
+    };
+    allGamesListStats: {
+      created: number;
+      skipped: number;
+    };
+    errors: Array<{
+      steamAppId: number;
+      error: string;
+    }>;
+  };
 
-export type GameListUpdateObject = {
-    $set: InferSchemaType<typeof GameInfo>,
+type GameListUpdateObject = {
+    $set: GameInfoSchemaType,
     $setOnInsert: {
         createdAt: Date,
     }
-}
+};
+
+export type { UpsertResult, GameListUpdateObject };

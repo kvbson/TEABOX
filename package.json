@@ -3,6 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "imports": {
+    "#api/*": "./api/*.js",
+    "#db/*": "./api/db/*.js",
+    "#server/*": "./api/server/*.js",
+    "#types/*": "./api/types/*.js"
+  },
   "scripts": {
     "dev:client": "vite",
     "dev:server": "nodemon --watch api/server -e ts --exec \"npx tsx api/server/server.ts\"",

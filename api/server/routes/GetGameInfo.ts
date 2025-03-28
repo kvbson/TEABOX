@@ -1,21 +1,44 @@
+import { ExtendedGameInfo } from '#types/gameInfo.types';
+import { SteamReviewsResponse } from '#types/reviews.types';
 import { Router } from 'express';
-import steamStoreApi from '../clients/steamClients/steamStoreApiClient.js';
+import steamStoreApi from '#server/clients/steamClients/steamStoreApiClient';
 
 /**
-  * Parameters:
-  * @param appids game id
-  */
+ * Parameters.
+ * @param appids - An array of game IDs.
+ * @param filter - The sorting filter:
+ *   - `recent` - Sorted by creation time (most recent first).
+ *   - `updated` - Sorted by last update time.
+ *   - `all` (default) - Sorted using a sliding window protocol.
+ */
 
-export const getGameInfo = async (appId: string | number) => {
+const getReviews = async (appId: string | number) => {
+  const reviewParams = {
+    json: 1,
+    filter: 'recent',
+    num_per_page: 200,
+    language: 'english',
+    key: undefined,
+  };
+
+  return await steamStoreApi.get<SteamReviewsResponse>(`appreviews/${appId}`, { params: reviewParams });
+};
+
+const getGameDetails = async (appId: string | number) => {
   const params = {
     appids: appId,
     format: 'json',
+    key: undefined,
   };
 
-  const { data } = await steamStoreApi.get('appdetails', {
+  return await steamStoreApi.get<{ success: boolean, data: ExtendedGameInfo }>('api/appdetails', {
     params,
   });
-  return data;
+};
+
+export const getGameInfo = async (appId: string | number) => {
+  const [reviews, gameDetails] = await Promise.all([getReviews(appId), getGameDetails(appId)]);
+  return { reviews: reviews.data, gameDetails: gameDetails.data };
 };
 
 const gameInfo = Router();

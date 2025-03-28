@@ -2,15 +2,15 @@ import { Router } from 'express';
 import { getUserRecentGames } from './GetRecentGames.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
 import { getGameInfo } from '../GetGameInfo.js';
-import { ExtendedGameInfo } from '@api/types/routes.types.js';
-import PQueue from 'p-queue';
+import { ExtendedGameInfo } from '#api/types/gameInfo.types';
+// import PQueue from 'p-queue';
 
 // Configure rate limiting: 1 request per 1.5 seconds
-const steamApiQueue = new PQueue({
-  interval: 1500,
-  intervalCap: 1,
-  carryoverConcurrencyCount: true,
-});
+// const steamApiQueue = new PQueue({
+//   interval: 1500,
+//   intervalCap: 1,
+//   carryoverConcurrencyCount: true,
+// });
 
 export type UserProfileData = {
     recentGames: Record<string, ExtendedGameInfo>;
@@ -34,18 +34,18 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
 
     // Fetch game details with rate limiting
     const gameInfoMap: Record<number, ExtendedGameInfo> = {};
-
-    await Promise.all(
-      allAppIds.map(appId =>
-        steamApiQueue.add(async () => {
-          try {
-            gameInfoMap[appId] = await getGameInfo(appId);
-          } catch (err) {
-            console.error(`Failed to fetch app ${appId}:`, err);
-          }
-        }),
-      ),
-    );
+    console.log(await getGameInfo(allAppIds[0]));
+    // await Promise.all(
+    //   allAppIds.map(appId =>
+    //     steamApiQueue.add(async () => {
+    //       try {
+    //         gameInfoMap[appId] = await getGameInfo(appId);
+    //       } catch (err) {
+    //         console.error(`Failed to fetch app ${appId}:`, err);
+    //       }
+    //     }),
+    //   ),
+    // );
 
     return {
       recentGames: recentGames.response.games.reduce((acc, game) => {

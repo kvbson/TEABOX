@@ -8,6 +8,4 @@ const UserSchema = new Schema({
   avatar: { type: String },
 }, { timestamps: true });
 
-UserSchema.index({ steamId: 1 });
-
 export const User = mongoose.model('User', UserSchema);

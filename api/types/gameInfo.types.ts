@@ -1,4 +1,4 @@
-export type GameInfo = {
+type GameInfo = {
     appid: number;
     name: string;
     playtime_forever: number;
@@ -6,7 +6,7 @@ export type GameInfo = {
     img_icon_url: string;
 }
 
-export type ExtendedGameInfo = {
+type ExtendedGameInfo = {
     type: 'game' | 'software';
     name: string;
     steam_appid: number;
@@ -60,3 +60,5 @@ export type ExtendedGameInfo = {
     ratings?: Record<string, any>;
     app_url?: string;
   };
+
+export type { GameInfo, ExtendedGameInfo };
