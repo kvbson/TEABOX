@@ -38,7 +38,7 @@ const getGameDetails = async (appId: string | number) => {
 
 export const getGameInfo = async (appId: string | number) => {
   const [reviews, gameDetails] = await Promise.all([getReviews(appId), getGameDetails(appId)]);
-  return { reviews: reviews.data, gameDetails: gameDetails.data };
+  return { reviews: reviews, gameDetails: gameDetails, appId };
 };
 
 const gameInfo = Router();

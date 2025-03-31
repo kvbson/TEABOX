@@ -1,3 +1,8 @@
+import { AxiosResponse } from 'axios';
+import { SteamReviewsResponse } from './reviews.types.js';
+
+type GamesObj = Record<string, { reviews: AxiosResponse<SteamReviewsResponse>; gameDetails: AxiosResponse<{ success: boolean; data: ExtendedGameInfo; }>; appId: string | number; }>;
+
 type GameInfo = {
     appid: number;
     name: string;
@@ -61,4 +66,4 @@ type ExtendedGameInfo = {
     app_url?: string;
   };
 
-export type { GameInfo, ExtendedGameInfo };
+export type { GameInfo, ExtendedGameInfo, GamesObj };

@@ -6,13 +6,13 @@ export async function handleFailedBatch(
   batch: BasicGameInfo[],
   initialDelay: number,
   maxRetries = 3,
-  backoffFactor = 2,
+  backoffFactor = 2, //backoffFactor - kara za opóźnienie po każdej złej próbie
 ) {
   let retryCount = 0;
   let currentDelay = initialDelay;
   const batchErrors = [];
 
-  while (retryCount < maxRetries) {
+  while (batch && batch.length === 0 && retryCount < maxRetries) {
     try {
       const bulkOps = batch.map(({ name, appid }) => ({
         updateOne: {
@@ -24,7 +24,6 @@ export async function handleFailedBatch(
           upsert: true,
         },
       }));
-
       const result = await AllGamesList.bulkWrite(bulkOps, { ordered: false });
       return {
         success: true,

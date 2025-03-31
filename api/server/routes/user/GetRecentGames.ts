@@ -2,7 +2,7 @@ import { Router } from 'express';
 import steamApi from '#server/clients/steamClients/steamApiClient';
 import { GameInfo } from '#types/gameInfo.types';
 
-type RecentGames = { response: { total_count: number, games: GameInfo[] }};
+export type RecentGames = { response: { total_count: number, games: GameInfo[] }};
 
 /**
   * Parameters:

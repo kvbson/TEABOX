@@ -4,7 +4,7 @@ import { Router } from 'express';
 /**
   * Parameters:
   * @param steamId user steam id
-  * @param appId game id
+  * @param appId steam game id
   */
 
 export const getUserPlaytime = async (steamId: string, appId: string | number) => {

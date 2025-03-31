@@ -12,7 +12,7 @@ const connectDB = async () => {
   try {
     await mongoose.connect(DB_URI, {
       serverSelectionTimeoutMS: 5000,
-      maxPoolSize: 10,
+      maxPoolSize: 5,
       appName: 'TEABOX_DB',
     });
   } catch (error) {

@@ -10,10 +10,12 @@ const useProfileData = (steamId: string) => {
     const fetchData = async () => {
       try {
         const loc = localStorage.getItem('profileData');
+        console.log(loc);
         if (loc) {
-          setProfileData(JSON.parse(loc));
+          return setProfileData(JSON.parse(loc));
         }
         const { data } = await callServer('profileData', { steamId });
+        console.log(data);
         if (data?.response?.games && Array.isArray(data.response.games)) {
           localStorage.setItem('profileData', JSON.stringify(data));
           setProfileData(data);

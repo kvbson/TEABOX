@@ -1,38 +1,51 @@
 import { Router } from 'express';
 import { getUserRecentGames } from './GetRecentGames.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
-import { ExtendedGameInfo } from '#api/types/gameInfo.types';
-// import PQueue from 'p-queue';
-
-// Configure rate limiting: 1 request per 1.5 seconds
-// const steamApiQueue = new PQueue({
-//   interval: 1500,
-//   intervalCap: 1,
-//   carryoverConcurrencyCount: true,
-// });
+import { GamesObj } from '#api/types/gameInfo.types';
+import { mapGames } from '../utils/mapGames.js';
 
 export type UserProfileData = {
-    recentGames: Record<string, ExtendedGameInfo>;
-    ownedGames: Record<string, ExtendedGameInfo>;
+    recentGames: GamesObj;
+    ownedGames: GamesObj;
+    errors: any[];
 }
 
 const getUserProfileData = async (steamId: string): Promise<UserProfileData | undefined> => {
   try {
+    const profileData: UserProfileData = {
+      ownedGames: {},
+      recentGames: {},
+      errors: [],
+    };
     const [recentGames, ownedGames] = await Promise.all([
       getUserRecentGames(steamId),
       getUserOwnedGames(steamId),
     ]);
 
-    // Get unique app IDs from both lists
-    // const allAppIds = [
-    //   ...new Set([
-    //     ...recentGames.response.games.map(g => g?.appid),
-    //     ...ownedGames.response.games.map(g => g?.appid),
-    //   ]),
-    // ].filter(Boolean) as number[];
+    const allAppIds = [
+      ...new Set<number>([
+        ...(recentGames?.response.games?.map(g => g?.appid) ?? []),
+        ...(ownedGames?.response.games?.map(g => g?.appid) ?? []),
+      ]),
+    ].filter((id): id is number => Number.isInteger(id));
+
+    if (allAppIds.length === 0) {
+      return { ...profileData, errors: ['No valid app IDs found'] };
+    }
+    const { games } = await mapGames(allAppIds);
+
+    for (const [appId, game] of Object.entries(games ?? {})) {
+      const possibleRecentGame = recentGames.response.games.find(el => String(el.appid) === String(appId));
+      if (possibleRecentGame) {
+        profileData.recentGames[appId] = game;
+      }
+      const possibleOwnedGame = ownedGames.response.games.find(el => String(el.appid) === String(appId));
+      if (possibleOwnedGame) {
+        profileData.ownedGames[appId] = game;
+      }
+    }
 
     // Fetch game details with rate limiting
-    const gameInfoMap: Record<number, ExtendedGameInfo> = {};
     // await getGameInfo(allAppIds[0]);
     // await updateAllGamesList();
     // await Promise.all(
@@ -47,17 +60,7 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
     //   ),
     // );
 
-    return {
-      recentGames: recentGames.response.games.reduce((acc, game) => {
-        if (game?.appid) acc[game.appid] = gameInfoMap[game.appid];
-        return acc;
-      }, {} as Record<string, ExtendedGameInfo>),
-
-      ownedGames: ownedGames.response.games.reduce((acc, game) => {
-        if (game?.appid) acc[game.appid] = gameInfoMap[game.appid];
-        return acc;
-      }, {} as Record<string, ExtendedGameInfo>),
-    };
+    return profileData;
 
   } catch (err) {
     console.log(err);
