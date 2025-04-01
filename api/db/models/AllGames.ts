@@ -10,6 +10,6 @@ const AllGamesListSchema = new Schema({
   name: {
     type: String,
   },
-}, { timestamps: true });
+}, { timestamps: true, _id: false });
 
 export const AllGamesList = mongoose.model('AllGamesList', AllGamesListSchema);

@@ -91,9 +91,9 @@ export const GameInfoSchema = new Schema({
 },
 {
   timestamps: true,
-  id: false,
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
+  _id: false,
 });
 
 //TODO: missing - playersCount

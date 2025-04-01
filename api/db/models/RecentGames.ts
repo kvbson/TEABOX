@@ -8,7 +8,7 @@ const RecentlyPlayedSchema = new Schema({
     playtimeRecent: { type: Number, default: 0 },
     lastPlayed: { type: Date, default: Date.now },
   }],
-}, { timestamps: true });
+}, { timestamps: true, _id: false });
 
 RecentlyPlayedSchema.index({ user: 1 });
 
