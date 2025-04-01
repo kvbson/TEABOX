@@ -68,14 +68,14 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
     })),
   ]);
 };
-
+//FIXME: do weryfikacji brakujące id z steamApi
 export const getAllGameInfo = async (ids: number[]): Promise<{
     games: GamesObj;
     failedIds: Set<string | number>;
   }> => {
   failedIds.clear();
   const results: GamesObj = {};
-  const batchSize = 20;
+  const batchSize = 200;
 
   // Process in batches for better memory management
   for (let i = 0; i < ids.length; i += batchSize) {
