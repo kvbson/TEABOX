@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getUserRecentGames } from './GetRecentGames.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
 import { GamesObj } from '#api/types/gameInfo.types';
-import { mapGames } from '../utils/mapGames.js';
+import { getAllGameInfo } from '../utils/getAllGameInfo.js';
 
 export type UserProfileData = {
     recentGames: GamesObj;
@@ -32,7 +32,7 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
     if (allAppIds.length === 0) {
       return { ...profileData, errors: ['No valid app IDs found'] };
     }
-    const { games } = await mapGames(allAppIds);
+    const { games } = await getAllGameInfo(allAppIds);
 
     for (const [appId, game] of Object.entries(games ?? {})) {
       const possibleRecentGame = recentGames.response.games.find(el => String(el.appid) === String(appId));

@@ -21,8 +21,8 @@
     "postinstall": "npx tsx ./api/certs/run.ts && npm run build"
   },
   "dependencies": {
+    "bottleneck": "^2.19.5",
     "mongoose": "^8.13.0",
-    "p-queue": "^8.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",

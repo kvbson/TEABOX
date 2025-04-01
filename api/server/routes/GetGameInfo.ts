@@ -1,7 +1,7 @@
-import { ExtendedGameInfo } from '#types/gameInfo.types';
-import { SteamReviewsResponse } from '#types/reviews.types';
+import { ExtendedGameInfo, GameDetailsResponse, GamesObj } from '#types/gameInfo.types';
 import { Router } from 'express';
 import steamStoreApi from '#server/clients/steamClients/steamStoreApiClient';
+import { SteamReviewsResponse } from '#api/types/reviews.types';
 
 /**
  * Parameters.
@@ -12,7 +12,7 @@ import steamStoreApi from '#server/clients/steamClients/steamStoreApiClient';
  *   - `all` (default) - Sorted using a sliding window protocol.
  */
 
-const getReviews = async (appId: string | number) => {
+export const getReviews = async (appId: string | number) => {
   const reviewParams = {
     json: 1,
     filter: 'recent',
@@ -21,24 +21,26 @@ const getReviews = async (appId: string | number) => {
     key: undefined,
   };
 
-  return await steamStoreApi.get<SteamReviewsResponse>(`appreviews/${appId}`, { params: reviewParams });
+  const result = await steamStoreApi.get<SteamReviewsResponse>(`appreviews/${appId}`, { params: reviewParams });
+  return result.data as unknown as SteamReviewsResponse;
 };
 
-const getGameDetails = async (appId: string | number) => {
+export const getGameDetails = async (appId: string | number) => {
   const params = {
     appids: appId,
     format: 'json',
     key: undefined,
   };
 
-  return await steamStoreApi.get<{ success: boolean, data: ExtendedGameInfo }>('api/appdetails', {
+  const result = await steamStoreApi.get<{ success: boolean, data: ExtendedGameInfo }>('api/appdetails', {
     params,
   });
+  return Object.values(result.data)[0] as unknown as GameDetailsResponse;
 };
 
-export const getGameInfo = async (appId: string | number) => {
+const getGameInfo = async (appId: string | number): Promise<GamesObj> => {
   const [reviews, gameDetails] = await Promise.all([getReviews(appId), getGameDetails(appId)]);
-  return { reviews: reviews, gameDetails: gameDetails, appId };
+  return { [String(appId)]: { reviews: reviews as any, gameDetails, appId } };
 };
 
 const gameInfo = Router();

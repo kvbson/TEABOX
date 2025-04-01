@@ -1,7 +1,8 @@
-import { AxiosResponse } from 'axios';
 import { SteamReviewsResponse } from './reviews.types.js';
 
-type GamesObj = Record<string, { reviews: AxiosResponse<SteamReviewsResponse>; gameDetails: AxiosResponse<{ success: boolean; data: ExtendedGameInfo; }>; appId: string | number; }>;
+type GamesObj = Record<string, { reviews: SteamReviewsResponse; gameDetails: GameDetailsResponse; appId: string | number; }>;
+
+export type GameDetailsResponse = { success: boolean; data?: ExtendedGameInfo; };
 
 type GameInfo = {
     appid: number;
@@ -12,21 +13,17 @@ type GameInfo = {
 }
 
 type ExtendedGameInfo = {
-    type: 'game' | 'software';
     name: string;
     steam_appid: number;
-    required_age: number;
+    required_age?: number | null;
     is_free: boolean;
-    controller_support?: 'full' | 'partial';
+    controller_support?: 'full' | 'partial' | null;
     dlc?: number[];
-    detailed_description: string;
-    about_the_game: string;
-    short_description: string;
-    supported_languages: string;
+    detailed_description?: string | null;
+    about_the_game?: string | null;
+    short_description?: string | null;
+    supported_languages?: string | null;
     reviews?: string;
-    header_image: string;
-    capsule_image: string;
-    capsule_imagev5?: string;
     website?: string;
     pc_requirements?: Record<string, any>;
     mac_requirements?: Record<string, any>;
@@ -35,35 +32,38 @@ type ExtendedGameInfo = {
     developers: string[];
     publishers: string[];
     price_overview?: {
-      currency: string;
-      initial: number;
-      final: number;
-      discount_percent: number;
+      currency?: string | null;
+      initial?: number | null;
+      final?: number | null;
+      discount_percent?: number | null;
     };
     packages?: number[];
     package_groups?: any[];
-    platforms: {
-      windows: boolean;
-      mac: boolean;
-      linux: boolean;
+    platforms?: {
+      windows?: boolean | null;
+      mac?: boolean | null;
+      linux?: boolean | null;
     };
     metacritic?: {
-      score: number;
-      url: string;
+      score?: number | null;
+      url?: string | null;
     };
-    categories?: { id: number; description: string }[];
-    genres?: { id: string; description: string }[];
-    screenshots?: { id: number; path_thumbnail: string; path_full: string }[];
-    movies?: { id: number; name: string; thumbnail: string; webm: any; mp4: any }[];
+    categories?: { id?: number | null; description?: string | null }[];
+    genres?: { id?: number | null; description?: string | null }[];
+    screenshots?: { id?: number | null; path_thumbnail?: string | null; path_full?: string | null }[];
+    movies?: { id?: number | null; name?: string | null; thumbnail?: string | null; webm?: {
+      '480'?: string | null,
+      max?: string | null,
+    } | null; mp4?: {
+      '480'?: string | null,
+      max?: string | null,
+    } | null}[];
     recommendations?: { total: number };
     achievements?: { total: number; highlighted: any[] };
-    release_date: { coming_soon: boolean; date: string };
-    support_info: { url: string; email: string };
-    background: string;
-    background_raw: string;
+    release_date: { coming_soon: boolean; date: string | null };
     content_descriptors?: { ids: number[]; notes: string };
     ratings?: Record<string, any>;
     app_url?: string;
-  };
+};
 
 export type { GameInfo, ExtendedGameInfo, GamesObj };

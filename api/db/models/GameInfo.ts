@@ -14,8 +14,8 @@ const GenresSchema = new Schema({
 
 const ScreenshotsSchema = new Schema({
   id: { type: Number },
-  pathThumbnail: { type: String },
-  pathFull: { type: String },
+  path_thumbnail: { type: String },
+  path_full: { type: String },
 });
 
 const MoviesSchema = new Schema({
@@ -35,32 +35,32 @@ const MoviesSchema = new Schema({
 
 // Game Info
 export const GameInfoSchema = new Schema({
-  steamAppId: { type: Number, required: true, unique: true },
+  steam_appid: { type: Number, required: true, unique: true },
   name: { type: String, required: true },
   platforms: {
     windows: Boolean,
     mac: Boolean,
     linux: Boolean,
   },
-  shortDescription: { type: String },
-  detailedDescription: { type: String },
-  isFree: { type: Boolean },
-  controllerSupport: {
+  short_description: { type: String },
+  detailed_description: { type: String },
+  is_free: { type: Boolean },
+  controller_support: {
     type: String,
     enum: ['full', 'partial'],
     required: false,
   },
-  aboutTheGame: { type: String },
-  supportedLanguages: { type: String },
-  pcRequirements: {
+  about_the_game: { type: String },
+  supported_languages: { type: String },
+  pc_requirements: {
     minimum: String,
     recommended: String,
   },
-  macRequirements: {
+  mac_requirements: {
     minimum: String,
     recommended: String,
   },
-  linuxRequirements: {
+  linux_requirements: {
     minimum: String,
     recommended: String,
   },
@@ -74,16 +74,20 @@ export const GameInfoSchema = new Schema({
   genres: [GenresSchema],
   screenshots: [ScreenshotsSchema],
   movies: [MoviesSchema],
-  releaseDate: { type: Date },
-  appUrl: { type: String },
-  price: {
+  release_date: {
+    coming_soon: { type: Boolean },
+    date: { type: Date },
+  },
+  app_url: { type: String },
+  required_age: Number,
+  price_overview: {
     currency: String,
     initial: Number,
     final: Number,
     initialFormatted: String,
     finalFormatted: String,
+    discount_percent: Number,
   },
-
 },
 {
   timestamps: true,

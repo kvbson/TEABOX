@@ -1,6 +1,7 @@
 import { GameInfo } from '../models/GameInfo.js';
 import { ExtendedGameInfo } from '#api/types/gameInfo.types';
 import { AnyBulkWriteOperation } from 'mongoose';
+import { getGameParamsDB } from './params/getGameParams.js';
 
 export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize = 50) {
   try {
@@ -17,43 +18,15 @@ export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize 
       const bulkOps: AnyBulkWriteOperation[] = [];
 
       for (const game of batch) {
+        const gameParams = getGameParamsDB(game);
         try {
-          const gameDoc = new GameInfo({
-            steamAppId: game.steam_appid,
-            name: game.name,
-            platforms: game.platforms || {},
-            shortDescription: game.short_description,
-            detailedDescription: game.detailed_description,
-            isFree: game.is_free || false,
-            controllerSupport: game.controller_support,
-            aboutTheGame: game.about_the_game,
-            supportedLanguages: game.supported_languages,
-            pcRequirements: game.pc_requirements || {},
-            macRequirements: game.mac_requirements || {},
-            linuxRequirements: game.linux_requirements || {},
-            developers: game.developers || [],
-            publishers: game.publishers || [],
-            metacritic: game.metacritic || {},
-            releaseDate: game.release_date.date ? new Date(game.release_date.date) : null,
-            appUrl: game.app_url || `https://store.steampowered.com/app/${game.steam_appid}`,
-            price: game.price_overview || {},
-            categories: game.categories?.map(cat => ({ id: cat.id, description: cat.description })) || [],
-            genres: game.genres?.map(genre => ({ id: genre.id, description: genre.description })) || [],
-            screenshots: game.screenshots?.map(ss => ({ id: ss.id, pathThumbnail: ss.path_thumbnail, pathFull: ss.path_full })) || [],
-            movies: game.movies?.map(movie => ({
-              id: movie.id,
-              name: movie.name,
-              thumbnail: movie.thumbnail,
-              webm: movie.webm || { '480': '', max: '' },
-              mp4: movie.mp4 || { '480': '', max: '' },
-            })) || [],
-          });
+          const gameDoc = new GameInfo(gameParams);
 
           const updateDoc = gameDoc.toObject();
 
           bulkOps.push({
             updateOne: {
-              filter: { steamAppId: game.steam_appid },
+              filter: { steam_appid: game.steam_appid },
               update: {
                 $set: updateDoc,
                 $setOnInsert: { createdAt: new Date() },
