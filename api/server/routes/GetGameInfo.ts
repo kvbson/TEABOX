@@ -16,7 +16,7 @@ export const getReviews = async (appId: string | number) => {
   const reviewParams = {
     json: 1,
     filter: 'recent',
-    num_per_page: 200,
+    num_per_page: 10,
     language: 'english',
     key: undefined,
   };

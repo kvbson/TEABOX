@@ -6,6 +6,7 @@ import { Reviews, ReviewsSchemaType } from '#api/db/models/Reviews';
 import Bottleneck from 'bottleneck';
 import { getGameParams } from '#api/db/utils/params/getGameParams';
 import { parseReviewData } from '#api/db/utils/params/getReviewParams';
+import { AnyBulkWriteOperation } from 'mongoose';
 
 const gameQueue = new Bottleneck({
   maxConcurrent: 5, // Allow up to 5 parallel game requests
@@ -18,7 +19,7 @@ const reviewQueue = new Bottleneck({
 });
 
 // const concurrency = 2;
-const failedIds = [];
+const failedIds = new Set<string | number>([]);
 // const queue = new PQueue({
 //   interval: 2000,
 //   intervalCap: 1,
@@ -31,17 +32,18 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
     // Fetch missing games
     Promise.all(missingGameIds.map(async (id) => {
       try {
-        const gameDetails = await gameQueue.schedule(() =>
-          retry(async () => {
-            const res = await getGameDetails(id);
-            if (!res?.data || !res.success) throw new Error(`Invalid response: ${JSON.stringify(res.data)}`);
-            return res.data;
-          }, { retries: 3, minTimeout: 2000, factor: 2 }),
+        const gameDetails = await gameQueue.schedule(async () => {
+          const res = await getGameDetails(id);
+          if (!res?.data || !res.success) throw new Error(`Invalid response: ${JSON.stringify(res.data)}`);
+          return res.data;
+        },
+          // retry(async () => {
+          // }, { retries: 3, minTimeout: 2000, factor: 2 }),
         );
         return { id: String(id), gameDetails };
       } catch (error) {
-        console.error(`Failed game ${id} after 3 retries:`, error);
-        failedIds.push(id);
+        console.error(`Failed game ${id}:`, error);
+        failedIds.add(id);
         return null;
       }
     })),
@@ -49,17 +51,18 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
     // Fetch missing reviews
     Promise.all(missingReviewIds.map(async (id) => {
       try {
-        const reviews = await reviewQueue.schedule(() =>
-          retry(async () => {
-            const res = await getReviews(id);
-            if (!res?.reviews || !res.success) throw new Error(`Invalid response: ${JSON.stringify(res)}`);
-            return res.reviews;
-          }, { retries: 3, minTimeout: 2000, factor: 2 }),
+        const reviews = await reviewQueue.schedule(async () => {
+          // retry(async () => {
+          const res = await getReviews(id);
+          if (!res?.reviews || !res.success) throw new Error(`Invalid response: ${JSON.stringify(res)}`);
+          return res.reviews;
+          // }, { retries: 3, minTimeout: 2000, factor: 2 }),
+        },
         );
         return { id: String(id), reviews };
       } catch (error) {
-        console.error(`Failed reviews for game ${id} after 3 retries:`, error);
-        failedIds.push(id);
+        console.error(`Failed reviews for game ${id}:`, error);
+        failedIds.add(id);
         return null;
       }
     })),
@@ -68,11 +71,11 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
 
 export const getAllGameInfo = async (ids: number[]): Promise<{
     games: GamesObj;
-    failedIds: number[];
+    failedIds: Set<string | number>;
   }> => {
+  failedIds.clear();
   const results: GamesObj = {};
-  const failedIds: number[] = [];
-  const batchSize = 100;
+  const batchSize = 20;
 
   // Process in batches for better memory management
   for (let i = 0; i < ids.length; i += batchSize) {
@@ -90,23 +93,85 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
     // Find missing games & reviews
     const missingGameIds = batch.filter(id => !gamesMap.has(String(id)));
     const missingReviewIds = batch.filter(id => !reviewsMap.has(String(id)));
+    console.log(missingGameIds, missingReviewIds);
 
     // Fetch missing games
     const [gamesToAdd, reviewsToAdd] = await getMissingDetails(missingGameIds, missingReviewIds);
 
     // Remove failed fetches
-    const validGames = gamesToAdd.filter(g => !!g?.gameDetails);
-    const validReviews = reviewsToAdd.filter(r => !!r?.reviews);
+    const validGames = gamesToAdd.filter(g => {
+      if (!g?.gameDetails && g?.id) {
+        failedIds.add(g.id);
+      }
+      return !!g?.gameDetails;
+    });
+    const validReviews = reviewsToAdd.filter(r => {
+      if (!r?.reviews.length && r?.id) {
+        failedIds.add(r.id);
+      }
+      return !!r?.reviews.length;
+    });
+    // console.log('validReviews to add:  ', validReviews, validReviews[0]?.reviews);
+
     //FIXME: zły typ w validReviews zły obiekt wysyłany
     // Insert new games & reviews
-    if (validGames.length > 0) await GameInfo.insertMany(validGames.map(g => g!.gameDetails));
-    if (validReviews.length > 0) await Reviews.insertMany(validReviews.map(r => parseReviewData(r?.reviews, r!.id)));
+    if (validGames.length > 0) {
+      const bulkOps = validGames.map(g => {
+        if (!g) {
+          return null;
+        }
+        return {
+          updateOne: {
+            filter: { steam_appid: g.id },
+            update: { $set: g.gameDetails },
+            upsert: true,
+          },
+        };
+      }).filter(Boolean) as AnyBulkWriteOperation[];
+      try {
+        await GameInfo.bulkWrite(bulkOps, { ordered: false });
+      } catch (err: any) {
+        if (err?.code === 11000) {
+          console.warn('Duplicate reviews detected, skipped insertion:', err.message);
+        } else {
+          throw err;
+        }
+      }
+    }
+    if (validReviews.length > 0) {
+      try {
+        const bulkOps = validReviews.flatMap(review => {
+          if (!review?.reviews?.length) return [];
+
+          return review.reviews.map(r => ({
+            updateOne: {
+              filter: {
+                steam_appid: review.id,
+                recommendationid: r.recommendationid,
+              },
+              update: { $set: parseReviewData(r, review.id) },
+              upsert: true,
+            },
+          }));
+        }).filter(Boolean);
+
+        if (bulkOps.length > 0) {
+          await Reviews.bulkWrite(bulkOps, { ordered: false });
+        }
+      } catch (err: any) {
+        if (err?.code === 11000) {
+          console.warn('Duplicate reviews detected, skipped insertion:', err.message);
+        } else {
+          throw err;
+        }
+      }
+    }
 
     // Add existing games & reviews
     for (const game of existingGames) {
       const appId = String(game.steam_appid);
       results[appId] = {
-        ...results[appId],
+        ...(results[appId] || {}),
         gameDetails: {
           data: getGameParams(game),
           success: true,
@@ -115,37 +180,76 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
       };
     }
 
-    const uniqueReviewAppIds = new Set(existingReviews.map(el => String(el.steam_appid)).filter(Boolean));
+    // Process existing reviews
+    const uniqueReviewAppIds = new Set(
+      existingReviews.map(el => String(el.steam_appid)).filter(Boolean),
+    );
+
     for (const appId of uniqueReviewAppIds) {
-      const reviewsForApp = existingReviews.filter(el => String(el.steam_appid) === appId);
-      // Initialize reviews if not already present
       if (!results[appId]) {
-        results[appId] = { appId, gameDetails: { success: false }, reviews: { reviews: reviewsForApp, success: true } };
+        results[appId] = { appId, gameDetails: { success: false }, reviews: { reviews: [], success: false } };
+      }
+
+      const reviewsForApp = existingReviews.filter(el =>
+        String(el.steam_appid) === appId,
+      );
+
+      if (!results[appId].reviews?.reviews || results[appId].reviews.reviews.length === 0) {
+        results[appId].reviews = {
+          reviews: reviewsForApp,
+          success: true,
+        };
       } else {
         results[appId].reviews.reviews.push(...reviewsForApp);
       }
     }
 
-    // Add newly fetched games & reviews
+    // Add newly fetched games
     for (const game of validGames) {
-      if (!game) {
-        continue;
-      }
+      if (!game) continue;
+
       if (!results[game.id]) {
-        results[game.id] = { gameDetails: { success: true, data: game.gameDetails }, reviews: { success: false, reviews: [] }, appId: game.id };
+        results[game.id] = {
+          gameDetails: {
+            success: true,
+            data: game.gameDetails,
+          },
+          reviews: {
+            success: false,
+            reviews: [],
+          },
+          appId: game.id,
+        };
       } else {
-        results[game.id].gameDetails = { success: true, data: game.gameDetails };
+        results[game.id].gameDetails = {
+          success: true,
+          data: game.gameDetails,
+        };
       }
     }
-    // Add newly fetched games & reviews
+
+    // Add newly fetched reviews
     for (const review of validReviews) {
-      if (!review) {
-        continue;
-      }
+      if (!review) continue;
+
       if (!results[review.id]) {
-        results[review.id] = { gameDetails: { success: false }, reviews: { success: true, reviews: review.reviews }, appId: review.id };
+        results[review.id] = {
+          appId: review.id,
+          reviews: {
+            success: true,
+            reviews: review.reviews,
+          },
+          gameDetails: { success: false },
+        };
       } else {
-        results[review.id].reviews.reviews.push(...review.reviews);
+        if (!results[review.id].reviews) {
+          results[review.id].reviews = {
+            success: true,
+            reviews: review.reviews,
+          };
+        } else {
+          results[review.id].reviews!.reviews.push(...review.reviews);
+        }
       }
     }
 
@@ -155,20 +259,20 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
   return { games: results, failedIds };
 };
 
-const retry = async <T>(
-  fn: () => Promise<T>,
-  options: { retries: number; minTimeout: number; factor: number },
-) => {
-  let attempt = 0;
-  while (attempt <= options.retries) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (attempt === options.retries) throw error;
-      const timeout = options.minTimeout * (options.factor ** attempt);
-      await new Promise(resolve => setTimeout(resolve, timeout));
-      attempt++;
-    }
-  }
-  throw new Error('Max retries exceeded');
-};
+// const retry = async <T>(
+//   fn: () => Promise<T>,
+//   options: { retries: number; minTimeout: number; factor: number },
+// ) => {
+//   let attempt = 0;
+//   while (attempt <= options.retries) {
+//     try {
+//       return await fn();
+//     } catch (error) {
+//       if (attempt === options.retries) throw error;
+//       const timeout = options.minTimeout * (options.factor ** attempt);
+//       await new Promise(resolve => setTimeout(resolve, timeout));
+//       attempt++;
+//     }
+//   }
+//   throw new Error('Max retries exceeded');
+// };

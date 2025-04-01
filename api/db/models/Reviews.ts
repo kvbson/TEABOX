@@ -22,7 +22,7 @@ const ReviewsSchema = new mongoose.Schema({
   author: { type: AuthorSchema, required: true },
 
   // Review content
-  review: { type: String, required: true, text: true }, // Enable text search
+  review: { type: String, text: true }, // Enable text search
   timestamp_created: { type: Date, required: true },
   timestamp_updated: { type: Date, default: null },
 
