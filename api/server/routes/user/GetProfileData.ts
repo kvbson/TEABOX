@@ -1,20 +1,32 @@
-import { Router } from 'express';
-import { getUserRecentGames } from './GetRecentGames.js';
-import { getUserOwnedGames } from './GetOwnedGames.js';
+import { Tag } from '#api/db/models/Tags';
 import { GamesObj } from '#api/types/gameInfo.types';
+import { scrapeTags } from '#api/utils/scrapeTags';
+import { Router } from 'express';
 import { getAllGameInfo } from '../utils/getAllGameInfo.js';
+import { getUserOwnedGames } from './GetOwnedGames.js';
+import { getUserRecentGames } from './GetRecentGames.js';
 
 export type UserProfileData = {
     recentGames: GamesObj;
     ownedGames: GamesObj;
+    tags: string[];
     errors: any[];
 }
+
+const getTags = async () => {
+  const tags = await Tag.find({}, { _id: 0, name: 1 });
+  if (tags.length === 0) {
+    return await scrapeTags() || [];
+  }
+  return tags;
+};
 
 const getUserProfileData = async (steamId: string): Promise<UserProfileData | undefined> => {
   try {
     const profileData: UserProfileData = {
       ownedGames: {},
       recentGames: {},
+      tags: [],
       errors: [],
     };
     const [recentGames, ownedGames] = await Promise.all([
@@ -32,33 +44,23 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
     if (allAppIds.length === 0) {
       return { ...profileData, errors: ['No valid app IDs found'] };
     }
+
+    //recent/owned games
     const { games } = await getAllGameInfo(allAppIds);
 
     for (const [appId, game] of Object.entries(games ?? {})) {
       const possibleRecentGame = recentGames.response.games.find(el => String(el.appid) === String(appId));
       if (possibleRecentGame) {
-        profileData.recentGames[appId] = game;
+        profileData.recentGames[appId] = { ...game, ...possibleRecentGame };
       }
       const possibleOwnedGame = ownedGames.response.games.find(el => String(el.appid) === String(appId));
       if (possibleOwnedGame) {
-        profileData.ownedGames[appId] = game;
+        profileData.ownedGames[appId] = { ...game, ...possibleOwnedGame };
       }
     }
 
-    // Fetch game details with rate limiting
-    // await getGameInfo(allAppIds[0]);
-    // await updateAllGamesList();
-    // await Promise.all(
-    //   allAppIds.map(appId =>
-    //     steamApiQueue.add(async () => {
-    //       try {
-    //         gameInfoMap[appId] = await getGameInfo(appId);
-    //       } catch (err) {
-    //         console.error(`Failed to fetch app ${appId}:`, err);
-    //       }
-    //     }),
-    //   ),
-    // );
+    //tags
+    profileData.tags = await getTags() as string[];
 
     return profileData;
 

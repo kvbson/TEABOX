@@ -1,12 +1,12 @@
 import { GamesObj } from '#api/types/gameInfo.types';
 // import PQueue from 'p-queue';
-import { getGameDetails, getReviews } from '../GetGameInfo.js';
 import { GameInfo, GameInfoSchemaType } from '#api/db/models/GameInfo';
 import { Reviews, ReviewsSchemaType } from '#api/db/models/Reviews';
-import Bottleneck from 'bottleneck';
 import { getGameParams } from '#api/db/utils/params/getGameParams';
 import { parseReviewData } from '#api/db/utils/params/getReviewParams';
+import Bottleneck from 'bottleneck';
 import { AnyBulkWriteOperation } from 'mongoose';
+import { getGameDetails, getReviews } from '../GetGameInfo.js';
 
 const gameQueue = new Bottleneck({
   maxConcurrent: 5, // Allow up to 5 parallel game requests
@@ -18,14 +18,7 @@ const reviewQueue = new Bottleneck({
   minTime: 1500, // Space out requests by at least 200ms
 });
 
-// const concurrency = 2;
 const failedIds = new Set<string | number>([]);
-// const queue = new PQueue({
-//   interval: 2000,
-//   intervalCap: 1,
-//   carryoverConcurrencyCount: true,
-//   concurrency,
-// });
 
 const getMissingDetails = async (missingGameIds: number[], missingReviewIds: number[]) => {
   return await Promise.all([
@@ -113,7 +106,6 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
     });
     // console.log('validReviews to add:  ', validReviews, validReviews[0]?.reviews);
 
-    //FIXME: zły typ w validReviews zły obiekt wysyłany
     // Insert new games & reviews
     if (validGames.length > 0) {
       const bulkOps = validGames.map(g => {
