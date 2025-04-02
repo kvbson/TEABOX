@@ -3,13 +3,14 @@ import express from 'express';
 import helmet from 'helmet';
 import fs from 'node:fs';
 import https from 'node:https';
+import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
+import { connectDB, mongoose } from '../db/connections.js';
+import gameInfo from './routes/GetGameInfo.js';
+import tags from './routes/GetTags.js';
 import userOwnedGames from './routes/user/GetOwnedGames.js';
 import userPlaytime from './routes/user/GetPlaytime.js';
-import userRecentGames from './routes/user/GetRecentGames.js';
-import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
 import userProfileData from './routes/user/GetProfileData.js';
-import gameInfo from './routes/GetGameInfo.js';
-import { connectDB, mongoose } from '../db/connections.js';
+import userRecentGames from './routes/user/GetRecentGames.js';
 
 const app = express();
 const PREFIX = '/api/steam';
@@ -31,6 +32,7 @@ app.use(PREFIX, userRecentGames);
 app.use(PREFIX, userOwnedGames);
 app.use(PREFIX, userProfileData);
 app.use(PREFIX, gameInfo);
+app.use(PREFIX, tags);
 
 //HEALTH CHECK
 app.get('/health', (_, res) => {

@@ -15,7 +15,7 @@ export const callServer = async <T extends { response: Record<string, unknown> }
   try {
     const endpoint = API_ENDPOINTS[mode];
     const url = new URL(endpoint, SERVER_URL);
-    Object.entries(params).forEach(([key, value]) => {
+    Object.entries(params ?? {}).forEach(([key, value]) => {
       url.searchParams.append(key, String(value));
     });
 

@@ -1,7 +1,6 @@
-import { Tag } from '#api/db/models/Tags';
 import { GamesObj } from '#api/types/gameInfo.types';
-import { scrapeTags } from '#api/utils/scrapeTags';
 import { Router } from 'express';
+import { getTags } from '../GetTags.js';
 import { getAllGameInfo } from '../utils/getAllGameInfo.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
 import { getUserRecentGames } from './GetRecentGames.js';
@@ -12,14 +11,6 @@ export type UserProfileData = {
     tags: string[];
     errors: any[];
 }
-
-const getTags = async () => {
-  const tags = await Tag.find({}, { _id: 0, name: 1 });
-  if (tags.length === 0) {
-    return await scrapeTags() || [];
-  }
-  return tags;
-};
 
 const getUserProfileData = async (steamId: string): Promise<UserProfileData | undefined> => {
   try {
