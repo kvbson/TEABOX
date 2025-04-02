@@ -6,6 +6,6 @@ const UserSchema = new Schema({
   username: { type: String, required: true },
   profileUrl: { type: String, required: true },
   avatar: { type: String },
-}, { timestamps: true });
+}, { timestamps: true, _id: false });
 
 export const User = mongoose.model('User', UserSchema);

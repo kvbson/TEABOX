@@ -7,7 +7,7 @@ const OwnedGamesSchema = new Schema({
   playtimeForever: { type: Number, default: 0 },
   playtime2Weeks: { type: Number, default: 0 },
   lastPlayed: { type: Date },
-}, { timestamps: true });
+}, { timestamps: true, _id: false });
 
 OwnedGamesSchema.index({ user: 1, game: 1 }, { unique: true });
 
