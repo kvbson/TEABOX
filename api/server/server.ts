@@ -12,7 +12,6 @@ import userOwnedGames from './routes/user/GetOwnedGames.js';
 import userPlaytime from './routes/user/GetPlaytime.js';
 import userProfileData from './routes/user/GetProfileData.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
-import userSteamLvl from './routes/user/GetSteamLevel.js';
 
 const app = express();
 const PREFIX = '/api/steam';
@@ -33,7 +32,6 @@ app.use(PREFIX, userPlaytime);
 app.use(PREFIX, userRecentGames);
 app.use(PREFIX, userOwnedGames);
 app.use(PREFIX, userProfileData);
-app.use(PREFIX, userSteamLvl);
 app.use(PREFIX, userBadges);
 app.use(PREFIX, gameInfo);
 app.use(PREFIX, tags);

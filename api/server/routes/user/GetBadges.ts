@@ -1,14 +1,31 @@
 import steamApi from '#server/clients/steamClients/steamApiClient';
 import { Router } from 'express';
 
-export type Badges = Record<string, any>; //TODO: type to be fixed
+type Badge = {
+  badgeid: number;
+  level: number;
+  completion_time: number;
+  xp: number;
+  scarcity: number;
+  appid?: number;
+};
+
+export type BadgeStats = {
+  response: {
+    badges?: Badge[];
+    player_level?: number;
+    player_xp?: number;
+    player_xp_needed_current_level?: number;
+    player_xp_needed_to_level_up?: number;
+  }
+};
 
 /**
   * Parameters:
   * @param steamId user steam id
   */
 
-export const getUserBadges = async (steamId: string): Promise<Badges> => {
+export const getUserBadges = async (steamId: string): Promise<BadgeStats> => {
   const params = {
     steamid: steamId,
     format: 'json',

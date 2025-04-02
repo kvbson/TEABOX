@@ -2,7 +2,7 @@ import { GamesObj } from '#api/types/gameInfo.types';
 import { Router } from 'express';
 import { getTags } from '../GetTags.js';
 import { getAllGameInfo } from '../utils/getAllGameInfo.js';
-import { Badges, getUserBadges } from './GetBadges.js';
+import { BadgeStats, getUserBadges } from './GetBadges.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
 import { getUserRecentGames } from './GetRecentGames.js';
 
@@ -10,8 +10,7 @@ export type UserProfileData = {
     recentGames: GamesObj;
     ownedGames: GamesObj;
     tags: string[];
-    steamLvl: number;
-    badges: Badges;
+    badges: BadgeStats['response'];
     errors: any[];
 }
 
@@ -23,7 +22,6 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
       tags: [],
       errors: [],
       badges: {},
-      steamLvl: 0,
     };
     const [recentGames, ownedGames] = await Promise.all([
       getUserRecentGames(steamId),
@@ -47,22 +45,29 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
     for (const [appId, game] of Object.entries(games ?? {})) {
       const possibleRecentGame = recentGames.response.games.find(el => String(el.appid) === String(appId));
       if (possibleRecentGame) {
-        profileData.recentGames[appId] = { ...game, ...possibleRecentGame };
+        profileData.recentGames[appId] = {
+          ...game,
+          playtime_forever: possibleRecentGame.playtime_forever,
+          playtime_2weeks: possibleRecentGame.playtime_2weeks,
+          name: possibleRecentGame.name,
+        };
       }
       const possibleOwnedGame = ownedGames.response.games.find(el => String(el.appid) === String(appId));
       if (possibleOwnedGame) {
-        profileData.ownedGames[appId] = { ...game, ...possibleOwnedGame };
+        profileData.ownedGames[appId] = {
+          ...game,
+          playtime_2weeks: possibleOwnedGame.playtime_2weeks,
+          playtime_forever: possibleOwnedGame.playtime_forever,
+          name: possibleOwnedGame.name,
+        };
       }
     }
 
     //tags
     profileData.tags = await getTags() as string[];
 
-    //steamLvl
-    // profileData.steamLvl = await getUserSteamLvl(steamId); //FIXME: fix type
-
-    //steamLvl
-    profileData.badges = await getUserBadges(steamId);
+    //steamLvl and badges
+    profileData.badges = (await getUserBadges(steamId)).response;
 
     return profileData;
 

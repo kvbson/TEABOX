@@ -68,7 +68,7 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
   }> => {
   failedIds.clear();
   const results: GamesObj = {};
-  const batchSize = 20;
+  const batchSize = 200;
 
   // Process in batches for better memory management
   for (let i = 0; i < ids.length; i += batchSize) {
@@ -246,7 +246,7 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
     }
 
     console.log(`Processed batch ${i / batchSize + 1}/${Math.ceil(ids.length / batchSize)}`);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 100));
   }
   return { games: results, failedIds };
 };

@@ -1,6 +1,6 @@
 import { SteamReviewsResponse } from './reviews.types.js';
 
-type GamesObj = Record<string, { reviews: SteamReviewsResponse; gameDetails: GameDetailsResponse; appId: string | number; }>;
+type GamesObj = Record<string, { reviews: SteamReviewsResponse; gameDetails: GameDetailsResponse; appId: string | number; name?: string; playtime_forever?: number; playtime_2weeks?: number }>;
 
 export type GameDetailsResponse = { success: boolean; data?: ExtendedGameInfo; };
 

@@ -26,16 +26,21 @@ export async function scrapeTags() {
 }
 
 const updateTagsInDB = async (tags: string[]) => {
-  const bulkOps = tags.map((tag) => ({
-    updateOne: {
-      filter: { name: tag },
-      update: { $set: { name: tag } },
-      upsert: true,
-    },
-  }));
+  const batchSize = 100;
 
-  if (bulkOps.length > 0) {
-    await Tag.bulkWrite(bulkOps);
-    console.log(`Updated ${bulkOps.length} tags`);
+  for (let i = 0; i < tags.length; i += batchSize) {
+    const batch = tags.slice(i, i + batchSize);
+    const bulkOps = batch.map((tag) => ({
+      updateOne: {
+        filter: { name: tag },
+        update: { $set: { name: tag } },
+        upsert: true,
+      },
+    }));
+    if (bulkOps.length > 0) {
+      await Tag.bulkWrite(bulkOps);
+      console.log(`Updated ${bulkOps.length} tags`);
+
+    }
   }
 };
