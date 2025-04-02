@@ -2,6 +2,7 @@ import { GamesObj } from '#api/types/gameInfo.types';
 import { Router } from 'express';
 import { getTags } from '../GetTags.js';
 import { getAllGameInfo } from '../utils/getAllGameInfo.js';
+import { Badges, getUserBadges } from './GetBadges.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
 import { getUserRecentGames } from './GetRecentGames.js';
 
@@ -9,6 +10,8 @@ export type UserProfileData = {
     recentGames: GamesObj;
     ownedGames: GamesObj;
     tags: string[];
+    steamLvl: number;
+    badges: Badges;
     errors: any[];
 }
 
@@ -19,6 +22,8 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
       recentGames: {},
       tags: [],
       errors: [],
+      badges: {},
+      steamLvl: 0,
     };
     const [recentGames, ownedGames] = await Promise.all([
       getUserRecentGames(steamId),
@@ -52,6 +57,12 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
 
     //tags
     profileData.tags = await getTags() as string[];
+
+    //steamLvl
+    // profileData.steamLvl = await getUserSteamLvl(steamId); //FIXME: fix type
+
+    //steamLvl
+    profileData.badges = await getUserBadges(steamId);
 
     return profileData;
 
