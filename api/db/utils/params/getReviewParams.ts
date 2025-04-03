@@ -6,11 +6,10 @@ import { ReviewsSchemaType, Reviews } from '#api/db/models/Reviews';
  */
 export function parseReviewData(rawReview: any, steamAppId: string): ReviewsSchemaType {
   // Validate required fields exist
-  console.log('raw:    ', rawReview);
   if (!rawReview.recommendationid) throw new Error('Missing required field: recommendationid');
   if (!rawReview.author) throw new Error('Missing required field: author');
   if (!rawReview.timestamp_created) throw new Error('Missing required field: timestamp_created');
-  if (typeof rawReview.voted_up === 'undefined') throw new Error('Missing required field: voted_up');
+  if (!rawReview.voted_up && rawReview.voted_up !== 0) throw new Error('Missing required field: voted_up');
 
   // Parse author data
   const author = {
@@ -50,9 +49,6 @@ export function parseReviewData(rawReview: any, steamAppId: string): ReviewsSche
   return parsed;
 }
 
-/**
- * Bulk insert reviews with validation
- */
 export async function insertReviews(rawReviews: any[], steamAppId: string) {
   const parsedReviews = rawReviews.map(raw => {
     try {

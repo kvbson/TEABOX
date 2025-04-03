@@ -14,6 +14,8 @@ export type UserProfileData = {
     errors: any[];
 }
 
+export const NOT_EXISTING_APP_IDS = [397080, 205100, 202090, 200110];
+
 const getUserProfileData = async (steamId: string): Promise<UserProfileData | undefined> => {
   try {
     const profileData: UserProfileData = {
@@ -27,13 +29,12 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
       getUserRecentGames(steamId),
       getUserOwnedGames(steamId),
     ]);
-
     const allAppIds = [
       ...new Set<number>([
         ...(recentGames?.response.games?.map(g => g?.appid) ?? []),
         ...(ownedGames?.response.games?.map(g => g?.appid) ?? []),
       ]),
-    ].filter((id): id is number => Number.isInteger(id));
+    ].filter((id): id is number => Number.isInteger(id) && !NOT_EXISTING_APP_IDS.includes(Number(id)));
 
     if (allAppIds.length === 0) {
       return { ...profileData, errors: ['No valid app IDs found'] };

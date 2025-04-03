@@ -42,10 +42,10 @@ app.get('/health', (_, res) => {
 });
 
 //MIDDLEWARE
-app.use((err: Error, _: express.Request, res: express.Response) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+// app.use((err: Error, _: express.Request, res: express.Response) => {
+  // console.error(err);
+  // res.status(500).json({ error: 'Something went wrong!' });
+// });
 
 async function startServer() {
   // check if certs exist; if not, generate them
@@ -69,7 +69,7 @@ async function startServer() {
   const shutdown = () => {
     console.log('Shutting down server...');
     mongoose.connection.close(false);
-    console.log('ℹ️ MongoDB connection closed');
+    console.log('ℹ️  MongoDB connection closed');
     server.close(() => {
       console.log('Server closed.');
       process.exit(0);
