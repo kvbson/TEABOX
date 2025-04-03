@@ -1,5 +1,6 @@
 import React from 'react';
-import logo from '../../../public/teacup-logo.svg';
+import logo from '../../../public/assets/images/teacup-default.png';
+import arrow from '../../../public/assets/images/Arrow-default.png'
 
 const Header: React.FC = () => {
   return (
@@ -11,8 +12,8 @@ const Header: React.FC = () => {
       <nav className="header-right">
         <a href="#">RECOMMENDATIONS</a>
         <a href="#">PREFERENCES</a>
-        <a href="#">LOGOUT</a>
-        <a href="#">---→</a>
+        <a href="#">LOG OUT</a>
+        <a href="#"><img src={arrow} alt="hide" className='header-arrow'></img></a>
       </nav>
     </header>
   );

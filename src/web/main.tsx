@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import './css/globals.css'
 import './css/header.css';
 import './css/index.css';
 import './css/loadingSpinner.css';

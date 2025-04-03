@@ -1,0 +1,48 @@
+/* === FONT-FACE: Inter === */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter/Inter_18pt-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter/Inter_18pt-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* === FONT-FACE: Archivo === */
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo/Archivo-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Archivo';
+  src: url('/fonts/archivo/Archivo-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* === ROOT VARIABLES === */
+:root {
+  /* Kolory */
+  --color-bg: #301F24;
+  --color-text: #E3D1AA;
+  --color-primary: #FE4B71;
+
+  /* Fonty */
+  --font-inter: 'Inter', sans-serif;
+  --font-archivo: 'Archivo', sans-serif;
+
+  /* Border radius */
+  --radius: 8px;
+}

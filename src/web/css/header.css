@@ -2,12 +2,14 @@
   position: sticky;
   top: 0;
   z-index: 999999;
-  background-color: #301f24;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+  background-color: var(--color-bg);
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 15px;
+  padding: 10px 38px;
+  height: 65px;
+  letter-spacing: 0.8px;
 }
 
 .header-left {
@@ -17,28 +19,36 @@
 }
 
 .logo {
-  width: 28px;
+  width: 48px;
   height: auto;
-  margin-right: 10px;
+  margin-right: 2px;
   display: block;
 }
 
 .header-title {
-  font-size: 18px;
+  font-size: 27px;
   font-weight: bold;
   line-height: 1;
 }
 
 .header-right {
   display: flex;
-  gap: 60px;
+  gap: 28px;
+  font-weight: 700;
 }
 
 .header-right a {
+  display: flex;
   text-decoration: none;
-  color: white;
-  font-size: 16px;
+  color: var(--color-primary);
+  font-size: 14px;
   transition: color 0.3s;
+  align-items: center;
+}
+
+.header-arrow {
+  height: 13px;
+  margin-left: 3px;
 }
 
 .header-right a:hover {
