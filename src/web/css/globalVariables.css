@@ -45,4 +45,13 @@
 
   /* Border radius */
   --radius: 8px;
+
+  /* Box shadows */
+  --shadow: 0 2px 25px rgba(0, 0, 0, 0.7);
+
+  /* Font sizes */
+  --f-xsmall: 14px;
+  --f-small: 15px;
+  --f-medium: 17px;
+  --f-xlarge: 27px;
 }

@@ -1,13 +1,21 @@
 .sidebar {
   width: 215px;
-  margin-top: 35px;
-  padding: 35px 22px;
+  height: calc(100vh - 60px);
+  right: 0;
+  top: 60px;
+  bottom: 0;
+  padding: 40px 17.5px;
   overflow-y: auto;
   position: fixed;
-  top: 30px;
-  right: 0;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  box-shadow: var(--shadow);
   font-family: var(--font-archivo);
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .swapy-slot {
@@ -16,11 +24,10 @@
 
 .swapy-item {
   width: 138px;
-  margin-left: 18px;
-  padding: 10px 15px;
+  padding: 12px 15px;
   text-align: center;
-  font-size: 15px;
-  font-weight: bolder;
+  font-size: var(--f-small);
+  font-weight: bold;
   cursor: grab;
   user-select: none;
   background-color: var(--color-primary);
@@ -29,9 +36,50 @@
 }
 
 .sidebar h3 {
-  font-size: 17px;
+  font-size: var(--f-medium);
   margin-bottom: 15px;
-  margin-left: 6px;
   color: var(--color-primary);
   line-height: 1.1;
 }
+
+.swapy-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 54px;
+}
+
+/* Strzałka nie wpływa na layout */
+.priority-arrow {
+  position: absolute;
+  left: -17px;
+  top: 12px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.priority-arrow span{
+  color: var(--color-text);
+  font-family: var(--font-archivo);
+  font-size: var(--f-medium);
+}
+
+.priority-arrow .top,
+.priority-arrow .bottom {
+  writing-mode: sideways-lr;
+  text-orientation: sideways-right;
+}
+
+.priority-arrow-svg {
+  color: var(--color-primary) !important;
+  height: 100%;
+  display: block;
+}
+
+
+
