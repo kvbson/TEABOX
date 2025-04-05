@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 dotenv.config();
 
-const DB_URI = process.env.MONGODB_URI;
+const DB_URI = process.env.VITE_MONGODB_URI;
 
 const connectDB = async () => {
   if (!DB_URI) {
