@@ -1,4 +1,4 @@
-import { ReviewsSchemaType, Reviews } from '#api/db/models/Reviews';
+import { ReviewsSchemaType } from '#api/db/models/Reviews';
 
 /**
  * Transforms raw Steam API review data into Mongoose-compatible format
@@ -47,20 +47,4 @@ export function parseReviewData(rawReview: any, steamAppId: string): ReviewsSche
   };
 
   return parsed;
-}
-
-export async function insertReviews(rawReviews: any[], steamAppId: string) {
-  const parsedReviews = rawReviews.map(raw => {
-    try {
-      return parseReviewData(raw, steamAppId);
-    } catch (error) {
-      console.error(`Skipping invalid review ${raw.recommendationid}:`, error instanceof Error ? error.message : 'Unknown error');
-      return null;
-    }
-  }).filter(Boolean);
-
-  if (parsedReviews.length > 0) {
-    return Reviews.insertMany(parsedReviews, { ordered: false });
-  }
-  return [];
 }

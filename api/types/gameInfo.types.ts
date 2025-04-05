@@ -60,7 +60,7 @@ type ExtendedGameInfo = {
     } | null}[];
     recommendations?: { total: number };
     achievements?: { total: number; highlighted: any[] };
-    release_date: { coming_soon: boolean; date: string | null };
+    release_date?: { coming_soon: boolean; date: string | Date } | null;
     content_descriptors?: { ids: number[]; notes: string };
     ratings?: Record<string, any>;
     app_url?: string;

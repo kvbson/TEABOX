@@ -2,12 +2,12 @@ import { GamesObj } from '#api/types/gameInfo.types';
 // import PQueue from 'p-queue';
 import { GameInfo, GameInfoSchemaType } from '#api/db/models/GameInfo';
 import { Reviews, ReviewsSchemaType } from '#api/db/models/Reviews';
-import { getGameParams } from '#api/db/utils/params/getGameParams';
-import { parseReviewData } from '#api/db/utils/params/getReviewParams';
+import { parseReviewData } from '#api/db/utils/params/parseReviewData';
 import Bottleneck from 'bottleneck';
 import { AnyBulkWriteOperation } from 'mongoose';
 import { getGameDetails, getReviews } from '../GetGameInfo.js';
 import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '#api/db/models/other/MissingAppIds';
+import { parseGameData } from '#api/db/utils/params/parseGameData';
 
 const gameQueue = new Bottleneck({
   maxConcurrent: 5, // Allow up to 5 parallel game requests
@@ -175,7 +175,7 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
       results[appId] = {
         ...(results[appId] || {}),
         gameDetails: {
-          data: getGameParams(game),
+          data: parseGameData(game, 'app'),
           success: true,
         },
         appId,
