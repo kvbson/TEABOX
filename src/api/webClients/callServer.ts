@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 import { ApiResponse, ModeParams } from '../types/api';
-import { API_ENDPOINTS, SERVER_URL, TOAST_ID } from './utils/config';
+import { API_ENDPOINTS, TOAST_ID } from './utils/config';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_UNAUTHORIZED } from './utils/httpsStatus';
 
 const errorMessages: Record<number, string> = {
@@ -14,7 +14,9 @@ export const callServer = async <T extends { response: Record<string, unknown> }
 ): Promise<ApiResponse<T> | { data: null }> => {
   try {
     const endpoint = API_ENDPOINTS[mode];
-    const url = new URL(endpoint, SERVER_URL);
+    const expressServerUrl = import.meta.env.VITE_SERVER_URL;
+    const url = new URL(endpoint, expressServerUrl);
+
     Object.entries(params ?? {}).forEach(([key, value]) => {
       url.searchParams.append(key, String(value));
     });
@@ -24,7 +26,6 @@ export const callServer = async <T extends { response: Record<string, unknown> }
       headers: {
         'Content-Type': 'application/json',
       },
-      // credentials: 'include',
     });
 
     if (!response.ok) {

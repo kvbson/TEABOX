@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { UseGamesResult, UserGame } from './useRecentGames.types.js';
 import { callServer } from '../../api/webClients/callServer.js';
 
-const useRecentGames = (steamId: string): UseGamesResult => {
+export const useRecentGames = (steamId: string): UseGamesResult => {
   const [recentGames, setRecentGames] = useState<UserGame[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,5 +28,3 @@ const useRecentGames = (steamId: string): UseGamesResult => {
 
   return { recentGames, loading, error };
 };
-
-export default useRecentGames;

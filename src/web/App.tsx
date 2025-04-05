@@ -3,8 +3,8 @@ import LoadingSpinner from './components/LoadingSpinner';
 import RecentGames from './components/RecentGames';
 import Sidebar from './components/Sidebar';
 import Toast from './components/Toast';
-import useProfileData from './hooks/useProfileData';
-import useRecentGames from './hooks/useRecentGames';
+import { useProfileData } from './hooks/useProfileData';
+import { useRecentGames } from './hooks/useRecentGames';
 
 // const testSteamId = '76561198271038475';
 const testSteamId2 = '76561198199623266';

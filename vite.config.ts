@@ -7,45 +7,50 @@ const CERT_FILE = 'localhost.crt';
 const KEY_FILE = 'localhost-key.pem';
 const CERTS_DIR = './api/certs/';
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  build: {
-    rollupOptions: {
-      external: [
-        /^node:.*/,
-        'express',
-        'fs',
-        'path',
-        'https',
-        'child_process',
-        'crypto',
-        'os',
+export default defineConfig(({ mode }) => {
+  const isDev = mode === 'development';
+
+  return {
+    plugins: [react()],
+    build: {
+      rollupOptions: {
+        external: [
+          /^node:.*/,
+          'express',
+          'fs',
+          'path',
+          'https',
+          'child_process',
+          'crypto',
+          'os',
+        ],
+      },
+    },
+    ssr: {
+      noExternal: [
+        'child_process', 'https', 'fs', 'path', 'os', 'crypto', 'express', 'mkcert',
       ],
     },
-  },
-  ssr: {
-    noExternal: ['child_process', 'https', 'fs', 'path', 'os', 'crypto', 'express', 'mkcert'],
-  },
-  optimizeDeps: {
-    exclude: ['child_process', 'https', 'fs', 'path', 'os', 'crypto', 'express', 'mkcert'],
-  },
-  // Explicitly exclude the api/ directory
-  publicDir: false,
-  resolve: {
-    alias: {
-      // Ensure Vite ignores the api/ directory
-      '/api': path.resolve(__dirname, 'api'),
+    optimizeDeps: {
+      exclude: [
+        'child_process', 'https', 'fs', 'path', 'os', 'crypto', 'express', 'mkcert',
+      ],
     },
-  },
-  server: {
-    https: {
-      key: fs.readFileSync(path.join(CERTS_DIR as string, KEY_FILE)),
-      cert: fs.readFileSync(path.join(CERTS_DIR as string, CERT_FILE)),
-      // key: 'api/server/certs/localhost-key.pem',
-      // cert: 'api/server/certs/localhost.pem',
+    publicDir: false,
+    resolve: {
+      alias: {
+        '/api': path.resolve(__dirname, 'api'),
+      },
     },
-    host: 'localhost',
-    port: 5173,
-  },
+    server: isDev
+      ? {
+        https: {
+          key: fs.readFileSync(path.join(CERTS_DIR, KEY_FILE)),
+          cert: fs.readFileSync(path.join(CERTS_DIR, CERT_FILE)),
+        },
+        host: 'localhost',
+        port: 5173,
+      }
+      : undefined,
+  };
 });
