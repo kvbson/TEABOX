@@ -15,10 +15,10 @@ import userRecentGames from './routes/user/GetRecentGames.js';
 
 const app = express();
 const PREFIX = '/api/steam';
-export const PORT = 5000;
+const PORT = 5000;
 
 app.use(cors({
-  origin: 'https://localhost:5173', //vite client url
+  origin: ['https://localhost:5173', 'http://localhost:4173'], //[vite client url, vite preview client url]
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -43,8 +43,8 @@ app.get('/health', (_, res) => {
 
 //MIDDLEWARE
 // app.use((err: Error, _: express.Request, res: express.Response) => {
-  // console.error(err);
-  // res.status(500).json({ error: 'Something went wrong!' });
+// console.error(err);
+// res.status(500).json({ error: 'Something went wrong!' });
 // });
 
 async function startServer() {
