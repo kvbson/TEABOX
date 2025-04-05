@@ -7,11 +7,11 @@ import { useProfileData } from './hooks/useProfileData';
 import { useRecentGames } from './hooks/useRecentGames';
 
 // const testSteamId = '76561198271038475';
-const testSteamId2 = '76561198199623266';
+const testSteamId = '76561198199623266';
 
 function App() {
-  const { recentGames, loading, error } = useRecentGames(testSteamId2);
-  const { profileData } = useProfileData(testSteamId2);
+  const { recentGames, loading, error } = useRecentGames(testSteamId);
+  const { profileData } = useProfileData(testSteamId);
   console.log(profileData);
   return (
     <div className='App'>

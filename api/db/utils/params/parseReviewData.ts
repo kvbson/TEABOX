@@ -6,10 +6,10 @@ import { ReviewsSchemaType } from '#api/db/models/Reviews';
  */
 export function parseReviewData(rawReview: any, steamAppId: string): ReviewsSchemaType {
   // Validate required fields exist
-  if (!rawReview.recommendationid) throw new Error('Missing required field: recommendationid');
-  if (!rawReview.author) throw new Error('Missing required field: author');
-  if (!rawReview.timestamp_created) throw new Error('Missing required field: timestamp_created');
-  if (!rawReview.voted_up && rawReview.voted_up !== 0) throw new Error('Missing required field: voted_up');
+  if (!rawReview.recommendationid) throw new Error(`Missing required field: recommendationid. Recieved: ${rawReview.recommendationid}`);
+  if (!rawReview.author) throw new Error(`Missing required field: author. Recieved: ${rawReview.author}`);
+  if (!rawReview.timestamp_created) throw new Error(`Missing required field: timestamp_created. Recieved: ${rawReview.timestamp_created}`);
+  if (typeof rawReview.voted_up === 'undefined') throw new Error(`Missing required field: voted_up. Recieved: ${rawReview.voted_up}`);
 
   // Parse author data
   const author = {
