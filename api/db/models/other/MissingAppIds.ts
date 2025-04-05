@@ -17,7 +17,7 @@ export async function handleFailedAppId(appId: string) {
   if (entry) {
     if (!entry.confirmed) {
       entry.failureCount += 1;
-      if (entry.failureCount >= 10) {
+      if (entry.failureCount >= maxFails) {
         entry.confirmed = true;
       }
       await entry.save();
