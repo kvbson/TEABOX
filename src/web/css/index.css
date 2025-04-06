@@ -29,6 +29,7 @@ body {
   flex-direction: column;
 }
 
+
 @media (prefers-color-scheme: light) {
   :root {
     color: var(--color-text);

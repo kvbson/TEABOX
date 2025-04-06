@@ -35,6 +35,7 @@
   display: flex;
   gap: 28px;
   font-weight: 700;
+  align-items: center;
 }
 
 .header-right a {
@@ -46,11 +47,28 @@
   align-items: center;
 }
 
-.header-arrow {
-  height: 13px;
-  margin-left: 3px;
+.header button {
+  background-color: transparent;
+  border: none;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.header-right a:hover {
-  color: #f48fb1;
+.burger{
+  height: 100%;
+  margin-left: 3px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  opacity: 1;
+}
+
+.menu-hiden {
+  transform: rotate(180deg);
+}
+
+.header-right a:hover
+ {
+  background-color: var(--color-text);
 }

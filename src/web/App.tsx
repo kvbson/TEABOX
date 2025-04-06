@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Header from './components/Header';
 import LoadingSpinner from './components/LoadingSpinner';
 import RecentGames from './components/RecentGames';
@@ -12,13 +13,19 @@ const testSteamId2 = '76561198199623266';
 function App() {
   const { recentGames, loading, error } = useRecentGames(testSteamId2);
   const { profileData } = useProfileData(testSteamId2);
+
+  const [menuOpened, setMenuOpened] = useState(false);
+  const toggleMenu = () => {
+    setMenuOpened(prev => !prev);
+  };
+
   console.log(profileData);
   return (
     <div className='App'>
-      <Header />
-      <Sidebar />
+      <Header onToggleMenu={toggleMenu} menuOpened={menuOpened}/>
+      <Sidebar menuOpened={menuOpened}/>
       <Toast error={error}/>
-      { loading ? <LoadingSpinner /> : <RecentGames recentGames={recentGames} />}
+      { loading ? <LoadingSpinner /> : <RecentGames recentGames={recentGames} /> }
     </div>
   );
 }

@@ -12,6 +12,17 @@
   line-height: 1.2;
   box-shadow: var(--shadow);
   font-family: var(--font-archivo);
+  background-color: var(--color-bg);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translateX(0);
+  opacity: 1;
+  z-index: 1000;
+}
+
+.sidebar.hide {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .sidebar::-webkit-scrollbar {

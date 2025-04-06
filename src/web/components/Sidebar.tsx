@@ -12,7 +12,11 @@ const initialOptions = [
   { id: "8", text: "Cost" },
 ];
 
-const Sidebar: React.FC = () => {
+type SidebarProps = {
+  menuOpened: boolean;
+};
+
+const Sidebar: React.FC<SidebarProps> = ({menuOpened}) => {
   const swapyRef = useRef<Swapy | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -47,7 +51,7 @@ const Sidebar: React.FC = () => {
   console.log(options);
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${!menuOpened ? "hide" : ""}`}>
       <h3>What flavors are the most important?</h3>
       <div className="swapy-container">
         <div className="priority-arrow">
