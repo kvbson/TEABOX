@@ -35,6 +35,7 @@ type ExtendedGameInfo = {
       currency?: string | null;
       initial?: number | null;
       final?: number | null;
+      final_formatted?: string | null;
       discount_percent?: number | null;
     };
     packages?: number[];
@@ -64,6 +65,7 @@ type ExtendedGameInfo = {
     content_descriptors?: { ids: number[]; notes: string };
     ratings?: Record<string, any>;
     app_url?: string;
+    header_image?: string;
 };
 
 export type { GameInfo, ExtendedGameInfo, GamesObj };

@@ -1,0 +1,13 @@
+.underlined {
+  position: relative;
+  top: -15px;
+}
+
+.underlined.right {
+  transform: scaleX(-1);
+  right: -16px;
+}
+
+.underlined.left {
+  left: -16px;
+}

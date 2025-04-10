@@ -1,0 +1,65 @@
+.recommendations-wrapper {
+  position: relative;
+}
+
+.game-showcase {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 80px 40px;
+  font-family: var(--font-inter);
+  font-size: var(--f-medium);
+}
+
+.game-showcase .left {
+  max-width: 60%;
+}
+
+.game-showcase .left img{
+  max-width: 100%;
+}
+
+
+@media (max-width: 1480px) {
+  .game-showcase .right img {
+    max-width: 350px;
+  }
+}
+
+@media (min-width: 1480px) {
+  .right img {
+    min-width: 480px;
+    max-width: 520px;
+  }
+}
+
+
+.sidebar-opened  {
+  width: calc(100% - 235px);
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+.image-container img {
+  overflow: hidden;
+}
+
+.price-tag {
+  padding: 12px;
+  min-width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -28px;
+  right: -20px;
+  background: var(--color-primary);
+  font-size: var(--f-large);
+  color: var(--color-bg);
+  font-weight: 900;
+}

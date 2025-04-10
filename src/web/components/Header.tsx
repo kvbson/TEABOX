@@ -1,7 +1,7 @@
-import React from 'react';
-import logo from '../../../public/assets/images/teacup-default.png';
-import arrow from '../../../public/assets/images/Arrow-default.png';
-import burger from '../../../public/assets/images/burgerMenu.svg';
+import React from "react";
+import arrow from "../../../public/assets/images/Arrow-default.png";
+import ArrowRight from "../components/ui/ArrowRight";
+import TeacupIcon from "./ui/TeacupIcon";
 
 type HeaderProps = {
   onToggleMenu: () => void;
@@ -12,14 +12,19 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
   return (
     <header className="header">
       <div className="header-left">
-        <img src={logo} alt="TEABOX Logo" className="logo" />
+        <TeacupIcon />
         <span className="header-title">TEABOX</span>
       </div>
       <nav className="header-right">
         <a href="#">RECOMMENDATIONS</a>
         <a href="#">PREFERENCES</a>
         <a href="#">LOG OUT</a>
-        <button><img src={arrow} alt="menu" className={`burger ${!menuOpened ? "menu-hiden" : "menu-opened"}`} onClick={onToggleMenu}></img></button>
+        <button onClick={onToggleMenu} className="arrow-button">
+          <ArrowRight
+            className={`burger ${!menuOpened ? "menu-hiden" : "menu-opened"}`}
+            color="var(--color-primary)"
+          />
+        </button>
       </nav>
     </header>
   );
