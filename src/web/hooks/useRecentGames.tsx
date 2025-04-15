@@ -10,7 +10,7 @@ export const useRecentGames = (steamId: string): UseGamesResult => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await callServer('recentGames', { steamId });
+        const { data } = await callServer<{response: { games: UserGame[] }}, any>('recentGames', { steamId });
         if (data?.response?.games && Array.isArray(data.response.games)) {
           setRecentGames(data.response.games);
         } else {

@@ -12,7 +12,9 @@ import userOwnedGames from './routes/user/GetOwnedGames.js';
 import userPlaytime from './routes/user/GetPlaytime.js';
 import userProfileData from './routes/user/GetProfileData.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
-
+import missingIds from './routes/db/GetMissingIds.js';
+//TODO: na podstawie sidebara ustawić sortowanie w mongodb
+//Opisac endpointy z serwera na dsc
 const app = express();
 const PREFIX = '/api/steam';
 const PORT = 5000;
@@ -28,13 +30,10 @@ app.use(helmet());
 connectDB();
 
 //ROUTES
-app.use(PREFIX, userPlaytime);
-app.use(PREFIX, userRecentGames);
-app.use(PREFIX, userOwnedGames);
-app.use(PREFIX, userProfileData);
-app.use(PREFIX, userBadges);
-app.use(PREFIX, gameInfo);
-app.use(PREFIX, tags);
+const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags];
+for (const route of routes) {
+  app.use(PREFIX, route);
+}
 
 //HEALTH CHECK
 app.get('/health', (_, res) => {

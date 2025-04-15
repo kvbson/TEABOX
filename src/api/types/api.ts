@@ -2,8 +2,9 @@ export interface ModeParams {
     recentGames: { steamId: string };
     ownedGames: { steamId: string };
     playtime: { steamId: string; appId: number };
-    profileData: { steamId: string };
+    profileData: { steamId: string, dataLimit: number };
     gameInfo: { appId: number | string };
+    missingIds: object;
     tags: object; //no params needed
 }
 

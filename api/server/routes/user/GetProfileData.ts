@@ -16,7 +16,7 @@ export type UserProfileData = {
 
 export const NOT_EXISTING_APP_IDS = [397080, 205100, 202090, 200110];
 
-const getUserProfileData = async (steamId: string): Promise<UserProfileData | undefined> => {
+const getUserProfileData = async (steamId: string, dataLimit: number): Promise<UserProfileData | undefined> => {
   try {
     const profileData: UserProfileData = {
       ownedGames: {},
@@ -34,7 +34,7 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
         ...(recentGames?.response.games?.map(g => g?.appid) ?? []),
         ...(ownedGames?.response.games?.map(g => g?.appid) ?? []),
       ]),
-    ].filter((id): id is number => Number.isInteger(id) && !NOT_EXISTING_APP_IDS.includes(Number(id)));
+    ].slice(0, dataLimit > 0 ? dataLimit : undefined).filter((id): id is number => Number.isInteger(id) && !NOT_EXISTING_APP_IDS.includes(Number(id)));
 
     if (allAppIds.length === 0) {
       return { ...profileData, errors: ['No valid app IDs found'] };
@@ -81,7 +81,7 @@ const getUserProfileData = async (steamId: string): Promise<UserProfileData | un
 const userProfileData = Router();
 
 userProfileData.get('/user/profileData', async (req, res) => {
-  const { steamId } = req.query;
+  const { steamId, dataLimit = 100 } = req.query;
 
   if (!steamId) {
     res.status(400).json({ error: `Invalid steamId. Received: ${steamId}` });
@@ -95,8 +95,13 @@ userProfileData.get('/user/profileData', async (req, res) => {
     return;
   }
 
+  if (!dataLimit || isNaN(Number(dataLimit))) {
+    res.status(400).json({ error: `Invalid dataLimit. Received: ${dataLimit}` });
+    return;
+  }
+
   try {
-    const data = await getUserProfileData(steamId);
+    const data = await getUserProfileData(steamId, Number(dataLimit));
     res.json({ success: true, data });
   } catch (error) {
     res.status(500).json({ error });

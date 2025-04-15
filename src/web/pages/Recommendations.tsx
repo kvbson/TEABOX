@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import useRecentGames from "../hooks/useRecentGames";
-import useProfileData from "../hooks/useProfileData";
-import GamesShowcase from "../components/GamesShowcase";
-import LoadingOverlay from "../components/LoadingOverlay";
-import Toast from "../components/Toast";
+import { useEffect, useState } from 'react';
+import { useRecentGames } from '../hooks/useRecentGames';
+import { useProfileData } from '../hooks/useProfileData';
+import GamesShowcase from '../components/GamesShowcase';
+import LoadingOverlay from '../components/LoadingOverlay';
+import Toast from '../components/Toast';
 
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from 'react';
 
 interface RecommendationsProps {
   menuOpened: boolean;
@@ -15,10 +15,10 @@ interface RecommendationsProps {
 
 const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError, steamId }) => {
   const { recentGames, loading, error } = useRecentGames(steamId);
-  const { profileData } = useProfileData(steamId);
+  // const { profileData } = useProfileData(steamId);
 
   useEffect(() => {
-    setError(error); 
+    setError(error);
   }, [error]);
 
   const [gameIds, setGameIds] = useState<number[]>([]);
@@ -38,7 +38,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
 
   const handlePrev = () => {
     setSelectedGameIndex((prev) =>
-      prev === 0 ? gameIds.length - 1 : prev - 1
+      prev === 0 ? gameIds.length - 1 : prev - 1,
     );
   };
 

@@ -2,6 +2,8 @@ import { ExtendedGameInfo, GameDetailsResponse, GamesObj } from '#types/gameInfo
 import { Router } from 'express';
 import steamStoreApi from '#server/clients/steamClients/steamStoreApiClient';
 import { SteamReviewsResponse } from '#api/types/reviews.types';
+import { handleFailedAppId } from '#api/db/models/other/MissingAppIds';
+import { checkAppId } from './utils/checkAppId.js';
 
 /**
  * Parameters.
@@ -48,13 +50,30 @@ const gameInfo = Router();
 gameInfo.get('/gameInfo', async (req, res) => {
   const { appId } = req.query;
 
+  if (!appId) {
+    return res.status(404).json({ error: `Wrong appId: Received: ${appId}` }) as any;
+  }
+
+  const { action } = await checkAppId(String(appId));
+  if (action === 'skip') {
+    return res.status(403).json({ error: `AppId banned - too many failed requests. Received: ${appId}` }) as any;
+  }
   try {
     const data = await getGameInfo(appId as string);
+
+    if (!data[String(appId)].gameDetails.success) {
+      handleFailedAppId(String(appId));
+      return res.status(404).json({
+        error: 'No game details from steam API. Will be automatically blocked after 10 retries.',
+      });
+    }
+
     res.json({
       success: true,
       data,
     });
   } catch (error) {
+    handleFailedAppId(String(appId));
     res.status(500).json({ error });
   }
 });

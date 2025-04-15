@@ -19,8 +19,6 @@ const reviewQueue = new Bottleneck({
   minTime: 1500, // Space out requests by at least 200ms
 });
 
-const failedIds = new Set<string | number>([]);
-
 const getMissingDetails = async (missingGameIds: number[], missingReviewIds: number[]) => {
   return await Promise.all([
     // Fetch missing games
@@ -40,7 +38,9 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
         return { id: String(id), gameDetails };
       } catch (error) {
         console.error(`Failed game ${id}:`, error);
-        failedIds.add(id);
+        if (id) {
+          await handleFailedAppId(String(id));
+        }
         return null;
       }
     })),
@@ -62,7 +62,7 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
         return { id: String(id), reviews };
       } catch (error) {
         console.error(`Failed reviews for game ${id}:`, error);
-        failedIds.add(id);
+        await handleFailedAppId(String(id));
         return null;
       }
     })),
@@ -71,9 +71,7 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
 
 export const getAllGameInfo = async (ids: number[]): Promise<{
     games: GamesObj;
-    failedIds: Set<string | number>;
   }> => {
-  failedIds.clear();
   const results: GamesObj = {};
   const batchSize = 100;
 
@@ -103,18 +101,8 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
     const [gamesToAdd, reviewsToAdd] = await getMissingDetails(missingGameIds, missingReviewIds);
 
     // Remove failed fetches
-    const validGames = gamesToAdd.filter(g => {
-      if (!g?.gameDetails && g?.id) {
-        failedIds.add(g.id);
-      }
-      return !!g?.gameDetails;
-    });
-    const validReviews = reviewsToAdd.filter(r => {
-      if (!r?.reviews.length && r?.id) {
-        failedIds.add(r.id);
-      }
-      return !!r?.reviews.length;
-    });
+    const validGames = gamesToAdd.filter(g => !!g?.gameDetails);
+    const validReviews = reviewsToAdd.filter(r => !!r?.reviews.length);
 
     // Insert new games & reviews
     if (validGames.length > 0) {
@@ -258,7 +246,7 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
     console.log(`Processed batch ${i / batchSize + 1}/${Math.ceil(ids.length / batchSize)}`);
     // await new Promise(resolve => setTimeout(resolve, 100));
   }
-  return { games: results, failedIds };
+  return { games: results };
 };
 
 const retry = async <T>(

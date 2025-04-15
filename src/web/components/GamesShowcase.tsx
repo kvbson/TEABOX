@@ -21,7 +21,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
 }) => {
   const { data, loading, error } = useGameInfo(appId);
 
-  const game: ExtendedGameInfo | undefined = data?.gameDetails?.data;
+  const game: ExtendedGameInfo | undefined = data?.gameDetails.data;
   const reviews: ReviewsSchemaType[] = data?.reviews?.reviews ?? [];
   const price = game?.price_overview?.final_formatted ?? "N/A";
 
