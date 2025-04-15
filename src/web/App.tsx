@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
-import Toast from "./components/Toast";
-import Recommendations from "./pages/Recommendations";
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Sidebar from './components/Sidebar';
+import Toast from './components/Toast';
+import Recommendations from './pages/Recommendations';
 
 function App() {
   const [menuOpened, setMenuOpened] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const steamId = "76561198422563870";
+  const steamId = '76561198422563870';
 
   const toggleMenu = () => {
     setMenuOpened((prev) => !prev);

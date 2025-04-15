@@ -2,11 +2,12 @@ import { GamesObj } from '#api/types/gameInfo.types';
 // import PQueue from 'p-queue';
 import { GameInfo, GameInfoSchemaType } from '#api/db/models/GameInfo';
 import { Reviews, ReviewsSchemaType } from '#api/db/models/Reviews';
-import { getGameParams } from '#api/db/utils/params/getGameParams';
-import { parseReviewData } from '#api/db/utils/params/getReviewParams';
+import { parseReviewData } from '#api/db/utils/params/parseReviewData';
 import Bottleneck from 'bottleneck';
 import { AnyBulkWriteOperation } from 'mongoose';
 import { getGameDetails, getReviews } from '../GetGameInfo.js';
+import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '#api/db/models/other/MissingAppIds';
+import { parseGameData } from '#api/db/utils/params/parseGameData';
 
 const gameQueue = new Bottleneck({
   maxConcurrent: 5, // Allow up to 5 parallel game requests
@@ -26,13 +27,16 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
     Promise.all(missingGameIds.map(async (id) => {
       try {
         const gameDetails = await gameQueue.schedule(async () => {
-          const res = await getGameDetails(id);
-          if (!res?.data || !res.success) throw new Error(`Invalid response: ${JSON.stringify(res.data)}`);
-          return res.data;
-        },
-          // retry(async () => {
-          // }, { retries: 3, minTimeout: 2000, factor: 2 }),
-        );
+          return retry(async () => { // Ensure this function returns a value
+            const res = await getGameDetails(id);
+            if (!res?.data || !res.success) {
+              await handleFailedAppId(String(id));
+              throw new Error(`Invalid response: ${JSON.stringify(res.data)}`);
+            }
+            return res.data;
+          }, { retries: 2, minTimeout: 500, factor: 1 });
+        });
+
         return { id: String(id), gameDetails };
       } catch (error) {
         console.error(`Failed game ${id}:`, error);
@@ -45,11 +49,14 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
     Promise.all(missingReviewIds.map(async (id) => {
       try {
         const reviews = await reviewQueue.schedule(async () => {
-          // retry(async () => {
-          const res = await getReviews(id);
-          if (!res?.reviews || !res.success) throw new Error(`Invalid response: ${JSON.stringify(res)}`);
-          return res.reviews;
-          // }, { retries: 3, minTimeout: 2000, factor: 2 }),
+          return retry(async () => {
+            const res = await getReviews(id);
+            if (!res?.reviews || !res.success || res.query_summary?.num_reviews === 0) {
+              handleFailedReviewAppId(String(id));
+              throw new Error(`Invalid response: ${JSON.stringify(res)}`);
+            }
+            return res.reviews;
+          }, { retries: 2, minTimeout: 500, factor: 1 });
         },
         );
         return { id: String(id), reviews };
@@ -61,14 +68,14 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
     })),
   ]);
 };
-//FIXME: do weryfikacji brakujące id z steamApi
+
 export const getAllGameInfo = async (ids: number[]): Promise<{
     games: GamesObj;
     failedIds: Set<string | number>;
   }> => {
   failedIds.clear();
   const results: GamesObj = {};
-  const batchSize = 200;
+  const batchSize = 100;
 
   // Process in batches for better memory management
   for (let i = 0; i < ids.length; i += batchSize) {
@@ -83,10 +90,14 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
     const gamesMap = new Map(existingGames.map(g => [String(g.steam_appid), g]));
     const reviewsMap = new Map(existingReviews.map(r => [String(r.steam_appid), r]));
 
+    // not existing ids
+    const bannedIds = [{ appId: 412020 }, { appId: 1449560 }];
+    const notExistingAppIds = ([...await MissingApp.find({ confirmed: true }), ...bannedIds]).map(app => app.appId && String(app.appId)).filter(Boolean);
+    const notExistingReviewAppIds = (await MissingReviewApp.find({ confirmed: true })).map(app => app.appId && String(app.appId)).filter(Boolean);
+
     // Find missing games & reviews
-    const missingGameIds = batch.filter(id => !gamesMap.has(String(id)));
-    const missingReviewIds = batch.filter(id => !reviewsMap.has(String(id)));
-    console.log(missingGameIds, missingReviewIds);
+    const missingGameIds = batch.filter(id => !gamesMap.has(String(id)) && !notExistingAppIds.includes(String(id)));
+    const missingReviewIds = batch.filter(id => !reviewsMap.has(String(id)) && !notExistingReviewAppIds.includes(String(id)));
 
     // Fetch missing games
     const [gamesToAdd, reviewsToAdd] = await getMissingDetails(missingGameIds, missingReviewIds);
@@ -104,7 +115,6 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
       }
       return !!r?.reviews.length;
     });
-    // console.log('validReviews to add:  ', validReviews, validReviews[0]?.reviews);
 
     // Insert new games & reviews
     if (validGames.length > 0) {
@@ -165,7 +175,7 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
       results[appId] = {
         ...(results[appId] || {}),
         gameDetails: {
-          data: getGameParams(game),
+          data: parseGameData(game, 'app'),
           success: true,
         },
         appId,
@@ -246,25 +256,25 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
     }
 
     console.log(`Processed batch ${i / batchSize + 1}/${Math.ceil(ids.length / batchSize)}`);
-    await new Promise(resolve => setTimeout(resolve, 100));
+    // await new Promise(resolve => setTimeout(resolve, 100));
   }
   return { games: results, failedIds };
 };
 
-// const retry = async <T>(
-//   fn: () => Promise<T>,
-//   options: { retries: number; minTimeout: number; factor: number },
-// ) => {
-//   let attempt = 0;
-//   while (attempt <= options.retries) {
-//     try {
-//       return await fn();
-//     } catch (error) {
-//       if (attempt === options.retries) throw error;
-//       const timeout = options.minTimeout * (options.factor ** attempt);
-//       await new Promise(resolve => setTimeout(resolve, timeout));
-//       attempt++;
-//     }
-//   }
-//   throw new Error('Max retries exceeded');
-// };
+const retry = async <T>(
+  fn: () => Promise<T>,
+  options: { retries: number; minTimeout: number; factor: number },
+) => {
+  let attempt = 0;
+  while (attempt <= options.retries) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === options.retries) throw error;
+      const timeout = options.minTimeout * (options.factor ** attempt);
+      await new Promise(resolve => setTimeout(resolve, timeout));
+      attempt++;
+    }
+  }
+  throw new Error('Max retries exceeded');
+};

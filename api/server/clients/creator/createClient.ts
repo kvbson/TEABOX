@@ -12,7 +12,7 @@ export const createApiClient = (baseURL: string): AxiosInstance => {
       'User-Agent': 'Teabox/0.0.0',
     },
     params: {
-      key: process.env.VITE_STEAM_API_KEY,
+      key: process.env.STEAM_API_KEY,
     },
   });
 

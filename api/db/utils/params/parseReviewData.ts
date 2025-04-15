@@ -1,4 +1,4 @@
-import { ReviewsSchemaType, Reviews } from '#api/db/models/Reviews';
+import { ReviewsSchemaType } from '#api/db/models/Reviews';
 
 /**
  * Transforms raw Steam API review data into Mongoose-compatible format
@@ -6,11 +6,10 @@ import { ReviewsSchemaType, Reviews } from '#api/db/models/Reviews';
  */
 export function parseReviewData(rawReview: any, steamAppId: string): ReviewsSchemaType {
   // Validate required fields exist
-  console.log('raw:    ', rawReview);
-  if (!rawReview.recommendationid) throw new Error('Missing required field: recommendationid');
-  if (!rawReview.author) throw new Error('Missing required field: author');
-  if (!rawReview.timestamp_created) throw new Error('Missing required field: timestamp_created');
-  if (typeof rawReview.voted_up === 'undefined') throw new Error('Missing required field: voted_up');
+  if (!rawReview.recommendationid) throw new Error(`Missing required field: recommendationid. Recieved: ${rawReview.recommendationid}`);
+  if (!rawReview.author) throw new Error(`Missing required field: author. Recieved: ${rawReview.author}`);
+  if (!rawReview.timestamp_created) throw new Error(`Missing required field: timestamp_created. Recieved: ${rawReview.timestamp_created}`);
+  if (typeof rawReview.voted_up === 'undefined') throw new Error(`Missing required field: voted_up. Recieved: ${rawReview.voted_up}`);
 
   // Parse author data
   const author = {
@@ -48,23 +47,4 @@ export function parseReviewData(rawReview: any, steamAppId: string): ReviewsSche
   };
 
   return parsed;
-}
-
-/**
- * Bulk insert reviews with validation
- */
-export async function insertReviews(rawReviews: any[], steamAppId: string) {
-  const parsedReviews = rawReviews.map(raw => {
-    try {
-      return parseReviewData(raw, steamAppId);
-    } catch (error) {
-      console.error(`Skipping invalid review ${raw.recommendationid}:`, error instanceof Error ? error.message : 'Unknown error');
-      return null;
-    }
-  }).filter(Boolean);
-
-  if (parsedReviews.length > 0) {
-    return Reviews.insertMany(parsedReviews, { ordered: false });
-  }
-  return [];
 }

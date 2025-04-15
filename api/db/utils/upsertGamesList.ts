@@ -1,7 +1,7 @@
 import { GameInfo } from '../models/GameInfo.js';
 import { ExtendedGameInfo } from '#api/types/gameInfo.types';
 import { AnyBulkWriteOperation } from 'mongoose';
-import { getGameParamsDB } from './params/getGameParams.js';
+import { parseGameData } from './params/parseGameData.js';
 
 export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize = 50) {
   try {
@@ -18,7 +18,7 @@ export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize 
       const bulkOps: AnyBulkWriteOperation[] = [];
 
       for (const game of batch) {
-        const gameParams = getGameParamsDB(game);
+        const gameParams = parseGameData(game, 'db');
         try {
           const gameDoc = new GameInfo(gameParams);
 

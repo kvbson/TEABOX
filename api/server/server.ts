@@ -15,10 +15,10 @@ import userRecentGames from './routes/user/GetRecentGames.js';
 
 const app = express();
 const PREFIX = '/api/steam';
-export const PORT = 5000;
+const PORT = 5000;
 
 app.use(cors({
-  origin: 'https://localhost:5173', //vite client url
+  origin: ['https://localhost:5173', 'http://localhost:4173'], //[vite client url, vite preview client url]
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -42,10 +42,10 @@ app.get('/health', (_, res) => {
 });
 
 //MIDDLEWARE
-app.use((err: Error, _: express.Request, res: express.Response) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
+// app.use((err: Error, _: express.Request, res: express.Response) => {
+// console.error(err);
+// res.status(500).json({ error: 'Something went wrong!' });
+// });
 
 async function startServer() {
   // check if certs exist; if not, generate them
@@ -69,7 +69,7 @@ async function startServer() {
   const shutdown = () => {
     console.log('Shutting down server...');
     mongoose.connection.close(false);
-    console.log('ℹ️ MongoDB connection closed');
+    console.log('ℹ️  MongoDB connection closed');
     server.close(() => {
       console.log('Server closed.');
       process.exit(0);
