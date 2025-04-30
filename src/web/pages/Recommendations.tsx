@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useRecentGames } from '../hooks/useRecentGames';
-import { useProfileData } from '../hooks/useProfileData';
 import GamesShowcase from '../components/GamesShowcase';
 import LoadingOverlay from '../components/LoadingOverlay';
 import Toast from '../components/Toast';
-
-import { Dispatch, SetStateAction } from 'react';
+import { useRecentGames } from '../hooks/useRecentGames';
 
 interface RecommendationsProps {
   menuOpened: boolean;
