@@ -56,10 +56,10 @@ gameInfo.get('/gameInfo', async (req, res) => {
 
   const { action } = await checkAppId(String(appId));
   if (action === 'skip') {
-    return res.status(403).json({ error: `AppId banned - too many failed requests. Received: ${appId}` }) as any;
+    return res.status(403).json({ error: `AppId banned - too many failed requests. Received: ${appId}` });
   }
   try {
-    const data = await getGameInfo(appId as string);
+    const data = await getGameInfo(String(appId));
 
     if (!data[String(appId)].gameDetails.success) {
       handleFailedAppId(String(appId));
