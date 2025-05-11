@@ -16,6 +16,7 @@ function App() {
   };
 
   //TODO: zawężyć genres na sidebarze i dodać liste do wyboru kilku opcji po których można filtrować
+  // dodać strukturę do bazy danych by mozna bylo zapisać zapisane przez AI opisy gier i wyniki analizy
 
   return (
     <div className="App">
