@@ -15,6 +15,8 @@ function App() {
     setMenuOpened((prev) => !prev);
   };
 
+  //TODO: zawężyć genres na sidebarze i dodać liste do wyboru kilku opcji po których można filtrować
+
   return (
     <div className="App">
       <Router>
