@@ -11,12 +11,12 @@ import { parseGameData } from '#api/db/utils/params/parseGameData';
 
 const gameQueue = new Bottleneck({
   maxConcurrent: 5, // Allow up to 5 parallel game requests
-  minTime: 1500, // Space out requests by at least 200ms
+  minTime: 2000,
 });
 
 const reviewQueue = new Bottleneck({
   maxConcurrent: 5, // Allow up to 5 parallel review requests
-  minTime: 1500, // Space out requests by at least 200ms
+  minTime: 2000,
 });
 
 const getMissingDetails = async (missingGameIds: number[], missingReviewIds: number[]) => {

@@ -8,4 +8,5 @@ export const API_ENDPOINTS = {
   gameInfo: '/api/steam/gameInfo/',
   missingIds: '/api/steam/missingIds',
   tags: '/api/steam/tags/',
-};
+  topmostTags: '/api/steam/topmostTags/',
+} as const;

@@ -8,7 +8,7 @@ const errorMessages: Record<number, string> = {
   [HTTP_STATUS_NOT_FOUND]: 'Error 404: Resource not found.',
 };
 
-export const callServer = async <T extends Record<string, unknown>, M extends keyof ModeParams>(
+export const callServer = async <T extends Record<string, unknown> | any[], M extends keyof ModeParams>(
   mode: M,
   params: ModeParams[M],
 ): Promise<ApiResponse<T> | { data: null; error: any }> => {

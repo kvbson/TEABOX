@@ -6,6 +6,7 @@ export interface ModeParams {
     gameInfo: { appId: number | string };
     missingIds: object;
     tags: object; //no params needed
+    topmostTags: object;
 }
 
 export interface ApiResponse<T> {

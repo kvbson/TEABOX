@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { callServer } from '../../api/webClients/callServer.js';
 
 export const useProfileData = (steamId: string) => {
-  const [profileData, setProfileData] = useState<Record<string, unknown> | null>(null);
+  const [profileData, setProfileData] = useState<Record<string, unknown> | null | any[]>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
