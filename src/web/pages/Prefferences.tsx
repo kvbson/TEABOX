@@ -6,9 +6,10 @@ type Props = {
   getTags: () => Promise<{ data: Tag[] | null; error?: any }>;
   selectedTags: string[];
   setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
+  setSuccessSave: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTags }) => {
+const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTags, setSuccessSave }) => {
   const [allTags, setAllTags] = useState<Tag[]>([]);
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTa
 
   const handleSave = () => {
     localStorage.setItem('user-tags', JSON.stringify(selectedTags));
-    alert('Saved!');
+    setSuccessSave('Selected tags saved successfully.');
   };
 
   return (

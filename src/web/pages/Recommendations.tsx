@@ -20,10 +20,6 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
 
   const [selectedGameIndex, setSelectedGameIndex] = useState(0);
 
-  useEffect(() => {
-    setSelectedGameIndex(0);
-  }, [data]);
-
   const handleNext = () => {
     setSelectedGameIndex((prev) => (prev + 1) % data.length);
   };
@@ -36,7 +32,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
   const currentAppDetails = data[selectedGameIndex];
 
   if (loading || data.length === 0) return <LoadingOverlay />;
-  if (error) return <Toast error={error} />;
+  if (error) return <Toast text={error ?? 'Unkwnon error'} mode={'error'} />;
 
   return (
     <div className="mt-10">

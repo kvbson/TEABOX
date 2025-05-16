@@ -9,13 +9,13 @@ import { callServer } from '../api/webClients/callServer';
 
 function App() {
   const [menuOpened, setMenuOpened] = useState(false);
-  const [sidebarTags, setSidebarTags] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-
+  const [successSave, setSuccessSave] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>(() => {
     const saved = localStorage.getItem('user-tags');
     return saved ? JSON.parse(saved) : [];
   });
+  const [sidebarTags, setSidebarTags] = useState<string[]>(selectedTags);
 
   const steamId = '76561198199623266';
 
@@ -23,8 +23,7 @@ function App() {
     setMenuOpened((prev) => !prev);
   };
 
-  //TODO: zawężyć genres na sidebarze i dodać liste do wyboru kilku opcji po których można filtrować
-  // poprawic - na starcie ustawic gry, poprawic przeladowanie gier
+  //TODO: poprawic - poprawic przeladowanie gier
   // dodać strukturę do bazy danych by mozna bylo zapisać zapisane przez AI opisy gier i wyniki analizy
   const recommendationsComponents = <Recommendations
     menuOpened={menuOpened}
@@ -37,7 +36,8 @@ function App() {
       <Router>
         <Header onToggleMenu={toggleMenu} menuOpened={menuOpened} />
         <Sidebar menuOpened={menuOpened} selectedTags={selectedTags} setSidebarTags={setSidebarTags} />
-        <Toast error={error} />
+        <Toast mode={'error'} text={error ?? 'Unknown error'} />
+        <Toast mode={'success'} text={successSave ?? 'Saved successfully'} />
         <Routes>
           <Route
             path="/user/recommendations"
@@ -58,6 +58,7 @@ function App() {
                 getTags={() => callServer<string[], any>('topmostTags', { limit: 60 })}
                 selectedTags={selectedTags}
                 setSelectedTags={setSelectedTags}
+                setSuccessSave={setSuccessSave}
               />
             }
           />

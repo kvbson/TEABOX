@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 
-const Toast: React.FC<{error: string | null}> = ({ error }) => {
+const Toast: React.FC<{mode: 'error' | 'success', text: string}> = ({ mode, text }) => {
   useEffect(() => {
-    if (error) {
-      toast.error(error);
+    if (text) {
+      toast[mode](text);
     }
-  }, [error]);
+  }, [mode, text]);
   return <ToastContainer
     position="bottom-right"
     autoClose={3000}

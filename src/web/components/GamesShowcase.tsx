@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import GameNav from './GameNav';
 import LoadingOverlay from './LoadingOverlay';
@@ -22,6 +22,34 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   const game = appDetails;
   const price = game?.price_overview?.final_formatted ?? 'N/A';
 
+  const [isImageLoading, setIsImageLoading] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!game?.header_image) {
+      setIsImageLoading(false);
+      return;
+    }
+
+    setIsImageLoading(true);
+    const img = new Image();
+    img.src = game.header_image;
+
+    img.onload = () => {
+      if (isMounted) setIsImageLoading(false);
+    };
+
+    img.onerror = () => {
+      if (isMounted) setIsImageLoading(false);
+    };
+
+    return () => {
+      isMounted = false;
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [game?.header_image]);
+
   const sanitizeHTML = (html: string | undefined) => ({
     __html: DOMPurify.sanitize(html || ''),
   });
@@ -35,7 +63,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
       />
 
       <div className="game-showcase">
-        {isLoading && <LoadingOverlay />}
+        {(isLoading || isImageLoading) && <LoadingOverlay />}
 
         <section className="game-showcase__description">
           <h2 className="section-title">Description</h2>
