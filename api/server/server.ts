@@ -14,6 +14,7 @@ import userProfileData from './routes/user/GetProfileData.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
 import missingIds from './routes/db/GetMissingIds.js';
 import topmostTags from './routes/utils/getTopmostTags.js';
+import sortedGameInfo from './routes/db/GetSortedGameInfo.js';
 //TODO: na podstawie sidebara ustawić sortowanie w mongodb
 //Opisac endpointy z serwera na dsc
 const app = express();
@@ -31,7 +32,7 @@ app.use(helmet());
 connectDB();
 
 //ROUTES
-const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags, topmostTags];
+const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags, topmostTags, sortedGameInfo];
 for (const route of routes) {
   app.use(PREFIX, route);
 }

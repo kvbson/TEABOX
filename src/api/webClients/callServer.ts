@@ -18,6 +18,9 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
     const url = new URL(endpoint, expressServerUrl);
 
     Object.entries(params ?? {}).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value = encodeURIComponent(JSON.stringify(value));
+      }
       url.searchParams.append(key, String(value));
     });
 

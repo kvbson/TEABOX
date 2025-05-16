@@ -1,0 +1,34 @@
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+.tag-button {
+  padding: 8px 12px;
+  border: 1px solid #999;
+  border-radius: var(--radius);
+  background: #fff;
+  cursor: pointer;
+  color: var(--color-bg);
+}
+
+.tag-button.selected {
+  background: #555;
+  color: var(--color-text);
+}
+
+.save-button {
+  padding: 10px 20px;
+  background: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.preferences-page {
+    margin: 2%;
+}

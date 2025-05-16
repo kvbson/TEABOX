@@ -15,9 +15,10 @@ export async function getTopmostTags({ limit = 15 }: { limit?: number } = {}) {
 
 const topmostTags = Router();
 
-topmostTags.get('/topmostTags', async (_, res) => {
+topmostTags.get('/topmostTags', async (req, res) => {
+  const limit = req.query.limit ? Number(req.query.limit) : undefined;
   try {
-    const tags = await getTopmostTags();
+    const tags = await getTopmostTags({ limit });
     res.json({
       success: true,
       data: tags,

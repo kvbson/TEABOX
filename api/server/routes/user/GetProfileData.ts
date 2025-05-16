@@ -44,7 +44,7 @@ const getUserProfileData = async (steamId: string, dataLimit: number): Promise<U
     const { games } = await getAllGameInfo(allAppIds);
 
     for (const [appId, game] of Object.entries(games ?? {})) {
-      const possibleRecentGame = recentGames.response.games.find(el => String(el.appid) === String(appId));
+      const possibleRecentGame = recentGames.response.games?.find(el => String(el.appid) === String(appId));
       if (possibleRecentGame) {
         profileData.recentGames[appId] = {
           ...game,
@@ -53,7 +53,7 @@ const getUserProfileData = async (steamId: string, dataLimit: number): Promise<U
           name: possibleRecentGame.name,
         };
       }
-      const possibleOwnedGame = ownedGames.response.games.find(el => String(el.appid) === String(appId));
+      const possibleOwnedGame = ownedGames.response.games?.find(el => String(el.appid) === String(appId));
       if (possibleOwnedGame) {
         profileData.ownedGames[appId] = {
           ...game,

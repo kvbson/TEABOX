@@ -6,7 +6,8 @@ export interface ModeParams {
     gameInfo: { appId: number | string };
     missingIds: object;
     tags: object; //no params needed
-    topmostTags: object;
+    topmostTags: { limit?: number };
+    sortedGameInfo: { sidebarTags: string | string[] };
 }
 
 export interface ApiResponse<T> {
