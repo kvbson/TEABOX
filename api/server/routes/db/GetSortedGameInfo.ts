@@ -1,67 +1,21 @@
 import { GameInfo } from '#api/db/models/GameInfo';
 import { Router } from 'express';
+import { sortGameInfo } from '../utils/sortGameInfo.js';
 
 const sortedGameInfo = Router();
 
 export async function getSortedGameInfo(sidebarTags: string[]) {
-  return GameInfo.aggregate([
-    {
-      $match: {
-        'genres.description': { $in: sidebarTags },
-      },
-    },
-    {
-      $addFields: {
-        // Get the highest priority match (earliest in sidebarTags)
-        priorityOrder: {
-          $min: {
-            $map: {
-              input: '$genres.description',
-              as: 'genre',
-              in: {
-                $let: {
-                  vars: {
-                    idx: { $indexOfArray: [sidebarTags, '$$genre'] },
-                  },
-                  in: {
-                    $cond: [
-                      { $ne: ['$$idx', -1] },
-                      '$$idx', // Use actual index from sidebarTags
-                      null, // Ignore non-matches
-                    ],
-                  },
-                },
-              },
-            },
-          },
-        },
-        // Count of matches for secondary sorting
-        matchCount: {
-          $size: {
-            $setIntersection: [sidebarTags, '$genres.description'],
-          },
-        },
-      },
-    },
-    {
-      $sort: {
-        priorityOrder: 1, // Lower values (earlier in sidebarTags) first
-        matchCount: -1, // More matches first within same priority
-        'release_date.date': -1,
-      },
-    },
-    {
-      $project: {
-        priorityOrder: 0, // Remove temporary field from results
-      },
-    },
-  ]).exec();
+  const games = await GameInfo.find({
+    'genres.description': { $in: sidebarTags },
+  });
+  const sortedGames = sortGameInfo(games, sidebarTags);
+  return sortedGames;
 }
 
 /*@ts-expect-error type error */
 sortedGameInfo.get('/sortedGameInfo', async (req, res) => {
   if (!req.query.sidebarTags) {
-    return res.status(400).json({ // Added return
+    return res.status(400).json({
       success: false,
       message: `Invalid sidebarTags query parameter. Received: ${req.query.sidebarTags}`,
     });
@@ -71,7 +25,6 @@ sortedGameInfo.get('/sortedGameInfo', async (req, res) => {
 
   try {
     const parsedData = JSON.parse(sidebarTags);
-
     if (!Array.isArray(parsedData)) {
       return res.status(400).json({
         success: false,

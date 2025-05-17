@@ -29,6 +29,15 @@
   cursor: pointer;
 }
 
+.remove-button {
+  padding: 10px 20px;
+  background: red;
+  color: var(--color-text);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
 .preferences-page {
     margin: 2%;
 }

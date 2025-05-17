@@ -25,7 +25,7 @@ export async function scrapeTags() {
   return tags;
 }
 
-const updateTagsInDB = async (tags: string[]) => {
+export const updateTagsInDB = async (tags: string[]) => {
   const batchSize = 100;
 
   for (let i = 0; i < tags.length; i += batchSize) {

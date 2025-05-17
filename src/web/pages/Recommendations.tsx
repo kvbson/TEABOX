@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import GamesShowcase from '../components/GamesShowcase';
 import LoadingOverlay from '../components/LoadingOverlay';
-import Toast from '../components/Toast';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
+import { toast } from 'react-toastify';
 
 interface RecommendationsProps {
   menuOpened: boolean;
@@ -16,9 +16,9 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
 
   useEffect(() => {
     setError(error);
-  }, [error]);
+  }, [error, setError]);
 
-  const [selectedGameIndex, setSelectedGameIndex] = useState(0);
+  const [selectedGameIndex, setSelectedGameIndex] = useState(1); //changed to 1 for now, cuz theres a bugged game at beggining
 
   const handleNext = () => {
     setSelectedGameIndex((prev) => (prev + 1) % data.length);
@@ -32,7 +32,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
   const currentAppDetails = data[selectedGameIndex];
 
   if (loading || data.length === 0) return <LoadingOverlay />;
-  if (error) return <Toast text={error ?? 'Unkwnon error'} mode={'error'} />;
+  if (error) return toast.error(error);
 
   return (
     <div className="mt-10">

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import Toast from './components/Toast';
 import Recommendations from './pages/Recommendations';
 import PreferencesPage from './pages/Prefferences';
 import { callServer } from '../api/webClients/callServer';
+import ToastError from './components/ToastError';
+import ToastSuccess from './components/ToastSuccess';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 function App() {
   const [menuOpened, setMenuOpened] = useState(false);
@@ -36,8 +38,22 @@ function App() {
       <Router>
         <Header onToggleMenu={toggleMenu} menuOpened={menuOpened} />
         <Sidebar menuOpened={menuOpened} selectedTags={selectedTags} setSidebarTags={setSidebarTags} />
-        <Toast mode={'error'} text={error ?? 'Unknown error'} />
-        <Toast mode={'success'} text={successSave ?? 'Saved successfully'} />
+        <ToastContainer
+          position="bottom-left"
+          autoClose={4000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover
+          theme="dark"
+          transition={Bounce}
+        />
+        <ToastSuccess success={successSave} />
+        <ToastError error={error} />
+
         <Routes>
           <Route
             path="/user/recommendations"

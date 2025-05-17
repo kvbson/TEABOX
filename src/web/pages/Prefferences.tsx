@@ -40,6 +40,12 @@ const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTa
     setSuccessSave('Selected tags saved successfully.');
   };
 
+  const handleReset = () => {
+    localStorage.setItem('user-tags', JSON.stringify(selectedTags));
+    setSuccessSave('Selected tags reseted.');
+    setSelectedTags([]);
+  };
+
   return (
     <div className="preferences-page">
       <h2>Your Preferences</h2>
@@ -57,6 +63,9 @@ const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTa
       </div>
       <button onClick={handleSave} className="save-button">
         Save Preferences
+      </button>
+      <button onClick={handleReset} className="remove-button">
+        Reset
       </button>
     </div>
   );

@@ -100,6 +100,8 @@ export const GameInfoSchema = new Schema({
   _id: false,
 });
 
+GameInfoSchema.index({ description: 'text' });
+GameInfoSchema.index({ 'genres.id': 1 });
 //TODO: missing - playersCount
 
 export const GameInfo = mongoose.model('GameInfo', GameInfoSchema);
