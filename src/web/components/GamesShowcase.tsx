@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 import GameNav from './GameNav';
 import LoadingOverlay from './LoadingOverlay';
 import '../css/gamesShowcase.css';
-import { BlurImage } from './ui/BlurImage';
+// import { BlurImage } from './ui/BlurImage';
 
 interface GameShowcaseProps {
   appDetails: Record<string, any>;
@@ -114,7 +114,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
 
         <aside className="game-showcase__media">
           <div className="image-container">
-            {game?.blur_image ? BlurImage({ src: game.header_image, blurhash: game.blur_image }) : game.header_image ? (
+            {/* {game?.blur_image ? BlurImage({ src: game.header_image, blurhash: game.blur_image }) : game.header_image ? (
               <img
                 src={game.header_image}
                 alt={`Cover art for ${game.name}`}
@@ -123,7 +123,17 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
                   (e.target as HTMLImageElement).src = '/fallback-image.jpg';
                 }}
               />
-            ) : <></>}
+            ) : <></>} */}
+            {game.header_image && (
+              <img
+                src={game.header_image}
+                alt={`Cover art for ${game.name}`}
+                loading='eager'
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/fallback-image.jpg';
+                }}
+              />
+            )}
             <div className="price-tag" aria-label="Game price">
               {price}
             </div>
