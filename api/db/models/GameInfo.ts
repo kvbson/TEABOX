@@ -47,6 +47,9 @@ export const GameInfoSchema = new Schema({
   is_free: { type: Boolean },
   header_image: { type: String },
   capsule_image: { type: String },
+  blur_image: { type: String },
+  cons: [String],
+  pros: [String],
   website: { type: String },
   controller_support: {
     type: String,

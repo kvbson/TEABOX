@@ -13,7 +13,7 @@ export const useSortedGameInfo = (sidebarTags: string[]) => {
         setLoading(true);
         console.log('[SortedGameInfo] Fetching for tags:', sidebarTags);
         const games = await callServer('sortedGameInfo', { sidebarTags });
-        console.log('[SortedGameInfo] API response:', games);
+        console.log('[SortedGameInfo] API response:', (games.data as any || []).slice(0, 20));
         if (error) {
           console.log(`[SortedGameInfo] Failed fetching games info. Error: ${(error as any)?.message || error}`);
           setError(error);

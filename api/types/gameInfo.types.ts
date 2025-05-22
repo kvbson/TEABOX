@@ -68,6 +68,9 @@ type ExtendedGameInfo = {
     ratings?: Record<string, any>;
     app_url?: string;
     header_image?: string;
+    blur_image?: string;
+    pros?: string[];
+    cons?: string[];
 };
 
 export type { GameInfo, ExtendedGameInfo, GamesObj };

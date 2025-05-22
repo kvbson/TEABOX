@@ -12,32 +12,39 @@ export const MissingApp = mongoose.model('MissingApp', missingAppSchema);
 export const MissingReviewApp = mongoose.model('MissingReviewApp', missingAppSchema);
 
 export async function handleFailedAppId(appId: string) {
-  const entry = await MissingApp.findOne({ appId });
+  const entry = await MissingApp.findOneAndUpdate(
+    { appId },
+    {
+      $inc: { failureCount: 1 },
+      $setOnInsert: { confirmed: false },
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+  );
 
-  if (entry) {
-    if (!entry.confirmed) {
-      entry.failureCount += 1;
-      if (entry.failureCount >= maxFails) {
-        entry.confirmed = true;
-      }
-      await entry.save();
-    }
-  } else {
-    await MissingApp.create({ appId, failureCount: 1 });
+  if (entry.failureCount >= maxFails && !entry.confirmed) {
+    entry.confirmed = true;
+    await entry.save();
   }
 }
 
 export async function handleFailedReviewAppId(appId: string) {
-  const entry = await MissingReviewApp.findOne({ appId });
-  if (entry) {
-    if (!entry.confirmed) {
-      entry.failureCount += 1;
-      if (entry.failureCount >= maxFails) {
-        entry.confirmed = true;
-      }
-      await entry.save();
-    }
-  } else {
-    await MissingReviewApp.create({ appId, failureCount: 1 });
+  const entry = await MissingReviewApp.findOneAndUpdate(
+    { appId },
+    {
+      $inc: { failureCount: 1 },
+      $setOnInsert: { confirmed: false },
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+  );
+
+  if (entry.failureCount >= maxFails && !entry.confirmed) {
+    entry.confirmed = true;
+    await entry.save();
   }
 }

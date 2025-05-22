@@ -29,8 +29,6 @@ export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize 
               filter: { steam_appid: game.steam_appid },
               update: {
                 $set: updateDoc,
-                $setOnInsert: { createdAt: new Date() },
-                $currentDate: { updatedAt: true },
               },
               upsert: true,
             },

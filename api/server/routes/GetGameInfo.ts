@@ -40,7 +40,7 @@ export const getGameDetails = async (appId: string | number) => {
   return Object.values(result.data)[0] as unknown as GameDetailsResponse;
 };
 
-const getGameInfo = async (appId: string | number): Promise<GamesObj> => {
+export const getGameInfo = async (appId: string | number): Promise<GamesObj> => {
   const [reviews, gameDetails] = await Promise.all([getReviews(appId), getGameDetails(appId)]);
   return { [String(appId)]: { reviews: reviews as any, gameDetails, appId } };
 };

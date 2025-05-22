@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify';
 import GameNav from './GameNav';
 import LoadingOverlay from './LoadingOverlay';
 import '../css/gamesShowcase.css';
+import { BlurImage } from './ui/BlurImage';
 
 interface GameShowcaseProps {
   appDetails: Record<string, any>;
@@ -78,7 +79,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
 
           <div className="game-details">
             <p>
-              <strong>Released:</strong> {game?.release_date?.date?.toString() ?? 'N/A'}
+              <strong>Released:</strong> {new Date(game?.release_date?.date?.toString()).toLocaleDateString('de-DE')}
             </p>
             {game?.metacritic?.score && (
               <p>
@@ -87,10 +88,33 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
             )}
           </div>
         </section>
+        <section>
+          {game?.pros?.length > 0 && (
+            <section className="game-pros">
+              <h3>Pros</h3>
+              <ul>
+                {game.pros.map((pro: string, i: number) => (
+                  <li key={`pro-${i}`}>{pro}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {game?.cons?.length > 0 && (
+            <section className="game-cons">
+              <h3>Cons</h3>
+              <ul>
+                {game.cons.map((con: string, i: number) => (
+                  <li key={`con-${i}`}>{con}</li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </section>
 
         <aside className="game-showcase__media">
           <div className="image-container">
-            {game?.header_image && (
+            {game?.blur_image ? BlurImage({ src: game.header_image, blurhash: game.blur_image }) : game.header_image ? (
               <img
                 src={game.header_image}
                 alt={`Cover art for ${game.name}`}
@@ -99,7 +123,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
                   (e.target as HTMLImageElement).src = '/fallback-image.jpg';
                 }}
               />
-            )}
+            ) : <></>}
             <div className="price-tag" aria-label="Game price">
               {price}
             </div>

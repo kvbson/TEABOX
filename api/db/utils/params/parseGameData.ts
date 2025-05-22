@@ -46,5 +46,8 @@ export const parseGameData = (game: ExtendedGameInfo | GameInfoSchemaType, mode:
       webm: movie.webm || { '480': '', max: '' },
       mp4: movie.mp4 || { '480': '', max: '' },
     })) || []) as GameInfoSchemaType['movies'],
+    pros: game.pros || [],
+    cons: game.cons || [],
+    blur_image: game.blur_image ?? undefined,
   };
 };

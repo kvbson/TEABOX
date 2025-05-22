@@ -15,8 +15,7 @@ import userRecentGames from './routes/user/GetRecentGames.js';
 import missingIds from './routes/db/GetMissingIds.js';
 import topmostTags from './routes/utils/getTopmostTags.js';
 import sortedGameInfo from './routes/db/GetSortedGameInfo.js';
-//TODO: na podstawie sidebara ustawić sortowanie w mongodb
-//Opisac endpointy z serwera na dsc
+
 const app = express();
 const PREFIX = '/api/steam';
 const PORT = 5000;
