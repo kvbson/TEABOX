@@ -11,7 +11,7 @@ import { Bounce, ToastContainer } from 'react-toastify';
 
 function App() {
   const [menuOpened, setMenuOpened] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>(() => {
     const saved = localStorage.getItem('user-tags');
@@ -52,7 +52,7 @@ function App() {
           transition={Bounce}
         />
         <ToastSuccess success={successSave} />
-        <ToastError error={error} />
+        <ToastError error={error instanceof Error ? error.message : String(error)} />
 
         <Routes>
           <Route
@@ -75,6 +75,7 @@ function App() {
                 selectedTags={selectedTags}
                 setSelectedTags={setSelectedTags}
                 setSuccessSave={setSuccessSave}
+                setError={setError}
               />
             }
           />

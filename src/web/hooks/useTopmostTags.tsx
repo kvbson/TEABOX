@@ -4,7 +4,7 @@ import { callServer } from '../../api/webClients/callServer';
 export const useTopmostTags = () => {
   const [data, setData] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | Error | null>(null);
 
   useEffect(() => {
     const fetchTopmostTags = async () => {
@@ -13,7 +13,7 @@ export const useTopmostTags = () => {
       const { data, error } = await callServer<string[], any>('topmostTags', {});
       console.log('[TopmostTags] API response:', data);
       if (error) {
-        console.log(`[TopmostTags] Failed fetching topmost tags. Error: ${error.message}`);
+        console.log(`[TopmostTags] Failed fetching topmost tags. Error: ${error instanceof Error ? error.message : String(error)}`);
         setError(error);
       }
       if (data) {

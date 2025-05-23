@@ -44,7 +44,7 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
     const data: ApiResponse<T> = await response.json();
     return data;
   } catch (error) {
-    console.error('Network error:', error);
+    console.error('Network error:', error instanceof Error ? error.message : String(error));
     toast.error('Error. Connection to server not established.', { toastId: TOAST_ID });
     return { data: null, error };
   }

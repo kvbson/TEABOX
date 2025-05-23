@@ -7,9 +7,10 @@ type Props = {
   selectedTags: string[];
   setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
   setSuccessSave: React.Dispatch<React.SetStateAction<string | null>>;
+  setError: React.Dispatch<React.SetStateAction<string | Error | null>>;
 };
 
-const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTags, setSuccessSave }) => {
+const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTags, setSuccessSave, setError }) => {
   const [allTags, setAllTags] = useState<Tag[]>([]);
 
   useEffect(() => {
@@ -20,14 +21,15 @@ const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTa
           setAllTags(result.data);
         }
       } catch (error) {
-        console.error('Failed to fetch tags:', error);
+        setError(error as Error);
+        console.error('Failed to fetch tags:', error instanceof Error ? error.message : String(error));
       }
     };
 
     if (allTags.length === 0) {
       fetchTags();
     }
-  }, [allTags.length, getTags]);
+  }, [allTags.length, getTags, setError]);
 
   const toggleTag = (tag: Tag) => {
     setSelectedTags((prev) =>

@@ -67,10 +67,10 @@ const Sidebar: React.FC<SidebarProps> = ({ menuOpened, selectedTags, setSidebarT
     return () => {
       swapyRef.current?.destroy();
     };
-  }, [options, loading]);
+  }, [options, loading, setSidebarTags]);
 
   if (loading) return ;
-  if (error) return <div className="sidebar">Error: {error}</div>;
+  if (error) return <div className="sidebar">Error: {error instanceof Error ? error.message : String(error)}</div>;
 
   return (
     <div className={`sidebar ${!menuOpened ? 'hide' : ''}`}>

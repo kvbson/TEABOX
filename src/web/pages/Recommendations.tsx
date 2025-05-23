@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 interface RecommendationsProps {
   menuOpened: boolean;
-  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  setError: React.Dispatch<React.SetStateAction<string | Error | null>>;
   steamId: string;
   sidebarTags: string[];
 }
@@ -32,7 +32,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
   const currentAppDetails = data[selectedGameIndex];
 
   if (loading || data.length === 0) return <LoadingOverlay />;
-  if (error) return toast.error(error);
+  if (error) return toast.error(error instanceof Error ? error.message : String(error));
 
   return (
     <div className="mt-10">

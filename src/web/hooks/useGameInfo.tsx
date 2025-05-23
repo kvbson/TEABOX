@@ -14,7 +14,7 @@ export const useGameInfo = (appId: number | string) => {
       const { data, error } = await callServer('gameInfo', { appId }) as any;
       console.log('[GameInfo] API response:', data);
       if (error) {
-        console.log(`[GameInfo] Failed fetching game. Error: ${error.message}`);
+        console.log(`[GameInfo] Failed fetching game. Error: ${error instanceof Error ? error.message : String(error)}`);
         setError(error);
       }
       if (data?.[appId]) {
