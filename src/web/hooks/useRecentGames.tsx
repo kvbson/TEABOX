@@ -17,7 +17,9 @@ export const useRecentGames = (steamId: string): UseGamesResult => {
           throw new Error('Invalid response format');
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        if (err) {
+          setError(err instanceof Error ? err.message : 'Unknown error');
+        }
       } finally {
         setLoading(false);
       }

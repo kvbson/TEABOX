@@ -15,7 +15,9 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
   const { data, error, loading } = useSortedGameInfo(sidebarTags);
 
   useEffect(() => {
-    setError(error);
+    if (error) {
+      setError(error);
+    }
   }, [error, setError]);
 
   const [selectedGameIndex, setSelectedGameIndex] = useState(1); //changed to 1 for now, cuz theres a bugged game at beggining

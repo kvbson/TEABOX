@@ -18,7 +18,6 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [sidebarTags, setSidebarTags] = useState<string[]>(selectedTags);
-
   const steamId = '76561198199623266';
 
   const toggleMenu = () => {
@@ -51,8 +50,8 @@ function App() {
           theme="dark"
           transition={Bounce}
         />
-        <ToastSuccess success={successSave} />
-        <ToastError error={error instanceof Error ? error.message : String(error)} />
+        {successSave && <ToastSuccess success={successSave} />}
+        {error && <ToastError error={error instanceof Error ? error.message : String(error)} />}
 
         <Routes>
           <Route

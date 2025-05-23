@@ -78,9 +78,10 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
           )}
 
           <div className="game-details">
-            <p>
+            {game?.release_date?.date && (<p>
               <strong>Released:</strong> {new Date(game?.release_date?.date?.toString()).toLocaleDateString('de-DE')}
-            </p>
+            </p>)
+            }
             {game?.metacritic?.score && (
               <p>
                 <strong>Metacritic Score:</strong> {game.metacritic.score}

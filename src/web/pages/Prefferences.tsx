@@ -21,7 +21,9 @@ const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTa
           setAllTags(result.data);
         }
       } catch (error) {
-        setError(error as Error);
+        if (error) {
+          setError(error as Error);
+        }
         console.error('Failed to fetch tags:', error instanceof Error ? error.message : String(error));
       }
     };
