@@ -3,12 +3,13 @@ import DOMPurify from 'dompurify';
 import GameNav from './GameNav';
 import LoadingOverlay from './LoadingOverlay';
 import '../css/gamesShowcase.css';
+import ScrollToTopButton from './ui/ScrollToTopArror';
 // import { BlurImage } from './ui/BlurImage';
 
 interface GameShowcaseProps {
   appDetails: Record<string, any>;
   isLoading: boolean;
-  menuOpened: boolean;
+  sidebarOpened: boolean;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -16,7 +17,7 @@ interface GameShowcaseProps {
 const GamesShowcase: React.FC<GameShowcaseProps> = ({
   appDetails,
   isLoading,
-  menuOpened,
+  sidebarOpened,
   onNext,
   onPrev,
 }) => {
@@ -56,7 +57,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   });
 
   return (
-    <div className={`recommendations-wrapper ${menuOpened ? 'sidebar-opened' : ''}`}>
+    <div className={`recommendations-wrapper ${sidebarOpened ? 'sidebar-opened' : ''}`}>
       <GameNav
         title={game?.name || 'Loading...'}
         onPrev={onPrev}
@@ -141,6 +142,8 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
           </div>
         </aside>
       </div>
+      <ScrollToTopButton />
+
     </div>
   );
 };

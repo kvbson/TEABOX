@@ -4,16 +4,18 @@ import { AllGamesList } from '#db/models/AllGames';
 import { handleFailedBatch } from '#db/utils/helpers/handleFailedBatch';
 import { setTimeout } from 'node:timers/promises';
 
-export async function upsertAllGamesList() {
-  const games = await getAllGames();
-  const result = await bulkUpsertAllGamesList(games, 500);
+type UpsertAllGamesListParams = {
+  limit: number;
+  batchSize: number;
+}
+
+export async function upsertAllGamesList({ limit, batchSize = 150 }: UpsertAllGamesListParams) {
+  const games = await getAllGames(limit);
+  const result = await bulkUpsertAllGamesList({ batchSize, games });
   console.log(`Processed: ${result.totalProcessed};\n Upserted: ${result.upsertedCount};\n Modified ${result.modifiedCount};\n Errors: ${result.errorCount}`);
 }
 
-async function bulkUpsertAllGamesList(
-  { applist: { apps } }: SteamAppListResponse,
-  batchSize = 200,
-  throttleDelay = 100,
+async function bulkUpsertAllGamesList({ batchSize, games: { applist: { apps } } }: Omit<UpsertAllGamesListParams, 'limit'> & { games: SteamAppListResponse },
 ) {
   let processed = 0;
   let upserted = 0;
@@ -47,13 +49,12 @@ async function bulkUpsertAllGamesList(
         console.log(`Processed ${i + batchSize}/${apps.length} (${percent}%)`);
         lastLogged = processed;
       }
-
       if (i + batchSize < apps.length) {
-        await setTimeout(throttleDelay);
+        await setTimeout();
       }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error);
-      const retryResult = await handleFailedBatch(batch, throttleDelay * 2);
+      const retryResult = await handleFailedBatch(batch);
       if (!retryResult.success) {
         errors.push({
           batchRange: `${i}-${Math.min(i + batchSize, apps.length)}`,
