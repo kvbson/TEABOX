@@ -7,6 +7,11 @@ const sortedGameInfo = Router();
 export async function getSortedGameInfo(sidebarTags: string[]) {
   const games = await GameInfo.find({
     'genres.description': { $in: sidebarTags },
+    //get games only with either some pros or cons
+    $or: [
+      { $expr: { $gt: [{ $size: { $ifNull: ['$pros', []] } }, 0] } },
+      { $expr: { $gt: [{ $size: { $ifNull: ['$cons', []] } }, 0] } },
+    ],
   });
   const sortedGames = sortGameInfo(games, sidebarTags);
   return sortedGames;
