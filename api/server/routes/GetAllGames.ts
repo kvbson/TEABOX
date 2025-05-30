@@ -2,10 +2,11 @@ import steamApi from '#server/clients/steamClients/steamApiClient';
 import { SteamAppListResponse } from '#types/allGames.types';
 import { Router } from 'express';
 
-export const getAllGames = async ()=> {
+export const getAllGames = async (limit = 10000) => {
   const params = {
     key: undefined,
     format: 'json',
+    limit,
   };
 
   const { data } = await steamApi.get<SteamAppListResponse>('ISteamApps/GetAppList/v2/', { params });
@@ -14,9 +15,11 @@ export const getAllGames = async ()=> {
 
 const allGames = Router();
 
-allGames.get('/allGames', async (_, res) => {
+allGames.get('/allGames', async (req, res) => {
+  const limit = parseInt(String(req.query.limit), 10) || undefined;
+
   try {
-    const data = await getAllGames();
+    const data = await getAllGames(limit);
     res.json({
       success: true,
       data,

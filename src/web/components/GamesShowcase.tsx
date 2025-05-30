@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
-import DOMPurify from "dompurify";
-import GameNav from "./GameNav";
-import LoadingOverlay from "./LoadingOverlay";
-import "../css/gamesShowcase.css";
+import React, { useEffect, useState } from 'react';
+import DOMPurify from 'dompurify';
+import GameNav from './GameNav';
+import LoadingOverlay from './LoadingOverlay';
+import '../css/gamesShowcase.css';
+import ScrollToTopButton from './ui/ScrollToTopArror';
+// import { BlurImage } from './ui/BlurImage';
 
 interface GameShowcaseProps {
   appDetails: Record<string, any>;
   isLoading: boolean;
-  menuOpened: boolean;
+  sidebarOpened: boolean;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -15,7 +17,7 @@ interface GameShowcaseProps {
 const GamesShowcase: React.FC<GameShowcaseProps> = ({
   appDetails,
   isLoading,
-  menuOpened,
+  sidebarOpened,
   onNext,
   onPrev,
 }) => {
@@ -74,12 +76,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   };
 
   return (
-    <div
-      className={`recommendations-wrapper ${
-        menuOpened ? "sidebar-opened" : ""
-      }`}
-    >
-      {/* Strzałki i tytuł */}
+    <div className={`recommendations-wrapper ${sidebarOpened ? 'sidebar-opened' : ''}`}>
       <GameNav
         className="game-nav"
         title={game?.name || "Loading..."}
@@ -97,8 +94,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
 
         <section className="game-showcase__description">
           <h2 className="section-title">Description</h2>
-          <p>{game?.short_description || "No description available"}</p>
-
+          {game?.short_description?.trim() !== game?.about_the_game?.trim() && <p>{game?.short_description || "No description available"}</p>}
           {game?.about_the_game && (
             <div
               className="html-content"
@@ -165,6 +161,8 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
           </section>
         </aside>
       </div>
+      <ScrollToTopButton />
+
     </div>
   );
 };

@@ -15,6 +15,6 @@ export function sortGameInfo(games: GameInfoSchemaType[], userTags: string[]) {
   games.forEach((game) => {
     (game as GameInfoSchemaType & { relevance: number }).relevance = calculateRelevance(game.genres?.map(el => el.description ?? '') ?? []);
   });
-  return (games as (GameInfoSchemaType & { relevance: number })[]).sort((a, b) => (b.relevance ?? 0) - (a.relevance ?? 0)).filter(game => game.pros.length > 0 || game.cons.length > 0);
+  return (games as (GameInfoSchemaType & { relevance: number })[]).sort((a, b) => (b.relevance ?? 0) - (a.relevance ?? 0));
 }
 

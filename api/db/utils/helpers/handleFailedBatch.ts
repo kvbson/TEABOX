@@ -1,10 +1,11 @@
 import { BasicGameInfo } from '#types/allGames.types';
 import { AllGamesList } from '#db/models/AllGames';
 import { setTimeout } from 'timers/promises';
+import { AnyBulkWriteOperation } from 'mongoose';
 
 export async function handleFailedBatch(
   batch: BasicGameInfo[],
-  initialDelay: number,
+  initialDelay = 4,
   maxRetries = 3,
   backoffFactor = 2, //backoffFactor - kara za opóźnienie po każdej złej próbie
 ) {
@@ -14,7 +15,7 @@ export async function handleFailedBatch(
 
   while (batch && batch.length === 0 && retryCount < maxRetries) {
     try {
-      const bulkOps = batch.map(({ name, appid }) => ({
+      const bulkOps: AnyBulkWriteOperation[] = batch.map(({ name, appid }) => ({
         updateOne: {
           filter: { steamAppId: appid },
           update: {
