@@ -69,8 +69,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
 
         <section className="game-showcase__description">
           <h2 className="section-title">Description</h2>
-          <p>{game?.short_description || 'No description available'}</p>
-
+          {game?.short_description?.trim() !== game?.about_the_game?.trim() && <p>{game?.short_description || "No description available"}</p>}
           {game?.about_the_game && (
             <div
               className="html-content"
