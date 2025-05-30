@@ -24,7 +24,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   onPrev,
 }) => {
   const game = appDetails;
-  const price = game?.price_overview?.final_formatted ?? "N/A";
+  const price = game?.price_overview?.final_formatted ?? (game?.is_free ? "FREE" : "N/A");
 
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
