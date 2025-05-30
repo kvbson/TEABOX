@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import ArrowRight from '../components/ui/ArrowRight';
-import TeacupIcon from './ui/TeacupIcon';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import ArrowRight from "../components/ui/ArrowRight";
+import TeacupIcon from "./ui/TeacupIcon";
 
 type HeaderProps = {
   onToggleMenu: () => void;
@@ -30,13 +30,19 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
           {/* Sidebar trigger (zostaje) */}
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight
-              className={`burger ${!menuOpened ? 'menu-hiden' : 'menu-opened'}`}
+              className={`burger ${!menuOpened ? "menu-hiden" : "menu-opened"}`}
               color="var(--color-primary)"
             />
           </button>
-          <button className="hamburger-button" onClick={toggleMobileMenu}>
-            ☰
-          </button>
+          {!mobileMenuOpen ? (
+            <button className="hamburger-button" onClick={toggleMobileMenu}>
+              ☰
+            </button>
+          ) : (
+            <button className="hamburger-button" onClick={toggleMobileMenu}>
+              ✕
+            </button>
+          )}
         </nav>
       </header>
 
@@ -44,9 +50,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
       {mobileMenuOpen && (
         <div className="mobile-menu-overlay">
           <div className="mobile-menu-content">
-            <button className="close-button" onClick={toggleMobileMenu}>
-              ✕
-            </button>
             <Link to="/user/recommendations" onClick={toggleMobileMenu}>
               RECOMMENDATIONS
             </Link>

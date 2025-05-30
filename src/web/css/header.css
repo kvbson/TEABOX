@@ -66,7 +66,6 @@
   color: var(--color-text);
 }
 
-/* Nowy przycisk hamburgera */
 .hamburger-button {
   background: transparent;
   border: none;
@@ -75,27 +74,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 16px;
+  
   color: var(--color-primary);
 }
 
-/* Popup z mobilnym menu */
 .mobile-menu-overlay {
+  margin-top: 60px;
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background-color: var(--color-bg, white);
+  background-color: var(--color-bg);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   gap: 40px;
   padding: 20px;
 }
 
-/* Zawartość menu */
 .mobile-menu-content a {
-  font-size: var(--f-xlarge);
+  font-size: var(--f-large);
   text-decoration: none;
   color: var(--color-primary);
   font-weight: 700;
@@ -104,13 +101,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin: 20px;
 }
 
 .mobile-menu-content a:hover {
   color: var(--color-text);
 }
 
-/* Przycisk zamknięcia mobilnego menu */
 .close-button {
   position: absolute;
   top: 20px;
@@ -122,7 +119,6 @@
   color: var(--color-primary);
 }
 
-/* MOBILE / TABLET */
 @media (max-width: 1000px) {
   .header-right a {
     display: none;
@@ -133,7 +129,7 @@
   }
 
   .hamburger-button {
-    display: flex; /* Upewnij się, że jest widoczny */
+    display: flex; 
   }
 }
 

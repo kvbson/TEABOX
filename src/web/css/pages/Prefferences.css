@@ -46,3 +46,20 @@
 .preferences-page {
     margin: 2%;
 }
+
+.warning-text {
+  font-size: 0.9rem;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.tag-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media screen and (max-width: 1000px) {
+  .tag-list {
+    width: 100%;
+  }
+}
