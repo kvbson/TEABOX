@@ -45,6 +45,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
           isLoading={loading}
           onNext={handleNext}
           onPrev={handlePrev}
+          sidebarOpened={true}
         />
       )}
     </div>

@@ -33,7 +33,7 @@
   }
 }
 
-.sidebar-opened  {
+.recommendations-wrapper.sidebar-opened .game-showcase {
   width: calc(100% - 235px);
 }
 
@@ -67,6 +67,10 @@
 }
 
 @media screen and (max-width: 1000px) {
+  .game-showcase {
+    padding: 20px;
+  }
+
   .game-showcase__media {
     width: 100%;
     max-width: 100%;
@@ -76,6 +80,14 @@
     overflow: hidden;
     padding: 0 20px;
     box-sizing: border-box;
+  }
+
+  .game-showcase__description {
+    max-width: 80%;
+  }
+
+  .game-showcase__description .bb_img {
+    max-width: 100%;
   }
 
   .image-container {

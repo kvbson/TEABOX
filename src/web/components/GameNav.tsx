@@ -10,9 +10,9 @@ interface GameNavProps {
   onNext: () => void;
 }
 
-const GameNav: React.FC<GameNavProps> = ({ title, onPrev, onNext }) => {
+const GameNav: React.FC<GameNavProps> = ({ title, onPrev, onNext, className }) => {
   return (
-    <div className="game-nav">
+    <div className={`game-nav ${className}`}>
       <button className="nav-button" onClick={onPrev}>
          PREV GAME
         <ArrowDivider className='underlined left'/>

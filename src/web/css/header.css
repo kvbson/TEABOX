@@ -95,11 +95,15 @@
 
 /* Zawartość menu */
 .mobile-menu-content a {
-  font-size: var(--f-large, 20px);
+  font-size: var(--f-xlarge);
   text-decoration: none;
   color: var(--color-primary);
   font-weight: 700;
   transition: color 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .mobile-menu-content a:hover {

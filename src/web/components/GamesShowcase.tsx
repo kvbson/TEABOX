@@ -10,6 +10,7 @@ interface GameShowcaseProps {
   appDetails: Record<string, any>;
   isLoading: boolean;
   sidebarOpened: boolean;
+  menuOpened: boolean;
   onNext: () => void;
   onPrev: () => void;
 }
@@ -18,6 +19,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   appDetails,
   isLoading,
   sidebarOpened,
+  menuOpened,
   onNext,
   onPrev,
 }) => {
@@ -76,9 +78,9 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   };
 
   return (
-    <div className={`recommendations-wrapper ${sidebarOpened ? 'sidebar-opened' : ''}`}>
+    <div className={`recommendations-wrapper ${menuOpened ? 'sidebar-opened' : ''}`}>
       <GameNav
-        className="game-nav"
+        className={`game-nav ${menuOpened ? 'sidebar-opened' : ''}`}
         title={game?.name || "Loading..."}
         onPrev={onPrev}
         onNext={onNext}

@@ -4,6 +4,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 32px;
+  box-sizing: border-box;
+}
+
+.game-nav.sidebar-opened {
+  padding-right: calc(32px + 235px); /* więcej miejsca na tytuł */
 }
 
 .nav-button {
