@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom'; // ✅ import Link
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import ArrowRight from '../components/ui/ArrowRight';
 import TeacupIcon from './ui/TeacupIcon';
 
@@ -9,24 +9,57 @@ type HeaderProps = {
 };
 
 const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen((prev) => !prev);
+  };
+
   return (
-    <header className="header">
-      <div className="header-left">
-        <TeacupIcon />
-        <span className="header-title">TEABOX</span>
-      </div>
-      <nav className="header-right">
-        <Link to="/user/recommendations">RECOMMENDATIONS</Link>
-        <Link to="/user/preferences">PREFERENCES</Link>
-        <Link to="/logout">LOG OUT</Link>
-        <button onClick={onToggleMenu} className="arrow-button">
-          <ArrowRight
-            className={`burger ${!menuOpened ? 'menu-hiden' : 'menu-opened'}`}
-            color="var(--color-primary)"
-          />
-        </button>
-      </nav>
-    </header>
+    <>
+      <header className="header">
+        <div className="header-left">
+          <TeacupIcon />
+          <span className="header-title">TEABOX</span>
+        </div>
+
+        <nav className="header-right">
+          <Link to="/user/recommendations">RECOMMENDATIONS</Link>
+          <Link to="/user/preferences">PREFERENCES</Link>
+          <Link to="/logout">LOG OUT</Link>
+          {/* Sidebar trigger (zostaje) */}
+          <button onClick={onToggleMenu} className="arrow-button">
+            <ArrowRight
+              className={`burger ${!menuOpened ? 'menu-hiden' : 'menu-opened'}`}
+              color="var(--color-primary)"
+            />
+          </button>
+          <button className="hamburger-button" onClick={toggleMobileMenu}>
+            ☰
+          </button>
+        </nav>
+      </header>
+
+      {/* MOBILE MENU FULLSCREEN POPUP */}
+      {mobileMenuOpen && (
+        <div className="mobile-menu-overlay">
+          <div className="mobile-menu-content">
+            <button className="close-button" onClick={toggleMobileMenu}>
+              ✕
+            </button>
+            <Link to="/user/recommendations" onClick={toggleMobileMenu}>
+              RECOMMENDATIONS
+            </Link>
+            <Link to="/user/preferences" onClick={toggleMobileMenu}>
+              PREFERENCES
+            </Link>
+            <Link to="/logout" onClick={toggleMobileMenu}>
+              LOG OUT
+            </Link>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

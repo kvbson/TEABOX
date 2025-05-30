@@ -45,3 +45,18 @@
   white-space: nowrap;
   flex-shrink: 1;
 }
+
+/* Ukryj GameNav na mobilkach i tabletach */
+@media screen and (max-width: 1000px) {
+  .game-nav {
+    justify-content: center;
+  }
+
+  .game-nav .nav-button {
+    display: none;
+  }
+
+  .game-nav .game-title {
+    max-width: 100% !important;
+  }
+}

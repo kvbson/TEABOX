@@ -4,6 +4,7 @@ import ArrowDivider from './ui/ArrowDivider';
 import '../css/gameNav.css';
 
 interface GameNavProps {
+  className: string;
   title?: string;
   onPrev: () => void;
   onNext: () => void;

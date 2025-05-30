@@ -65,3 +65,85 @@
  {
   color: var(--color-text);
 }
+
+/* Nowy przycisk hamburgera */
+.hamburger-button {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16px;
+  color: var(--color-primary);
+}
+
+/* Popup z mobilnym menu */
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background-color: var(--color-bg, white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 20px;
+}
+
+/* Zawartość menu */
+.mobile-menu-content a {
+  font-size: var(--f-large, 20px);
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 700;
+  transition: color 0.3s;
+}
+
+.mobile-menu-content a:hover {
+  color: var(--color-text);
+}
+
+/* Przycisk zamknięcia mobilnego menu */
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--color-primary);
+}
+
+/* MOBILE / TABLET */
+@media (max-width: 1000px) {
+  .header-right a {
+    display: none;
+  }
+
+  .arrow-button {
+    display: none;
+  }
+
+  .hamburger-button {
+    display: flex; /* Upewnij się, że jest widoczny */
+  }
+}
+
+/* DESKTOP */
+@media (min-width: 1000px) {
+  .hamburger-button {
+    display: none !important;
+  }
+
+  .header-right a {
+    display: flex;
+  }
+
+  .arrow-button {
+    display: flex;
+  }
+}
