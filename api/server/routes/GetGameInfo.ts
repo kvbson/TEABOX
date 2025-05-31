@@ -1,5 +1,4 @@
 import { handleFailedAppId } from '#api/db/models/other/MissingAppIds';
-import { redisClient, setKeyWithTTL } from '#api/redis/redisClient';
 import { SteamReviewsResponse } from '#api/types/reviews.types';
 import steamStoreApi from '#server/clients/steamClients/steamStoreApiClient';
 import { ExtendedGameInfo, GameDetailsResponse, GamesObj } from '#types/gameInfo.types';
@@ -59,14 +58,7 @@ gameInfo.get('/gameInfo', async (req, res) => {
   if (action === 'skip') {
     return res.status(403).json({ error: `AppId banned - too many failed requests. Received: ${appId}` });
   }
-  const cacheKey = `gameInfo:${appId}`;
   try {
-    const cached = await redisClient.get(cacheKey);
-    if (cached) {
-      const data: GamesObj = JSON.parse(cached);
-      res.json({ success: true, data });
-      return;
-    }
     const data = await getGameInfo(String(appId));
 
     if (!data[String(appId)].gameDetails.success) {
@@ -75,7 +67,6 @@ gameInfo.get('/gameInfo', async (req, res) => {
         error: 'No game details from steam API. Will be automatically blocked after 10 retries.',
       });
     }
-    await setKeyWithTTL(cacheKey, JSON.stringify(data));
 
     res.json({
       success: true,

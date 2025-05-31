@@ -1,4 +1,5 @@
 import { GameInfo } from '#api/db/models/GameInfo';
+import { redisClient, setKeyWithTTL } from '#api/redis/redisClient';
 import { Router } from 'express';
 import { sortGameInfo } from '../utils/sortGameInfo.js';
 
@@ -27,6 +28,7 @@ sortedGameInfo.get('/sortedGameInfo', async (req, res) => {
   }
 
   const sidebarTags = decodeURIComponent(req.query.sidebarTags?.toString() ?? '');
+  console.log('3#@!#@', sidebarTags);
 
   try {
     const parsedData = JSON.parse(sidebarTags);
@@ -37,7 +39,16 @@ sortedGameInfo.get('/sortedGameInfo', async (req, res) => {
       });
     }
 
+    const cacheKey = `sortedGameInfo:${sidebarTags}`;
+    const cached = await redisClient.get(cacheKey);
+    if (cached) {
+      const data = JSON.parse(cached);
+      res.json({ success: true, data });
+      return;
+    }
+
     const data = await getSortedGameInfo(parsedData);
+    await setKeyWithTTL(cacheKey, JSON.stringify(data));
 
     if (data.length > 0) {
       return res.json({ success: true, data });

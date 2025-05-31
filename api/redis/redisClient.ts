@@ -2,7 +2,7 @@ import { Redis } from 'ioredis';
 
 const REDIS_PASSWORD = process.env.REDIS_PASSWORD;
 export const redisClient = new Redis({
-  host: 'driving-mollusk-15102.upstash.io',
+  host: 'balanced-snipe-43992.upstash.io',
   port: 6379,
   password: REDIS_PASSWORD,
   tls: {},
@@ -33,7 +33,8 @@ redisClient.on('reconnecting', () => {
 export const setKeyWithTTL = async (key: string, value: string | number | Buffer<ArrayBufferLike>) => {
   try {
     await redisClient.set(key, value);
-    await redisClient.expire(key, 259200);
+    // await redisClient.expire(key, 259200);
+    await redisClient.expire(key, 15000);
 
   } catch (err) {
     console.log(err);
