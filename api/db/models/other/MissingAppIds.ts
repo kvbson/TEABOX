@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const maxFails = 10;
+const maxFails = 8; // Maximum number of failures before confirming an app as missing
 
 const missingAppSchema = new mongoose.Schema({
   appId: { type: String, unique: true },

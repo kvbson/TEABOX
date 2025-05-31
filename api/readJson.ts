@@ -6,13 +6,14 @@ import { ExtendedGameInfo } from './types/gameInfo.types.js';
 type JsonFile = Record<string, { Pros: { pro1: string; pro2: string; pro3: string; pro4: string; }, Cons: { con1: string; con2: string; con3: string; con4: string; }}>
 
 export const readJson = async () => {
-  const jsonData = JSON.parse(fs.readFileSync('./api/review_list.json', 'utf-8')) as JsonFile;
-  if (!jsonData) {
-    return console.log('Missing json data');
-  }
   try {
+    const jsonData = JSON.parse(fs.readFileSync('./api/review_list.json', 'utf-8')) as JsonFile;
+    if (!jsonData) {
+      return console.log('Missing json data');
+    }
     const fetchAllApps = async () => {
       const appIds = Object.keys(jsonData).map(id => Number(id)).filter(id => !isNaN(id) && (id || id === 0));
+      console.log(`Selected ${appIds.length} apps from json data.`);
       return await getAllGameInfo(appIds);
     };
     const allGameInfo = await fetchAllApps();

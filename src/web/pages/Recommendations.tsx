@@ -5,13 +5,13 @@ import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
 import { toast } from 'react-toastify';
 
 interface RecommendationsProps {
-  menuOpened: boolean;
+  sidebarOpened: boolean;
   setError: React.Dispatch<React.SetStateAction<string | Error | null>>;
   steamId: string;
   sidebarTags: string[];
 }
 
-const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError, sidebarTags }) => {
+const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setError, sidebarTags }) => {
   const { data, error, loading } = useSortedGameInfo(sidebarTags);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ menuOpened, setError,
     <div className="mt-10">
       {currentAppDetails && (
         <GamesShowcase
-          menuOpened={menuOpened}
+          sidebarOpened={sidebarOpened}
           appDetails={currentAppDetails}
           isLoading={loading}
           onNext={handleNext}
