@@ -3,39 +3,38 @@ import { GamesObj } from '#api/types/gameInfo.types';
 import { GameInfo, GameInfoSchemaType } from '#api/db/models/GameInfo';
 import { Reviews, ReviewsSchemaType } from '#api/db/models/Reviews';
 import { parseReviewData } from '#api/db/utils/params/parseReviewData';
-import Bottleneck from 'bottleneck';
+// import Bottleneck from 'bottleneck';
 import { AnyBulkWriteOperation } from 'mongoose';
 import { getGameDetails, getReviews } from '../GetGameInfo.js';
 import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '#api/db/models/other/MissingAppIds';
 import { parseGameData } from '#api/db/utils/params/parseGameData';
 
-const gameQueue = new Bottleneck({
-  maxConcurrent: 5, // Allow up to 5 parallel game requests
-  minTime: 2000,
-});
+// const gameQueue = new Bottleneck({
+//   maxConcurrent: 1,
+//   minTime: 3000,
+// });
 
-const reviewQueue = new Bottleneck({
-  maxConcurrent: 5, // Allow up to 5 parallel review requests
-  minTime: 2000,
-});
+// const reviewQueue = new Bottleneck({
+//   maxConcurrent: 1,
+//   minTime: 3000,
+// });
 
 const getMissingDetails = async (missingGameIds: number[], missingReviewIds: number[]) => {
   return await Promise.all([
     // Fetch missing games
     Promise.all(missingGameIds.map(async (id) => {
       try {
-        const gameDetails = await gameQueue.schedule(async () => {
-          return retry(async () => { // Ensure this function returns a value
-            const res = await getGameDetails(id);
-            if (!res?.data || !res.success) {
-              await handleFailedAppId(String(id));
-              throw new Error(`Invalid response: ${JSON.stringify(res.data)}`);
-            }
-            return res.data;
-          }, { retries: 2, minTimeout: 500, factor: 1 });
-        });
+        // const gameDetails = await gameQueue.schedule(async () => {
+        //   return retry(async () => { // Ensure this function returns a value
+        const res = await getGameDetails(id);
+        if (!res?.data || !res.success) {
+          await handleFailedAppId(String(id));
+          throw new Error(`Invalid response: ${JSON.stringify(res.data)}`);
+        }
+        //   }, { retries: 2, minTimeout: 2500, factor: 1 });
+        // });
 
-        return { id: String(id), gameDetails };
+        return { id: String(id), gameDetails: res.data };
       } catch (error) {
         console.error(`Failed game ${id}:`, error);
         if (id) {
@@ -48,18 +47,17 @@ const getMissingDetails = async (missingGameIds: number[], missingReviewIds: num
     // Fetch missing reviews
     Promise.all(missingReviewIds.map(async (id) => {
       try {
-        const reviews = await reviewQueue.schedule(async () => {
-          return retry(async () => {
-            const res = await getReviews(id);
-            if (!res?.reviews || !res.success || res.query_summary?.num_reviews === 0) {
-              handleFailedReviewAppId(String(id));
-              throw new Error(`Invalid response: ${JSON.stringify(res)}`);
-            }
-            return res.reviews;
-          }, { retries: 2, minTimeout: 500, factor: 1 });
-        },
-        );
-        return { id: String(id), reviews };
+        // const reviews = await reviewQueue.schedule(async () => {
+        // return retry(async () => {
+        const res = await getReviews(id);
+        if (!res?.reviews || !res.success || res.query_summary?.num_reviews === 0) {
+          handleFailedReviewAppId(String(id));
+          throw new Error(`Invalid response: ${JSON.stringify(res)}`);
+        }
+        // }, { retries: 2, minTimeout: 2500, factor: 1 });
+        // },
+        // );
+        return { id: String(id), reviews: res.reviews };
       } catch (error) {
         console.error(`Failed reviews for game ${id}:`, error);
         await handleFailedAppId(String(id));
@@ -249,20 +247,20 @@ export const getAllGameInfo = async (ids: number[]): Promise<{
   return { games: results };
 };
 
-const retry = async <T>(
-  fn: () => Promise<T>,
-  options: { retries: number; minTimeout: number; factor: number },
-) => {
-  let attempt = 0;
-  while (attempt <= options.retries) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (attempt === options.retries) throw error;
-      const timeout = options.minTimeout * (options.factor ** attempt);
-      await new Promise(resolve => setTimeout(resolve, timeout));
-      attempt++;
-    }
-  }
-  throw new Error('Max retries exceeded');
-};
+// const retry = async <T>(
+//   fn: () => Promise<T>,
+//   options: { retries: number; minTimeout: number; factor: number },
+// ) => {
+//   let attempt = 0;
+//   while (attempt <= options.retries) {
+//     try {
+//       return await fn();
+//     } catch (error) {
+//       if (attempt === options.retries) throw error;
+//       const timeout = options.minTimeout * (options.factor ** attempt);
+//       await new Promise(resolve => setTimeout(resolve, timeout));
+//       attempt++;
+//     }
+//   }
+//   throw new Error('Max retries exceeded');
+// };

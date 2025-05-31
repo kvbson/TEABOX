@@ -23,6 +23,7 @@ const connectDB = async () => {
 
 mongoose.connection.on('connected', () => {
   console.log('✅ DB connected!');
+  // fillGameInfo(500, 6000);
 });
 
 mongoose.connection.on('error', (err) => {

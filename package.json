@@ -11,18 +11,18 @@
   },
   "scripts": {
     "dev:client": "vite",
-    "dev:server": "nodemon --watch api/server -e ts --exec \"npx tsx api/server/server.ts\"",
+    "dev:server": "nodemon --watch api -e ts --exec \"npx tsx api/server/server.ts\"",
     "build:client": "vite build",
     "build:server": "tsc -p tsconfig.node.json",
     "build": "npm run build:client && npm run build:server",
     "lint": "eslint --ext [.ts,.tsx] ./src --cache --cache-location ./dist",
     "preview": "vite preview",
-    "dev": "concurrently -n CLIENT,SERVER \"vite\" \"npm run dev:server\"",
+    "typecheck": "npx tsc --noEmit --watch --project tsconfig.app.json",
+    "dev": "concurrently -n CLIENT,SERVER,TYPECHECK -c purple,green,blue \"vite\" \"npm run dev:server\" \"npm run typecheck\"",
     "postinstall": "npx tsx ./api/certs/run.ts && npm run build"
   },
   "dependencies": {
     "blurhash": "^2.0.5",
-    "bottleneck": "^2.19.5",
     "dompurify": "^3.2.5",
     "mongoose": "^8.13.0",
     "react": "^19.0.0",
