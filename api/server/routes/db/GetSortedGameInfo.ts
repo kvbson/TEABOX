@@ -28,7 +28,6 @@ sortedGameInfo.get('/sortedGameInfo', async (req, res) => {
   }
 
   const sidebarTags = decodeURIComponent(req.query.sidebarTags?.toString() ?? '');
-  console.log('3#@!#@', sidebarTags);
 
   try {
     const parsedData = JSON.parse(sidebarTags);
