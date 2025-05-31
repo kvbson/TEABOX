@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import ArrowRight from "../components/ui/ArrowRight";
-import TeacupIcon from "./ui/TeacupIcon";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import ArrowRight from '../components/ui/ArrowRight';
+import TeacupIcon from './ui/TeacupIcon';
 
 type HeaderProps = {
   onToggleMenu: () => void;
-  menuOpened: boolean;
+  sidebarOpened: boolean;
 };
 
-const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleMenu, sidebarOpened }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
           {/* Sidebar trigger (zostaje) */}
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight
-              className={`burger ${!menuOpened ? "menu-hiden" : "menu-opened"}`}
+              className={`burger ${!sidebarOpened ? 'menu-hiden' : 'menu-opened'}`}
               color="var(--color-primary)"
             />
           </button>

@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Bounce, ToastContainer } from 'react-toastify';
+import { callServer } from '../api/webClients/callServer';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import Recommendations from './pages/Recommendations';
-import PreferencesPage from './pages/Prefferences';
-import { callServer } from '../api/webClients/callServer';
 import ToastError from './components/ToastError';
 import ToastSuccess from './components/ToastSuccess';
-import { Bounce, ToastContainer } from 'react-toastify';
+import PreferencesPage from './pages/Prefferences';
+import Recommendations from './pages/Recommendations';
 
 function App() {
-  const [menuOpened, setMenuOpened] = useState(true);
+  const [sidebarOpened, setSidebarOpened] = useState(false);
   const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>(() => {
@@ -21,22 +21,22 @@ function App() {
   const steamId = '76561198199623266';
 
   const toggleMenu = () => {
-    setMenuOpened((prev) => !prev);
+    setSidebarOpened((prev) => !prev);
   };
 
   //TODO: poprawic - poprawic przeladowanie gier
-  // dodać strukturę do bazy danych by mozna bylo zapisać zapisane przez AI opisy gier i wyniki analizy
   const recommendationsComponents = <Recommendations
-    menuOpened={menuOpened}
+    sidebarOpened={sidebarOpened}
     setError={setError}
     steamId={steamId}
     sidebarTags={sidebarTags}
   />;
+  console.log(successSave);
   return (
     <div className="App">
       <Router>
-        <Header onToggleMenu={toggleMenu} menuOpened={menuOpened} />
-        <Sidebar menuOpened={menuOpened} selectedTags={selectedTags} setSidebarTags={setSidebarTags} />
+        <Header onToggleMenu={toggleMenu} sidebarOpened={sidebarOpened} />
+        <Sidebar sidebarOpened={sidebarOpened} selectedTags={selectedTags} setSidebarTags={setSidebarTags} />
         <ToastContainer
           position="bottom-left"
           autoClose={4000}

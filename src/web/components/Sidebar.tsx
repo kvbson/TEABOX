@@ -1,15 +1,15 @@
-import React, { useEffect, useRef, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createSwapy, Swapy } from 'swapy';
-import PriorityArrow from './ui/PriorityArrow';
 import { useTopmostTags } from '../hooks/useTopmostTags'; // ścieżkę dopasuj do siebie
+import PriorityArrow from './ui/PriorityArrow';
 
 type SidebarProps = {
-  menuOpened: boolean;
+  sidebarOpened: boolean;
   selectedTags: string[];
   setSidebarTags: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ menuOpened, selectedTags, setSidebarTags }) => {
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSidebarTags }) => {
   const swapyRef = useRef<Swapy | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const swapyListRef = useRef<HTMLDivElement>(null);
@@ -36,7 +36,6 @@ const Sidebar: React.FC<SidebarProps> = ({ menuOpened, selectedTags, setSidebarT
       const missing = baseOptions.filter(
         (item) => !sorted.some((sortedItem) => sortedItem.text === item.text),
       );
-
       return [...sorted, ...missing];
     } catch {
       return baseOptions;
@@ -80,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuOpened, selectedTags, setSidebarT
         }
       }
     }, 0); // działa jak "po layoucie"
-  
+
     return () => clearTimeout(timeout);
   }, [options]);
 
@@ -94,22 +93,22 @@ const Sidebar: React.FC<SidebarProps> = ({ menuOpened, selectedTags, setSidebarT
   }
 
   return (
-    <div className={`sidebar ${!menuOpened ? 'hide' : ''}`}>
+    <div className={`sidebar ${!sidebarOpened ? 'hide' : ''}`}>
       <h3>What flavors are the most important?</h3>
       <div className="swapy-container">
         <div className="priority-arrow">
           <span className="top">MOST</span>
           <div
-  className="arrow-line"
-  style={{
-    height: arrowHeight ? `${arrowHeight - 150}px` : '50px',
-    width: '40px', // lub dowolna stała szerokość
-    minWidth: '40px',
-    maxWidth: '40px',
-  }}
->
-  <PriorityArrow />
-</div>
+            className="arrow-line"
+            style={{
+              height: arrowHeight ? `${arrowHeight - 150}px` : '50px',
+              width: '40px', // lub dowolna stała szerokość
+              minWidth: '40px',
+              maxWidth: '40px',
+            }}
+          >
+            <PriorityArrow />
+          </div>
           <span className="bottom">LEAST</span>
         </div>
 
