@@ -10,7 +10,7 @@ import ToastSuccess from './components/ToastSuccess';
 import { Bounce, ToastContainer } from 'react-toastify';
 
 function App() {
-  const [sidebarOpened, setSidebarOpened] = useState(false);
+  const [sidebarOpened, setSidebarOpened] = useState(true);
   const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>(() => {
