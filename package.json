@@ -17,7 +17,7 @@
     "build": "npm run build:client && npm run build:server",
     "lint": "eslint --ext [.ts,.tsx] ./src --cache --cache-location ./dist",
     "preview": "vite preview",
-    "typecheck": "npx tsc --noEmit --watch --project tsconfig.app.json",
+    "typecheck": "npx tsc --noEmit --watch --project tsconfig.app.json --preserveWatchOutput",
     "dev": "concurrently -n CLIENT,SERVER,TYPECHECK -c purple,green,blue \"vite\" \"npm run dev:server\" \"npm run typecheck\"",
     "postinstall": "npx tsx ./api/certs/run.ts && npm run build"
   },
