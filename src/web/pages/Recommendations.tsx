@@ -40,11 +40,11 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
     <div className="mt-10">
       {currentAppDetails && (
         <GamesShowcase
-          sidebarOpened={sidebarOpened}
           appDetails={currentAppDetails}
           isLoading={loading}
           onNext={handleNext}
           onPrev={handlePrev}
+          sidebarOpened={sidebarOpened}
         />
       )}
     </div>

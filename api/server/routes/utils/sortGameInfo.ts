@@ -1,12 +1,16 @@
 import { GameInfoSchemaType } from '#api/db/models/GameInfo';
 
 export function sortGameInfo(games: GameInfoSchemaType[], userTags: string[]) {
+
   const calculateRelevance = (gameTags: string[]) => {
     let score = 0;
     gameTags.forEach((tag) => {
       const userTagIndex = userTags.indexOf(tag);
       if (userTagIndex !== -1) {
-        score += 1 / (userTagIndex + 1);
+        // decay function - funkcja która zwiększa/zmniejsza wagę tagów w zależności od ich pozycji w tablicy userTags
+        score += Math.pow(1.2, userTagIndex);
+        // alt
+        // score += 1 / (userTagIndex + 1);
       }
     });
     return score;
