@@ -18,6 +18,10 @@ export const parseGameData = (game: ExtendedGameInfo | GameInfoSchemaType, mode:
     controller_support: game.controller_support,
     about_the_game: game.about_the_game,
     supported_languages: game.supported_languages,
+    background: game.background ?? '',
+    website: game.website ?? '',
+    capsule_image: game.capsule_image ?? '',
+    header_image: game.header_image ?? '',
     pc_requirements: game.pc_requirements || {},
     mac_requirements: game.mac_requirements || {},
     linux_requirements: game.linux_requirements || {},
@@ -42,5 +46,8 @@ export const parseGameData = (game: ExtendedGameInfo | GameInfoSchemaType, mode:
       webm: movie.webm || { '480': '', max: '' },
       mp4: movie.mp4 || { '480': '', max: '' },
     })) || []) as GameInfoSchemaType['movies'],
+    pros: game.pros || [],
+    cons: game.cons || [],
+    blur_image: game.blur_image ?? undefined,
   };
 };

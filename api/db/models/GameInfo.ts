@@ -45,6 +45,12 @@ export const GameInfoSchema = new Schema({
   short_description: { type: String },
   detailed_description: { type: String },
   is_free: { type: Boolean },
+  header_image: { type: String },
+  capsule_image: { type: String },
+  blur_image: { type: String },
+  cons: [String],
+  pros: [String],
+  website: { type: String },
   controller_support: {
     type: String,
     enum: ['full', 'partial'],
@@ -52,6 +58,7 @@ export const GameInfoSchema = new Schema({
   },
   about_the_game: { type: String },
   supported_languages: { type: String },
+  background: { type: String },
   pc_requirements: {
     minimum: String,
     recommended: String,
@@ -96,6 +103,8 @@ export const GameInfoSchema = new Schema({
   _id: false,
 });
 
+GameInfoSchema.index({ description: 'text' });
+GameInfoSchema.index({ 'genres.id': 1 });
 //TODO: missing - playersCount
 
 export const GameInfo = mongoose.model('GameInfo', GameInfoSchema);

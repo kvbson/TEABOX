@@ -2,6 +2,7 @@ import { GameInfo } from '../models/GameInfo.js';
 import { ExtendedGameInfo } from '#api/types/gameInfo.types';
 import { AnyBulkWriteOperation } from 'mongoose';
 import { parseGameData } from './params/parseGameData.js';
+import { handleFailedBatch } from './helpers/handleFailedBatch.js';
 
 export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize = 50) {
   try {
@@ -29,8 +30,6 @@ export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize 
               filter: { steam_appid: game.steam_appid },
               update: {
                 $set: updateDoc,
-                $setOnInsert: { createdAt: new Date() },
-                $currentDate: { updatedAt: true },
               },
               upsert: true,
             },
@@ -51,15 +50,15 @@ export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize 
             console.log(batchResult.getWriteErrors());
             batchResult.getWriteErrors().forEach((writeError) => {
               const failedOp = bulkOps[writeError.index] as any;
-              console.log(failedOp);
+              console.log(failedOp); //TODO: finish
               // if (!failedOp) {
-                
+
               // }
               results.errors.push({
                 steamAppId: failedOp?.updateOne.filter.steam_appid ?? null, //no type
                 error: writeError.errmsg || 'Unknown bulk write error',
               });
-              // handleFailedBatch([ { appid: failedOp?.updateOne.filter.steam_appid, name: failedOp?.updateOne.filter.name }], 100)
+              handleFailedBatch([ { appid: failedOp?.updateOne.filter.steam_appid, name: failedOp?.updateOne.filter.name }], 100);
               results.skipped++;
             });
           }

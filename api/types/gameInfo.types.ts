@@ -29,6 +29,8 @@ type ExtendedGameInfo = {
     mac_requirements?: Record<string, any>;
     linux_requirements?: Record<string, any>;
     legal_notice?: string;
+    background: string;
+    capsule_image: string;
     developers: string[];
     publishers: string[];
     price_overview?: {
@@ -66,6 +68,9 @@ type ExtendedGameInfo = {
     ratings?: Record<string, any>;
     app_url?: string;
     header_image?: string;
+    blur_image?: string;
+    pros?: string[];
+    cons?: string[];
 };
 
 export type { GameInfo, ExtendedGameInfo, GamesObj };

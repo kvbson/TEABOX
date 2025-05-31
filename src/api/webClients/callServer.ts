@@ -8,7 +8,7 @@ const errorMessages: Record<number, string> = {
   [HTTP_STATUS_NOT_FOUND]: 'Error 404: Resource not found.',
 };
 
-export const callServer = async <T extends Record<string, unknown>, M extends keyof ModeParams>(
+export const callServer = async <T extends Record<string, unknown> | any[], M extends keyof ModeParams>(
   mode: M,
   params: ModeParams[M],
 ): Promise<ApiResponse<T> | { data: null; error: any }> => {
@@ -18,6 +18,9 @@ export const callServer = async <T extends Record<string, unknown>, M extends ke
     const url = new URL(endpoint, expressServerUrl);
 
     Object.entries(params ?? {}).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value = encodeURIComponent(JSON.stringify(value));
+      }
       url.searchParams.append(key, String(value));
     });
 
@@ -41,7 +44,7 @@ export const callServer = async <T extends Record<string, unknown>, M extends ke
     const data: ApiResponse<T> = await response.json();
     return data;
   } catch (error) {
-    console.error('Network error:', error);
+    console.error('Network error:', error instanceof Error ? error.message : String(error));
     toast.error('Error. Connection to server not established.', { toastId: TOAST_ID });
     return { data: null, error };
   }

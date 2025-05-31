@@ -41,7 +41,7 @@ export const getGameDetails = async (appId: string | number) => {
   return Object.values(result.data)[0] as unknown as GameDetailsResponse;
 };
 
-const getGameInfo = async (appId: string | number): Promise<GamesObj> => {
+export const getGameInfo = async (appId: string | number): Promise<GamesObj> => {
   const [reviews, gameDetails] = await Promise.all([getReviews(appId), getGameDetails(appId)]);
   return { [String(appId)]: { reviews: reviews as any, gameDetails, appId } };
 };
@@ -57,7 +57,7 @@ gameInfo.get('/gameInfo', async (req, res) => {
 
   const { action } = await checkAppId(String(appId));
   if (action === 'skip') {
-    return res.status(403).json({ error: `AppId banned - too many failed requests. Received: ${appId}` }) as any;
+    return res.status(403).json({ error: `AppId banned - too many failed requests. Received: ${appId}` });
   }
   const cacheKey = `gameInfo:${appId}`;
   try {
@@ -67,7 +67,7 @@ gameInfo.get('/gameInfo', async (req, res) => {
       res.json({ success: true, data });
       return;
     }
-    const data = await getGameInfo(appId as string);
+    const data = await getGameInfo(String(appId));
 
     if (!data[String(appId)].gameDetails.success) {
       handleFailedAppId(String(appId));
