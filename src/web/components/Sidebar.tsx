@@ -4,12 +4,12 @@ import PriorityArrow from './ui/PriorityArrow';
 import { useTopmostTags } from '../hooks/useTopmostTags'; // ścieżkę dopasuj do siebie
 
 type SidebarProps = {
-  menuOpened: boolean;
+  sidebarOpened: boolean;
   selectedTags: string[];
   setSidebarTags: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ menuOpened, selectedTags, setSidebarTags }) => {
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSidebarTags }) => {
   const swapyRef = useRef<Swapy | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { data, loading, error } = useTopmostTags();
@@ -73,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ menuOpened, selectedTags, setSidebarT
   if (error) return <div className="sidebar">Error: {error instanceof Error ? error.message : String(error)}</div>;
 
   return (
-    <div className={`sidebar ${!menuOpened ? 'hide' : ''}`}>
+    <div className={`sidebar ${!sidebarOpened ? 'hide' : ''}`}>
       <h3>What flavors are the most important?</h3>
       <div className="swapy-container">
         <div className="priority-arrow">

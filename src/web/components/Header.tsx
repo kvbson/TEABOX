@@ -5,10 +5,10 @@ import TeacupIcon from './ui/TeacupIcon';
 
 type HeaderProps = {
   onToggleMenu: () => void;
-  menuOpened: boolean;
+  sidebarOpened: boolean;
 };
 
-const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleMenu, sidebarOpened }) => {
   return (
     <header className="header">
       <div className="header-left">
@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, menuOpened }) => {
         <Link to="/logout">LOG OUT</Link>
         <button onClick={onToggleMenu} className="arrow-button">
           <ArrowRight
-            className={`burger ${!menuOpened ? 'menu-hiden' : 'menu-opened'}`}
+            className={`burger ${!sidebarOpened ? 'menu-hiden' : 'menu-opened'}`}
             color="var(--color-primary)"
           />
         </button>
