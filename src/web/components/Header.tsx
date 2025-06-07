@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import ArrowRight from "../components/ui/ArrowRight";
-import TeacupIcon from "./ui/TeacupIcon";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import ArrowRight from '../components/ui/ArrowRight';
+import TeacupIcon from './ui/TeacupIcon';
 
 type HeaderProps = {
   onToggleMenu: () => void;
@@ -30,7 +30,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, sidebarOpened }) => {
           {/* Sidebar trigger (zostaje) */}
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight
-              className={`burger ${!sidebarOpened ? "menu-hiden" : "menu-opened"}`}
+              className={`burger ${!sidebarOpened ? 'menu-hiden' : 'menu-opened'}`}
               color="var(--color-primary)"
             />
           </button>

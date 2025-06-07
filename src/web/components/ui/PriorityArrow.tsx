@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 import '../../css/ui/priorityArrow.css';
 
 interface PriorityArrowProps {
-  color?: string; 
+  color?: string;
   className?: string;
   width?: number;
   height?: number;
 }
 
 const PriorityArrow: React.FC<PriorityArrowProps> = ({
-  color = "currentColor",
-  className = "priority-arrow-svg",
+  color = 'currentColor',
+  className = 'priority-arrow-svg',
   width = '100%',
   height = '100%', // dodane
 }) => {

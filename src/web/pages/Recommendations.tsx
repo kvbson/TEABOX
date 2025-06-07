@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import GamesShowcase from '../components/GamesShowcase';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
-import { toast } from 'react-toastify';
 
 interface RecommendationsProps {
   sidebarOpened: boolean;

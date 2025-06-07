@@ -1,5 +1,5 @@
-import React from "react";
-import '../../css/ui/teacupIcon.css'
+import React from 'react';
+import '../../css/ui/teacupIcon.css';
 
 interface TeacupIconProps {
   color?: string;
@@ -9,8 +9,8 @@ interface TeacupIconProps {
 }
 
 const TeacupIcon: React.FC<TeacupIconProps> = ({
-  color = "var(--color-primary)",
-  className = "logo",
+  color = 'var(--color-primary)',
+  className = 'logo',
   width = 64,
   height = 62,
 }) => {

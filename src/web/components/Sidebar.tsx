@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createSwapy, Swapy } from 'swapy';
-import PriorityArrow from './ui/PriorityArrow';
 import { useTopmostTags } from '../hooks/useTopmostTags'; // ścieżkę dopasuj do siebie
+import PriorityArrow from './ui/PriorityArrow';
 
 type SidebarProps = {
   sidebarOpened: boolean;
@@ -36,7 +36,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
       const missing = baseOptions.filter(
         (item) => !sorted.some((sortedItem) => sortedItem.text === item.text),
       );
-
       return [...sorted, ...missing];
     } catch {
       return baseOptions;
@@ -80,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
         }
       }
     }, 0); // działa jak "po layoucie"
-  
+
     return () => clearTimeout(timeout);
   }, [options]);
 
@@ -100,16 +99,16 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
         <div className="priority-arrow">
           <span className="top">MOST</span>
           <div
-  className="arrow-line"
-  style={{
-    height: arrowHeight ? `${arrowHeight - 150}px` : '50px',
-    width: '40px', // lub dowolna stała szerokość
-    minWidth: '40px',
-    maxWidth: '40px',
-  }}
->
-  <PriorityArrow />
-</div>
+            className="arrow-line"
+            style={{
+              height: arrowHeight ? `${arrowHeight - 150}px` : '50px',
+              width: '40px', // lub dowolna stała szerokość
+              minWidth: '40px',
+              maxWidth: '40px',
+            }}
+          >
+            <PriorityArrow />
+          </div>
           <span className="bottom">LEAST</span>
         </div>
 
