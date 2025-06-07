@@ -27,3 +27,4 @@ dist-ssr
 #Certs
 localhost-key.pem
 localhost.crt
+firestore-acc.json
