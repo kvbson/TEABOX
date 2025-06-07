@@ -1,3 +1,4 @@
+// import { migrateData } from '#api/googleCloud/bigQuery/migrate';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
@@ -25,6 +26,7 @@ mongoose.connection.on('connected', () => {
   console.log('✅ DB connected!');
   // fillGameInfo(500, 6000);
   // initializeFirestore();
+  // migrateData();
 });
 
 mongoose.connection.on('error', (err) => {
