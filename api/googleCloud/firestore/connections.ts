@@ -78,7 +78,7 @@ export const initializeFirestore = async () => {
   }
 };
 
-function cleanForFirestore(obj: any): any {
+export function cleanForFirestore(obj: any): any {
   if (Array.isArray(obj)) {
     return obj.map(cleanForFirestore);
   } else if (obj && typeof obj === 'object') {
@@ -95,7 +95,7 @@ function cleanForFirestore(obj: any): any {
     const cleaned: Record<string, any> = {};
 
     for (const [key, value] of Object.entries(obj)) {
-      if (key === '_id' || key === '__v') {
+      if (key === '_id' || key === '__v' || key === 'createdAt' || key === 'updatedAt') {
         continue; // Remove MongoDB metadata
       }
       cleaned[key] = cleanForFirestore(value);
