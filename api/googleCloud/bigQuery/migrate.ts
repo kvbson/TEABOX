@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import { cleanForFirestore } from '../firestore/connections.js';
 import { GameInfo } from '#api/db/models/GameInfo';
 import sanitizeHtml from 'sanitize-html';
+import { Reviews } from '#api/db/models/Reviews';
 
 dotenv.config();
 
@@ -15,8 +16,35 @@ const bigquery = new BigQuery({
   keyFilename: 'api/certs/firestore-acc.json',
 });
 
+//TODO: naprawić daty w schematach (TIMESTAMP)
+const reviewsSchema = [
+  { name: 'recommendationid', type: 'STRING', mode: 'REQUIRED' },
+  { name: 'steam_appid', type: 'INTEGER', mode: 'REQUIRED' },
+  { name: 'language', type: 'STRING', mode: 'NULLABLE' },
+  { name: 'author', type: 'RECORD', mode: 'REQUIRED', fields: [
+    { name: 'steamid', type: 'STRING', mode: 'REQUIRED' },
+    { name: 'num_games_owned', type: 'INTEGER', mode: 'NULLABLE' },
+    { name: 'num_reviews', type: 'INTEGER', mode: 'NULLABLE' },
+    { name: 'playtime_forever', type: 'INTEGER', mode: 'NULLABLE' },
+    { name: 'playtime_last_two_weeks', type: 'INTEGER', mode: 'NULLABLE' },
+    { name: 'playtime_at_review', type: 'INTEGER', mode: 'NULLABLE' },
+    // { name: 'last_played', type: 'TIMESTAMP', mode: 'NULLABLE' },
+  ] },
+  { name: 'review', type: 'STRING', mode: 'NULLABLE' },
+  // { name: 'timestamp_created', type: 'TIMESTAMP', mode: 'REQUIRED' },
+  // { name: 'timestamp_updated', type: 'TIMESTAMP', mode: 'NULLABLE' },
+  { name: 'voted_up', type: 'BOOLEAN', mode: 'REQUIRED' },
+  { name: 'votes_up', type: 'INTEGER', mode: 'NULLABLE' },
+  { name: 'votes_funny', type: 'INTEGER', mode: 'NULLABLE' },
+  { name: 'weighted_vote_score', type: 'FLOAT64', mode: 'NULLABLE' },
+  { name: 'steam_purchase', type: 'BOOLEAN', mode: 'NULLABLE' },
+  { name: 'received_for_free', type: 'BOOLEAN', mode: 'NULLABLE' },
+  { name: 'written_during_early_access', type: 'BOOLEAN', mode: 'NULLABLE' },
+  { name: 'primarily_steam_deck', type: 'BOOLEAN', mode: 'NULLABLE' },
+];
+
 // Schemat tabeli w BigQuery
-const schema = [
+const gameInfoSchema = [
   { name: 'steam_appid', type: 'INTEGER', mode: 'REQUIRED' },
   { name: 'name', type: 'STRING', mode: 'REQUIRED' },
   { name: 'platforms', type: 'RECORD', mode: 'NULLABLE', fields: [
@@ -68,16 +96,75 @@ const schema = [
 
 export async function migrateData() {
   try {
+    await Promise.all([saveToDatabase(await fetchGameInfo(), 'game_info', gameInfoSchema), saveToDatabase(await fetchReviews(), 'reviews', reviewsSchema)]);;
+    await mongoose.disconnect();
+    console.log('Migration completed successfully');
+  } catch (error: any) {
+    (error as any)?.errors?.forEach((err: any) => console.log(err.err));
+    console.error('Migration failed:', error);
+    process.exit(1);
+  }
 
-    // Pobranie wszystkich dokumentów
+  async function saveToDatabase(rows: any[], tableId: string, schema: Record<string, any>[]) {
+    const datasetId = 'steam_games';
+
+    const [dataset] = await bigquery.dataset(datasetId).get({ autoCreate: true });
+
+    const [tableExists] = await dataset.table(tableId).exists();
+    console.log(`Table ${tableId} exists: ${tableExists}`);
+
+    if (!tableExists) {
+      await dataset.createTable(tableId, { schema });
+    }
+    const [table] = await dataset.table(tableId).get();
+    console.log(`Using table: ${table.id}`);
+
+    const batchSize = 300;
+    for (let i = 0; i < rows.length; i += batchSize) {
+      const batch = rows.slice(i, i + batchSize);
+      console.log(`Inserting batch ${Math.ceil(i / batchSize) + 1} of ${Math.ceil(rows.length / batchSize)}`);
+      const [job] = await (table as Table).insert(batch);
+      console.log(`Inserted rows. Job ID: ${job.kind}`);
+    }
+  }
+
+  async function fetchReviews() {
+    const reviews = cleanForFirestore(await Reviews.find().lean().exec());
+    console.log(`Found ${reviews.length} reviews to migrate`);
+    return Array.isArray(reviews) ? reviews.filter(review => !!Number(review.steam_appid)).map(review => ({
+      recommendationid: review.recommendationid,
+      steam_appid: Number(review.steam_appid),
+      language: review.language || 'english',
+      author: review.author ? {
+        steamid: review.author.steamid,
+        num_games_owned: review.author.num_games_owned || 0,
+        num_reviews: review.author.num_reviews || 0,
+        playtime_forever: review.author.playtime_forever || 0,
+        playtime_last_two_weeks: review.author.playtime_last_two_weeks || 0,
+        playtime_at_review: review.author.playtime_at_review || 0,
+        // last_played: review.author.last_played ? new Date(review.author.last_played) : null,
+      } : null,
+      review: review.review || null,
+      voted_up: review.voted_up || false,
+      votes_up: review.votes_up || 0,
+      votes_funny: review.votes_funny || 0,
+      weighted_vote_score: review.weighted_vote_score || 0,
+      steam_purchase: review.steam_purchase || false,
+      received_for_free: review.received_for_free || false,
+      written_during_early_access: review.written_during_early_access || false,
+      primarily_steam_deck: review.primarily_steam_deck || false,
+    })) : [];
+  }
+
+  async function fetchGameInfo() {
     const games = cleanForFirestore(await GameInfo.find().lean().exec());
     const sanitize = (str: string) => sanitizeHtml(str, { allowedTags: [], allowedAttributes: {} });
     // console.log(games[0]);
     // return;
     console.log(`Found ${games.length} games to migrate`);
     // Przygotowanie danych dla BigQuery
-    const rows = games.filter((game: any) => !!game.steam_appid).map((game: any) => ({
-      steam_appid: game.steam_appid,
+    return games.filter((game: any) => !!Number(game.steam_appid)).map((game: any) => ({
+      steam_appid: Number(game.steam_appid),
       name: game.name || null,
       is_free: game.is_free || false,
       controller_support: game.controller_support || null,
@@ -122,36 +209,5 @@ export async function migrateData() {
       })),
       // release_date: game.release_date,
     }));
-    console.log(rows[0]);
-    // return;
-
-    const datasetId = 'steam_games';
-    const tableId = 'game_info_test_8';
-
-    const [dataset] = await bigquery.dataset(datasetId).get({ autoCreate: true });
-
-    const [tableExists] = await dataset.table(tableId).exists();
-    console.log(`Table ${tableId} exists: ${tableExists}`);
-
-    if (!tableExists) {
-      await dataset.createTable(tableId, { schema });
-    }
-    const [table] = await dataset.table(tableId).get();
-    console.log(`Using table: ${table.id}`);
-
-    const batchSize = 50;
-    for (let i = 0; i < rows.length; i += batchSize) {
-      const batch = rows.slice(i, i + batchSize);
-      console.log(`Inserting batch ${Math.ceil(i / batchSize) + 1} of ${Math.ceil(rows.length / batchSize)}`);
-      const [job] = await (table as Table).insert(batch);
-      console.log(`Inserted rows. Job ID: ${job.kind}`);
-    }
-
-    await mongoose.disconnect();
-    console.log('Migration completed successfully');
-  } catch (error: any) {
-    (error as any)?.errors?.forEach((err: any) => console.log(err.err));
-    console.error('Migration failed:', error);
-    process.exit(1);
   }
 }

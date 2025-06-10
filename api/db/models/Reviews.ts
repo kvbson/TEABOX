@@ -30,7 +30,7 @@ const ReviewsSchema = new mongoose.Schema({
   voted_up: { type: Boolean, required: true },
   votes_up: { type: Number, default: 0 },
   votes_funny: { type: Number, default: 0 },
-  weighted_vote_score: { type: Number, default: 0 }, // Store as Number, not String
+  weighted_vote_score: { type: Number, default: 0 },
 
   // Flags
   steam_purchase: { type: Boolean, default: false },
