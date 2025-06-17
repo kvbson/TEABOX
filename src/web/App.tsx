@@ -31,7 +31,6 @@ function App() {
     steamId={steamId}
     sidebarTags={sidebarTags}
   />;
-  console.log(successSave);
   return (
     <div className="App">
       <Router>
