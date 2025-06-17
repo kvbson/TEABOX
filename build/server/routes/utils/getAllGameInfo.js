@@ -1,0 +1,244 @@
+// import PQueue from 'p-queue';
+import { GameInfo } from '#api/db/models/GameInfo';
+import { Reviews } from '#api/db/models/Reviews';
+import { parseReviewData } from '#api/db/utils/params/parseReviewData';
+import { getGameDetails, getReviews } from '../GetGameInfo.js';
+import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '#api/db/models/other/MissingAppIds';
+import { parseGameData } from '#api/db/utils/params/parseGameData';
+// const gameQueue = new Bottleneck({
+//   maxConcurrent: 1,
+//   minTime: 3000,
+// });
+// const reviewQueue = new Bottleneck({
+//   maxConcurrent: 1,
+//   minTime: 3000,
+// });
+const getMissingDetails = async (missingGameIds, missingReviewIds) => {
+    return await Promise.all([
+        // Fetch missing games
+        Promise.all(missingGameIds.map(async (id) => {
+            try {
+                // const gameDetails = await gameQueue.schedule(async () => {
+                //   return retry(async () => { // Ensure this function returns a value
+                const res = await getGameDetails(id);
+                if (!res?.data || !res.success) {
+                    await handleFailedAppId(String(id));
+                    throw new Error(`Invalid response: ${JSON.stringify(res.data)}`);
+                }
+                //   }, { retries: 2, minTimeout: 2500, factor: 1 });
+                // });
+                return { id: String(id), gameDetails: res.data };
+            }
+            catch (error) {
+                console.error(`Failed game ${id}:`, error);
+                if (id) {
+                    await handleFailedAppId(String(id));
+                }
+                return null;
+            }
+        })),
+        // Fetch missing reviews
+        Promise.all(missingReviewIds.map(async (id) => {
+            try {
+                // const reviews = await reviewQueue.schedule(async () => {
+                // return retry(async () => {
+                const res = await getReviews(id);
+                if (!res?.reviews || !res.success || res.query_summary?.num_reviews === 0) {
+                    handleFailedReviewAppId(String(id));
+                    throw new Error(`Invalid response: ${JSON.stringify(res)}`);
+                }
+                // }, { retries: 2, minTimeout: 2500, factor: 1 });
+                // },
+                // );
+                return { id: String(id), reviews: res.reviews };
+            }
+            catch (error) {
+                console.error(`Failed reviews for game ${id}:`, error);
+                await handleFailedAppId(String(id));
+                return null;
+            }
+        })),
+    ]);
+};
+export const getAllGameInfo = async (ids) => {
+    const results = {};
+    const batchSize = 100;
+    // Process in batches for better memory management
+    for (let i = 0; i < ids.length; i += batchSize) {
+        const batch = ids.slice(i, i + batchSize);
+        // Search for game in DB if not found create it
+        const [existingGames, existingReviews] = await Promise.all([
+            GameInfo.find({ steam_appid: { $in: batch } }),
+            Reviews.find({ steam_appid: { $in: batch } }),
+        ]);
+        // Create maps for quick lookup
+        const gamesMap = new Map(existingGames.map(g => [String(g.steam_appid), g]));
+        const reviewsMap = new Map(existingReviews.map(r => [String(r.steam_appid), r]));
+        // not existing ids
+        const bannedIds = [{ appId: 412020 }, { appId: 1449560 }];
+        const notExistingAppIds = ([...await MissingApp.find({ confirmed: true }), ...bannedIds]).map(app => app.appId && String(app.appId)).filter(Boolean);
+        const notExistingReviewAppIds = (await MissingReviewApp.find({ confirmed: true })).map(app => app.appId && String(app.appId)).filter(Boolean);
+        // Find missing games & reviews
+        const missingGameIds = batch.filter(id => !gamesMap.has(String(id)) && !notExistingAppIds.includes(String(id)));
+        const missingReviewIds = batch.filter(id => !reviewsMap.has(String(id)) && !notExistingReviewAppIds.includes(String(id)));
+        // Fetch missing games
+        const [gamesToAdd, reviewsToAdd] = await getMissingDetails(missingGameIds, missingReviewIds);
+        // Remove failed fetches
+        const validGames = gamesToAdd.filter(g => !!g?.gameDetails);
+        const validReviews = reviewsToAdd.filter(r => !!r?.reviews.length);
+        // Insert new games & reviews
+        if (validGames.length > 0) {
+            const bulkOps = validGames.map(g => {
+                if (!g) {
+                    return null;
+                }
+                return {
+                    updateOne: {
+                        filter: { steam_appid: g.id },
+                        update: { $set: g.gameDetails },
+                        upsert: true,
+                    },
+                };
+            }).filter(Boolean);
+            try {
+                await GameInfo.bulkWrite(bulkOps, { ordered: false });
+            }
+            catch (err) {
+                if (err?.code === 11000) {
+                    console.warn('Duplicate reviews detected, skipped insertion:', err.message);
+                }
+                else {
+                    throw err;
+                }
+            }
+        }
+        if (validReviews.length > 0) {
+            try {
+                const bulkOps = validReviews.flatMap(review => {
+                    if (!review?.reviews?.length)
+                        return [];
+                    return review.reviews.map(r => ({
+                        updateOne: {
+                            filter: {
+                                steam_appid: review.id,
+                                recommendationid: r.recommendationid,
+                            },
+                            update: { $set: parseReviewData(r, review.id) },
+                            upsert: true,
+                        },
+                    }));
+                }).filter(Boolean);
+                if (bulkOps.length > 0) {
+                    await Reviews.bulkWrite(bulkOps, { ordered: false });
+                }
+            }
+            catch (err) {
+                if (err?.code === 11000) {
+                    console.warn('Duplicate reviews detected, skipped insertion:', err.message);
+                }
+                else {
+                    throw err;
+                }
+            }
+        }
+        // Add existing games & reviews
+        for (const game of existingGames) {
+            const appId = String(game.steam_appid);
+            results[appId] = {
+                ...(results[appId] || {}),
+                gameDetails: {
+                    data: parseGameData(game, 'app'),
+                    success: true,
+                },
+                appId,
+            };
+        }
+        // Process existing reviews
+        const uniqueReviewAppIds = new Set(existingReviews.map(el => String(el.steam_appid)).filter(Boolean));
+        for (const appId of uniqueReviewAppIds) {
+            if (!results[appId]) {
+                results[appId] = { appId, gameDetails: { success: false }, reviews: { reviews: [], success: false } };
+            }
+            const reviewsForApp = existingReviews.filter(el => String(el.steam_appid) === appId);
+            if (!results[appId].reviews?.reviews || results[appId].reviews.reviews.length === 0) {
+                results[appId].reviews = {
+                    reviews: reviewsForApp,
+                    success: true,
+                };
+            }
+            else {
+                results[appId].reviews.reviews.push(...reviewsForApp);
+            }
+        }
+        // Add newly fetched games
+        for (const game of validGames) {
+            if (!game)
+                continue;
+            if (!results[game.id]) {
+                results[game.id] = {
+                    gameDetails: {
+                        success: true,
+                        data: game.gameDetails,
+                    },
+                    reviews: {
+                        success: false,
+                        reviews: [],
+                    },
+                    appId: game.id,
+                };
+            }
+            else {
+                results[game.id].gameDetails = {
+                    success: true,
+                    data: game.gameDetails,
+                };
+            }
+        }
+        // Add newly fetched reviews
+        for (const review of validReviews) {
+            if (!review)
+                continue;
+            if (!results[review.id]) {
+                results[review.id] = {
+                    appId: review.id,
+                    reviews: {
+                        success: true,
+                        reviews: review.reviews,
+                    },
+                    gameDetails: { success: false },
+                };
+            }
+            else {
+                if (!results[review.id].reviews) {
+                    results[review.id].reviews = {
+                        success: true,
+                        reviews: review.reviews,
+                    };
+                }
+                else {
+                    results[review.id].reviews.reviews.push(...review.reviews);
+                }
+            }
+        }
+        console.log(`Processed batch ${i / batchSize + 1}/${Math.ceil(ids.length / batchSize)}`);
+        // await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return { games: results };
+};
+// const retry = async <T>(
+//   fn: () => Promise<T>,
+//   options: { retries: number; minTimeout: number; factor: number },
+// ) => {
+//   let attempt = 0;
+//   while (attempt <= options.retries) {
+//     try {
+//       return await fn();
+//     } catch (error) {
+//       if (attempt === options.retries) throw error;
+//       const timeout = options.minTimeout * (options.factor ** attempt);
+//       await new Promise(resolve => setTimeout(resolve, timeout));
+//       attempt++;
+//     }
+//   }
+//   throw new Error('Max retries exceeded');
+// };

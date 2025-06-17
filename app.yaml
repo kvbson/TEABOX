@@ -1,0 +1,14 @@
+# app.yaml
+runtime: nodejs20
+instance_class: F1
+entrypoint: node build/server/server.js
+
+
+env_variables:
+  NODE_ENV: production
+
+
+automatic_scaling:
+  target_cpu_utilization: 0.65
+  min_instances: 1
+  max_instances: 2
