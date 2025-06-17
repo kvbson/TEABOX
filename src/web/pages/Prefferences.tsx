@@ -10,7 +10,13 @@ type Props = {
   setError: React.Dispatch<React.SetStateAction<string | Error | null>>;
 };
 
-const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTags, setSuccessSave, setError }) => {
+const PreferencesPage: React.FC<Props> = ({
+  getTags,
+  selectedTags,
+  setSelectedTags,
+  setSuccessSave,
+  setError,
+}) => {
   const [allTags, setAllTags] = useState<Tag[]>([]);
 
   useEffect(() => {
@@ -34,9 +40,18 @@ const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTa
   }, [allTags.length, getTags, setError]);
 
   const toggleTag = (tag: Tag) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
+    setSelectedTags((prev) => {
+      if (prev.includes(tag)) {
+        // Odznacz tag
+        return prev.filter((t) => t !== tag);
+      } else if (prev.length < 5) {
+        // Dodaj tag jeśli limit nie został osiągnięty
+        return [...prev, tag];
+      } else {
+        // Limit osiągnięty, nie dodawaj więcej
+        return prev;
+      }
+    });
   };
 
   const handleSave = () => {
@@ -45,26 +60,35 @@ const PreferencesPage: React.FC<Props> = ({ getTags, selectedTags, setSelectedTa
   };
 
   const handleReset = () => {
-    localStorage.setItem('user-tags', JSON.stringify(selectedTags));
-    setSuccessSave('Selected tags reseted.');
+    localStorage.setItem('user-tags', JSON.stringify([]));
     setSelectedTags([]);
+    setSuccessSave('Selected tags reset.');
   };
 
   return (
     <div className="preferences-page">
       <h2>Your Preferences</h2>
-      <p>Select tags you're interested in:</p>
+      <p>Select tags you're interested in (max 5):</p>
+
+      {selectedTags.length >= 5 && (
+        <p className="warning-text" style={{ color: 'crimson' }}>
+          You can only select up to 5 tags.
+        </p>
+      )}
+
       <div className="tag-list">
         {allTags.map((tag) => (
           <button
             key={tag}
             className={`tag-button ${selectedTags.includes(tag) ? 'selected' : ''}`}
             onClick={() => toggleTag(tag)}
+            disabled={!selectedTags.includes(tag) && selectedTags.length >= 5}
           >
             {tag}
           </button>
         ))}
       </div>
+
       <button onClick={handleSave} className="save-button">
         Save Preferences
       </button>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import GamesShowcase from '../components/GamesShowcase';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
-import { toast } from 'react-toastify';
 
 interface RecommendationsProps {
   sidebarOpened: boolean;
@@ -40,11 +40,11 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
     <div className="mt-10">
       {currentAppDetails && (
         <GamesShowcase
-          sidebarOpened={sidebarOpened}
           appDetails={currentAppDetails}
           isLoading={loading}
           onNext={handleNext}
           onPrev={handlePrev}
+          sidebarOpened={sidebarOpened}
         />
       )}
     </div>

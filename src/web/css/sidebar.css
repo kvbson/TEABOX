@@ -19,6 +19,7 @@
   z-index: 1000;
 }
 
+
 .sidebar.hide {
   transform: translateX(100%);
   opacity: 0;
@@ -62,4 +63,12 @@
   display: flex;
   justify-content: center;
   margin-bottom: 54px;
+}
+
+.priority-arrow {
+  height: 100px;
+}
+
+.bottom-text {
+  margin-top: auto;
 }

@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Bounce, ToastContainer } from 'react-toastify';
+import { callServer } from '../api/webClients/callServer';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import Recommendations from './pages/Recommendations';
-import PreferencesPage from './pages/Prefferences';
-import { callServer } from '../api/webClients/callServer';
 import ToastError from './components/ToastError';
 import ToastSuccess from './components/ToastSuccess';
-import { Bounce, ToastContainer } from 'react-toastify';
+import PreferencesPage from './pages/Prefferences';
+import Recommendations from './pages/Recommendations';
 
 function App() {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -31,7 +31,6 @@ function App() {
     steamId={steamId}
     sidebarTags={sidebarTags}
   />;
-
   return (
     <div className="App">
       <Router>
