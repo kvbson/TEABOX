@@ -1,8 +1,8 @@
-import { GameInfo } from '#api/db/models/GameInfo';
 import mongoose from 'mongoose';
 import fs from 'node:fs';
-import { Reviews } from '#api/db/models/Reviews';
 import { Firestore, Timestamp } from '@google-cloud/firestore';
+import { GameInfo } from '../../db/models/GameInfo.js';
+import { Reviews } from '../../db/models/Reviews.js';
 
 export const initializeFirestore = async () => {
   const mongoDbState = mongoose.connection.readyState;

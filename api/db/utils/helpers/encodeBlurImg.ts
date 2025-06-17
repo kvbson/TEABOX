@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import { encode } from 'blurhash';
-import { GameInfo, GameInfoSchemaType } from '#api/db/models/GameInfo';
 import axios from 'axios';
+import { GameInfo, GameInfoSchemaType } from '../../models/GameInfo.js';
 
 const getImageData = async (imageUrl: string) => {
   const response = await axios.get(imageUrl, {

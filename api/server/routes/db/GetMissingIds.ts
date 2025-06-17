@@ -1,5 +1,5 @@
-import { MissingApp } from '#api/db/models/other/MissingAppIds';
 import { Router } from 'express';
+import { MissingApp } from '../../../db/models/other/MissingAppIds.js';
 
 const missingIds = Router();
 

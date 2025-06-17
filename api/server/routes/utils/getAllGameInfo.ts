@@ -1,13 +1,13 @@
-import { GamesObj } from '#api/types/gameInfo.types';
 // import PQueue from 'p-queue';
-import { GameInfo, GameInfoSchemaType } from '#api/db/models/GameInfo';
-import { Reviews, ReviewsSchemaType } from '#api/db/models/Reviews';
-import { parseReviewData } from '#api/db/utils/params/parseReviewData';
 // import Bottleneck from 'bottleneck';
 import { AnyBulkWriteOperation } from 'mongoose';
 import { getGameDetails, getReviews } from '../GetGameInfo.js';
-import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '#api/db/models/other/MissingAppIds';
-import { parseGameData } from '#api/db/utils/params/parseGameData';
+import { GameInfo, GameInfoSchemaType } from '../../../db/models/GameInfo.js';
+import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '../../../db/models/other/MissingAppIds.js';
+import { Reviews, ReviewsSchemaType } from '../../../db/models/Reviews.js';
+import { parseGameData } from '../../../db/utils/params/parseGameData.js';
+import { parseReviewData } from '../../../db/utils/params/parseReviewData.js';
+import { GamesObj } from '../../../types/gameInfo.types.js';
 
 // const gameQueue = new Bottleneck({
 //   maxConcurrent: 1,

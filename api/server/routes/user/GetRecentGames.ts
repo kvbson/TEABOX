@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import steamApi from '#server/clients/steamClients/steamApiClient';
-import { GameInfo } from '#types/gameInfo.types';
 import { getMissingIds } from '../db/GetMissingIds.js';
+import { GameInfo } from '../../../types/gameInfo.types.js';
+import steamApi from '../../clients/steamClients/steamApiClient.js';
 
 export type RecentGames = { response: { total_count: number, games: GameInfo[] }};
 

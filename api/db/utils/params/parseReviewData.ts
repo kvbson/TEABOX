@@ -1,4 +1,4 @@
-import { ReviewsSchemaType } from '#api/db/models/Reviews';
+import { ReviewsSchemaType } from "../../models/Reviews.js";
 
 /**
  * Transforms raw Steam API review data into Mongoose-compatible format

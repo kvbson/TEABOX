@@ -1,6 +1,7 @@
-import { Tag } from '#api/db/models/Tags';
-import { scrapeTags } from '#api/utils/scrapeTags';
+
 import { Router } from 'express';
+import { Tag } from '../../db/models/Tags.js';
+import { scrapeTags } from '../../utils/scrapeTags.js';
 
 export const getTags = async () => {
   const tags = await Tag.find({}, { _id: 0, name: 1 });

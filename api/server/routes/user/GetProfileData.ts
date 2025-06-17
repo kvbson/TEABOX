@@ -1,10 +1,10 @@
-import { GamesObj } from '#api/types/gameInfo.types';
 import { Router } from 'express';
 import { getTags } from '../GetTags.js';
 import { getAllGameInfo } from '../utils/getAllGameInfo.js';
 import { BadgeStats, getUserBadges } from './GetBadges.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
 import { getUserRecentGames } from './GetRecentGames.js';
+import { GamesObj } from '../../../types/gameInfo.types.js';
 
 export type UserProfileData = {
     recentGames: GamesObj;

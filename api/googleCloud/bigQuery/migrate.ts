@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import fs from 'node:fs';
 import { cleanForFirestore } from '../firestore/connections.js';
-import { GameInfo } from '#api/db/models/GameInfo';
 import sanitizeHtml from 'sanitize-html';
-import { Reviews } from '#api/db/models/Reviews';
+import { Reviews } from '../../db/models/Reviews.js';
+import { GameInfo } from '../../db/models/GameInfo.js';
 
 dotenv.config();
 

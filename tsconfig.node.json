@@ -8,7 +8,6 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "rootDir": ".",
-    "baseUrl": ".",
     "types": ["node"]
   },
   "include": ["./api/**/*.ts"],

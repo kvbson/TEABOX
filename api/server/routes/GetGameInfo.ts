@@ -1,9 +1,9 @@
-import { ExtendedGameInfo, GameDetailsResponse, GamesObj } from '#types/gameInfo.types';
 import { Router } from 'express';
-import steamStoreApi from '#server/clients/steamClients/steamStoreApiClient';
-import { SteamReviewsResponse } from '#api/types/reviews.types';
-import { handleFailedAppId } from '#api/db/models/other/MissingAppIds';
 import { checkAppId } from './utils/checkAppId.js';
+import { handleFailedAppId } from '../../db/models/other/MissingAppIds.js';
+import { ExtendedGameInfo, GameDetailsResponse, GamesObj } from '../../types/gameInfo.types.js';
+import { SteamReviewsResponse } from '../../types/reviews.types.js';
+import steamStoreApi from '../clients/steamClients/steamStoreApiClient.js';
 
 /**
  * Parameters.

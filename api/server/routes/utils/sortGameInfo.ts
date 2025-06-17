@@ -1,4 +1,4 @@
-import { GameInfoSchemaType } from '#api/db/models/GameInfo';
+import { GameInfoSchemaType } from "../../../db/models/GameInfo.js";
 
 export function sortGameInfo(games: GameInfoSchemaType[], userTags: string[]) {
 

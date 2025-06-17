@@ -1,5 +1,6 @@
-import { GameInfoSchemaType } from '#api/db/models/GameInfo';
-import { ExtendedGameInfo } from '#api/types/gameInfo.types';
+import { ExtendedGameInfo } from "../../../types/gameInfo.types.js";
+import { GameInfoSchemaType } from "../../models/GameInfo.js";
+
 
 export const parseGameData = (game: ExtendedGameInfo | GameInfoSchemaType, mode: 'db' | 'app') => {
   if (!game.name) throw new Error(`Missing required field: name. Recieved: ${game.name}`);

@@ -1,7 +1,8 @@
-import { BasicGameInfo } from '#types/allGames.types';
-import { AllGamesList } from '#db/models/AllGames';
+
 import { setTimeout } from 'timers/promises';
 import { AnyBulkWriteOperation } from 'mongoose';
+import { BasicGameInfo } from '../../../types/allGames.types.js';
+import { AllGamesList } from '../../models/AllGames.js';
 
 export async function handleFailedBatch(
   batch: BasicGameInfo[],

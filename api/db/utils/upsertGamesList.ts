@@ -1,8 +1,8 @@
 import { GameInfo } from '../models/GameInfo.js';
-import { ExtendedGameInfo } from '#api/types/gameInfo.types';
 import { AnyBulkWriteOperation } from 'mongoose';
 import { parseGameData } from './params/parseGameData.js';
 import { handleFailedBatch } from './helpers/handleFailedBatch.js';
+import { ExtendedGameInfo } from '../../types/gameInfo.types.js';
 
 export async function bulkUpsertGames(gamesArray: ExtendedGameInfo[], batchSize = 50) {
   try {

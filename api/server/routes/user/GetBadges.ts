@@ -1,5 +1,5 @@
-import steamApi from '#server/clients/steamClients/steamApiClient';
 import { Router } from 'express';
+import steamApi from '../../clients/steamClients/steamApiClient.js';
 
 type Badge = {
   badgeid: number;

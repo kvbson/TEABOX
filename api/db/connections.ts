@@ -1,4 +1,3 @@
-// import { migrateData } from '#api/googleCloud/bigQuery/migrate';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 

@@ -1,5 +1,6 @@
-import { getAllGames } from '#api/server/routes/GetAllGames';
-import { getAllGameInfo } from '#api/server/routes/utils/getAllGameInfo';
+import { getAllGames } from "../../../server/routes/GetAllGames.js";
+import { getAllGameInfo } from "../../../server/routes/utils/getAllGameInfo.js";
+
 
 export const fillGameInfo = async (quantity = 1000, offset = 0) => {
   const allGames = await getAllGames();

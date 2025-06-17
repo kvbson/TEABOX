@@ -1,6 +1,6 @@
-import { GameInfo } from '#api/db/models/GameInfo';
 import { Router } from 'express';
 import { sortGameInfo } from '../utils/sortGameInfo.js';
+import { GameInfo } from '../../../db/models/GameInfo.js';
 
 const sortedGameInfo = Router();
 

@@ -1,8 +1,9 @@
-import { getAllGames } from '#server/routes/GetAllGames';
-import { SteamAppListResponse } from '#types/allGames.types';
-import { AllGamesList } from '#db/models/AllGames';
-import { handleFailedBatch } from '#db/utils/helpers/handleFailedBatch';
+
 import { setTimeout } from 'node:timers/promises';
+import { getAllGames } from '../../server/routes/GetAllGames.js';
+import { SteamAppListResponse } from '../../types/allGames.types.js';
+import { AllGamesList } from '../models/AllGames.js';
+import { handleFailedBatch } from './helpers/handleFailedBatch.js';
 
 type UpsertAllGamesListParams = {
   limit: number;

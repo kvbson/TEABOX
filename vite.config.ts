@@ -11,9 +11,15 @@ export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
 
   return {
+    root: '.',
     plugins: [react()],
     build: {
+      base: '/', // Ensure assets are loaded from root
+      outDir: './dist', // Output to `dist/` instead of `dist/src`
+      emptyOutDir: true, // Clear `dist/` before building
+      assetsDir: 'assets', // Explicitly set assets directory
       rollupOptions: {
+        input: path.resolve(__dirname, 'index.html'),
         external: [
           /^node:.*/,
           'express',
@@ -35,12 +41,6 @@ export default defineConfig(({ mode }) => {
       exclude: [
         'child_process', 'https', 'fs', 'path', 'os', 'crypto', 'express', 'mkcert',
       ],
-    },
-    publicDir: false,
-    resolve: {
-      alias: {
-        '/api': path.resolve(__dirname, 'api'),
-      },
     },
     server: isDev
       ? {

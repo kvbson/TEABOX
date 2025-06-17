@@ -1,4 +1,4 @@
-import { MissingApp } from '#api/db/models/other/MissingAppIds';
+import { MissingApp } from "../../../db/models/other/MissingAppIds.js";
 
 export const checkAppId = async (appId: string): Promise<{ action: 'skip' | 'continue' }> => {
   const dbRecord = await MissingApp.findOne({ appId });

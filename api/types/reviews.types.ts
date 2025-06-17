@@ -1,4 +1,4 @@
-import { ReviewsSchemaType } from '#api/db/models/Reviews';
+import { ReviewsSchemaType } from "../db/models/Reviews.js";
 
 /**
  * Represents a Steam review author's profile data.
