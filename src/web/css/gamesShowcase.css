@@ -111,6 +111,21 @@
   }
 }
 
+.genre-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.genre-item {
+  text-transform: uppercase;
+  font-size: var(--f-small);
+  font-family: var(--font-inter);
+  font-weight: 700;
+}
+
 @media screen and (max-width: 1000px) {
   .price-tag {
     top: -10px;

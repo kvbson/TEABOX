@@ -1,9 +1,9 @@
-import DOMPurify from 'dompurify';
-import React, { useEffect, useState } from 'react';
-import '../css/gamesShowcase.css';
-import GameNav from './GameNav';
-import LoadingOverlay from './LoadingOverlay';
-import ScrollToTopButton from './ui/ScrollToTopArror';
+import DOMPurify from "dompurify";
+import React, { useEffect, useState } from "react";
+import "../css/gamesShowcase.css";
+import GameNav from "./GameNav";
+import LoadingOverlay from "./LoadingOverlay";
+import ScrollToTopButton from "./ui/ScrollToTopArror";
 // import { BlurImage } from './ui/BlurImage';
 
 interface GameShowcaseProps {
@@ -22,7 +22,10 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   onPrev,
 }) => {
   const game = appDetails;
-  const price = game?.price_overview?.final_formatted ?? (game?.is_free ? 'FREE' : 'N/A');
+  const price =
+    game?.price_overview?.final_formatted ?? (game?.is_free ? "FREE" : "N/A");
+
+  console.log("game? ", game);
 
   const [isImageLoading, setIsImageLoading] = useState(false);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -54,7 +57,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   }, [game?.header_image]);
 
   const sanitizeHTML = (html: string | undefined) => ({
-    __html: DOMPurify.sanitize(html || ''),
+    __html: DOMPurify.sanitize(html || ""),
   });
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -76,10 +79,14 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   };
 
   return (
-    <div className={`recommendations-wrapper ${sidebarOpened ? 'sidebar-opened' : ''}`}>
+    <div
+      className={`recommendations-wrapper ${
+        sidebarOpened ? "sidebar-opened" : ""
+      }`}
+    >
       <GameNav
-        className={`game-nav ${sidebarOpened ? 'sidebar-opened' : ''}`}
-        title={game?.name || 'Loading...'}
+        className={`game-nav ${sidebarOpened ? "sidebar-opened" : ""}`}
+        title={game?.name || "Loading..."}
         onPrev={onPrev}
         onNext={onNext}
       />
@@ -94,7 +101,9 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
 
         <section className="game-showcase__description">
           <h2 className="section-title">Description</h2>
-          {game?.short_description?.trim() !== game?.about_the_game?.trim() && <p>{game?.short_description || 'No description available'}</p>}
+          {game?.short_description?.trim() !== game?.about_the_game?.trim() && (
+            <p>{game?.short_description || "No description available"}</p>
+          )}
           {game?.about_the_game && (
             <div
               className="html-content"
@@ -105,10 +114,10 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
           <div className="game-details">
             {game?.release_date?.date && (
               <p>
-                <strong>Released:</strong>{' '}
+                <strong>Released:</strong>{" "}
                 {new Date(
-                  game?.release_date?.date?.toString(),
-                ).toLocaleDateString('de-DE')}
+                  game?.release_date?.date?.toString()
+                ).toLocaleDateString("de-DE")}
               </p>
             )}
             {game?.metacritic?.score && (
@@ -127,7 +136,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
                 alt={`Cover art for ${game.name}`}
                 loading="eager"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/fallback-image.jpg';
+                  (e.target as HTMLImageElement).src = "/fallback-image.jpg";
                 }}
               />
             )}
@@ -135,7 +144,15 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
               {price}
             </div>
           </div>
-
+          {game?.genres?.length > 0 && (
+            <div className="genre-list">
+              {game.genres.map((genre: { id: number; description: string }) => (
+                <span key={genre.id} className="genre-item">
+                  {genre.description}
+                </span>
+              ))}
+            </div>
+          )}
           <section className="trade-offs">
             {game?.pros?.length > 0 && (
               <section className="game-pros">
@@ -162,7 +179,6 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
         </aside>
       </div>
       <ScrollToTopButton />
-
     </div>
   );
 };

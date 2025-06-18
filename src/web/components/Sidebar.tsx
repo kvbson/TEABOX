@@ -17,6 +17,11 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
+function getRandomSample<T>(array: T[], count: number): T[] {
+  const shuffled = [...array].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+
 type SidebarProps = {
   sidebarOpened: boolean;
   selectedTags: string[];
@@ -51,7 +56,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
   const sensors = useSensors(useSensor(PointerSensor));
 
   const options = useMemo(() => {
-    const baseOptions = (selectedTags.length > 0 ? selectedTags : data).map((text) => ({
+    const basePool = selectedTags.length > 0 ? selectedTags : getRandomSample(data ?? [], 5);
+    const baseOptions = basePool.map((text) => ({
       id: text,
       text,
     }));
