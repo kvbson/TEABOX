@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import ArrowRight from '../components/ui/ArrowRight';
-import TeacupIcon from './ui/TeacupIcon';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import ArrowRight from "../components/ui/ArrowRight";
+import TeacupIcon from "./ui/TeacupIcon";
 
 type HeaderProps = {
   onToggleMenu: () => void;
@@ -25,13 +25,14 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, sidebarOpened }) => {
 
         <nav className="header-right">
           <Link to="/user/recommendations">RECOMMENDATIONS</Link>
-          {/* <Link to="/user/preferences">PREFERENCES</Link> */}
+          <Link to="/user/preferences">PREFERENCES</Link>
           <Link to="/user/statistics">STATISTICS</Link>
           <Link to="/logout">LOG OUT</Link>
-          {/* Sidebar trigger (zostaje) */}
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight
-              className={`burger ${!sidebarOpened ? 'menu-hiden' : 'menu-opened'}`}
+              className={`burger ${
+                !sidebarOpened ? "menu-hiden" : "menu-opened"
+              }`}
               color="var(--color-primary)"
             />
           </button>
@@ -56,6 +57,9 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, sidebarOpened }) => {
             </Link>
             <Link to="/user/preferences" onClick={toggleMobileMenu}>
               PREFERENCES
+            </Link>
+            <Link to="/user/statistics" onClick={toggleMobileMenu}>
+              STATISTICS
             </Link>
             <Link to="/logout" onClick={toggleMobileMenu}>
               LOG OUT

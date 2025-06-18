@@ -2,13 +2,14 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 16px 32px;
   box-sizing: border-box;
 }
-
-.game-nav.sidebar-opened {
-  padding-right: calc(32px + 235px); /* więcej miejsca na tytuł */
+@media screen and (min-width: 610px) {
+  .game-nav.sidebar-opened {
+    padding-right: calc(32px + 235px); /* więcej miejsca na tytuł */
+  }
 }
 
 .nav-button {
@@ -45,9 +46,7 @@
   text-align: center;
   margin: 0;
   max-width: 50vw; /* <= ogranicza długość do połowy ekranu */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  
   flex-shrink: 1;
 }
 
@@ -63,5 +62,10 @@
 
   .game-nav .game-title {
     max-width: 100% !important;
+    white-space: normal;      /* pozwala na zawijanie */
+    word-break: break-word;   /* zawija długie słowa */
+    overflow-wrap: break-word;
+    line-height: 1.2;
+    font-size: clamp(4vw, 7vw, 32px);
   }
 }
