@@ -29,3 +29,4 @@ app.yaml
 localhost-key.pem
 localhost.crt
 firestore-acc.json
+bigquery-acc.json

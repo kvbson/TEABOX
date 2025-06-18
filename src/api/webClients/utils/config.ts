@@ -10,4 +10,5 @@ export const API_ENDPOINTS = {
   tags: '/api/steam/tags/',
   topmostTags: '/api/steam/topmostTags/',
   sortedGameInfo: '/api/steam/sortedGameInfo/',
+  bigQueryData: '/api/bigquery/queries/',
 } as const;

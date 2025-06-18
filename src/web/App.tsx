@@ -8,6 +8,7 @@ import ToastError from './components/ToastError';
 import ToastSuccess from './components/ToastSuccess';
 import PreferencesPage from './pages/Prefferences';
 import Recommendations from './pages/Recommendations';
+import StatisticsCharts from './pages/Statictics';
 
 function App() {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -74,6 +75,13 @@ function App() {
                 setSelectedTags={setSelectedTags}
                 setSuccessSave={setSuccessSave}
                 setError={setError}
+              />
+            }
+          />
+          <Route
+            path="/user/statistics"
+            element={
+              <StatisticsCharts
               />
             }
           />

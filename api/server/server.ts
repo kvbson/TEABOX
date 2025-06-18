@@ -8,6 +8,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
 import { connectDB, mongoose } from '../db/connections.js';
+import bigQueryData from './routes/bigQuery/GetBigQueryData.js';
 import missingIds from './routes/db/GetMissingIds.js';
 import sortedGameInfo from './routes/db/GetSortedGameInfo.js';
 import gameInfo from './routes/GetGameInfo.js';
@@ -17,8 +18,8 @@ import userOwnedGames from './routes/user/GetOwnedGames.js';
 import userPlaytime from './routes/user/GetPlaytime.js';
 import userProfileData from './routes/user/GetProfileData.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
-import topmostTags from './routes/utils/getTopmostTags.js';
 import errorHandler from './routes/utils/errorHandler.js';
+import topmostTags from './routes/utils/getTopmostTags.js';
 
 dotenv.config();
 
@@ -67,6 +68,8 @@ app.get('/_ah/health', (_, res) => {
   console.log('Server status - OK');
   res.status(200).json({ status: 'OK', dbState: mongoose.connection.readyState });
 });
+
+app.use('/api/bigquery', bigQueryData);
 
 //SERVE STATIC FILES
 if (process.env.NODE_ENV === 'production') {
