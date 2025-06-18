@@ -27,7 +27,7 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
       />
       <YAxis
         yAxisId="left"
-        label={{ value: 'Liczba recenzji', angle: -90, position: 'insideLeft', dx: -20 }}
+        label={{ value: "Review's count", angle: -90, position: 'insideLeft', dx: -20 }}
         tick={{ fill: '#ccc' }}
       />
       <YAxis yAxisId="right" />
@@ -41,7 +41,7 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
       <Bar
         yAxisId="left"
         dataKey="review_count"
-        name="Liczba recenzji"
+        name="Review's count"
         fill="#8884d8"
         barSize={30}
         offset={10}

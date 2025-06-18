@@ -25,7 +25,7 @@ const PublisherChart: React.FC<{data: PublisherChartData[]}> = ({ data }) => (
       />
       <YAxis
         yAxisId="left"
-        label={{ value: 'Liczba recenzji', angle: -90, position: 'insideLeft' }}
+        label={{ value: "Review's count", angle: -90, position: 'insideLeft' }}
         tick={{ fill: '#ccc' }}
       />
       <YAxis
@@ -33,12 +33,12 @@ const PublisherChart: React.FC<{data: PublisherChartData[]}> = ({ data }) => (
         orientation="right"
         domain={[0.95, 1]}
         tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
-        label={{ value: 'Średnia ocen (%)', angle: -90, position: 'insideRight', dx: 25 }}
+        label={{ value: 'AVG (%)', angle: -90, position: 'insideRight', dx: 25 }}
         tick={{ fill: '#ffa500' }}
       />
       <Tooltip
         formatter={(value, name) =>
-          name === 'Średnia ocen' ? `${(Number(value) * 100).toFixed(2)}%` : value
+          name === 'AVG' ? `${(Number(value) * 100).toFixed(2)}%` : value
         }
       />
       <Legend
@@ -50,7 +50,7 @@ const PublisherChart: React.FC<{data: PublisherChartData[]}> = ({ data }) => (
       <Bar
         yAxisId="left"
         dataKey="review_count"
-        name="Liczba recenzji"
+        name="Review's count"
         fill="#8884d8"
         barSize={20}
         offset={10}
@@ -59,7 +59,7 @@ const PublisherChart: React.FC<{data: PublisherChartData[]}> = ({ data }) => (
         yAxisId="right"
         type="monotone"
         dataKey="avg_score"
-        name="Średnia ocen"
+        name="AVG"
         stroke="#ffa500"
         strokeWidth={2}
         dot={{ r: 4, stroke: '#fff', strokeWidth: 1 }}
