@@ -38,15 +38,11 @@ ORDER BY review_count DESC`,
 };
 
 const getBigQueryData = async (bigQueryType: BigQueryTypes) => {
-  console.log('test');
-
   const [rows] = await bigQuery.query({ query: queries[bigQueryType] });
   return rows;
 };
 
 bigQueryData.get('/queries', async (req, res) => {
-  console.log('test');
-
   const bigQueryType = req.query.bigQueryType as BigQueryTypes;
 
   try {
