@@ -1,21 +1,21 @@
-import React, { useMemo, useState } from 'react';
-import { useTopmostTags } from '../hooks/useTopmostTags';
-import PriorityArrow from './ui/PriorityArrow';
 import {
-  DndContext,
   closestCenter,
+  DndContext,
+  DragEndEvent,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
-  verticalListSortingStrategy,
   useSortable,
+  verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import React, { useMemo, useState } from 'react';
+import { useTopmostTags } from '../hooks/useTopmostTags';
+import PriorityArrow from './ui/PriorityArrow';
 
 function getRandomSample<T>(array: T[], count: number): T[] {
   const shuffled = [...array].sort(() => 0.5 - Math.random());
@@ -73,7 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
         .filter(Boolean) as { id: string; text: string }[];
 
       const missing = baseOptions.filter(
-        (item) => !sorted.some((sortedItem) => sortedItem.text === item.text)
+        (item) => !sorted.some((sortedItem) => sortedItem.text === item.text),
       );
 
       return [...sorted, ...missing];
