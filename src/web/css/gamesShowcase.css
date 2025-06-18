@@ -32,9 +32,10 @@
     gap: 10px;
   }
 }
-
-.recommendations-wrapper.sidebar-opened .game-showcase {
-  width: calc(100% - 235px);
+@media screen and (min-width: 610px) {
+  .recommendations-wrapper.sidebar-opened .game-showcase {
+    width: calc(100% - 235px);
+}
 }
 
 .image-container {
