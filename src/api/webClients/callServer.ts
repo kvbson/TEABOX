@@ -14,7 +14,7 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
 ): Promise<ApiResponse<T> | { data: null; error: any }> => {
   try {
     const endpoint = API_ENDPOINTS[mode];
-    const expressServerUrl = import.meta.env.VITE_SERVER_URL;
+    const expressServerUrl = import.meta.env.PROD ? window.location.origin : import.meta.env.VITE_SERVER_URL;
     const url = new URL(endpoint, expressServerUrl);
 
     Object.entries(params ?? {}).forEach(([key, value]) => {
@@ -23,6 +23,8 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
       }
       url.searchParams.append(key, String(value));
     });
+
+    console.log('Web making request to: ', url);
 
     const response = await fetch(url, {
       method: 'GET',

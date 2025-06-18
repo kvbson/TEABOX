@@ -5,7 +5,7 @@ dotenv.config();
 
 export const createApiClient = (baseURL: string): AxiosInstance => {
   const api = axios.create({
-    baseURL,
+    baseURL: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : baseURL,
     timeout: 15000,
     headers: {
       'Content-Type': 'application/json',
