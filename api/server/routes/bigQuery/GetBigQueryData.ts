@@ -1,17 +1,12 @@
 import { BigQuery } from '@google-cloud/bigquery';
 import { Router } from 'express';
-import fs from 'node:fs';
 
 export type BigQueryTypes = 'bestPublishers' |'mostRatedGenres'
 
 const bigQueryData = Router();
 
-const bigQueryAccount = JSON.parse(fs.readFileSync('api/certs/bigquery-acc.json', 'utf-8'));
-const bigQuery = new BigQuery(
-  process.env.NODE_ENV === 'development' ? {
-    projectId: bigQueryAccount.project_id || 'emerald-water-462206-d0',
-    keyFilename: 'api/certs/bigquery-acc.json',
-  } : {});
+// const bigQueryAccount = JSON.parse(fs.readFileSync('api/certs/bigquery-acc.json', 'utf-8'));
+const bigQuery = new BigQuery();
 
 const queries: Record<BigQueryTypes, string> = {
   bestPublishers: ` SELECT 
