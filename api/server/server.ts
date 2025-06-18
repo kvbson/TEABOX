@@ -71,21 +71,10 @@ app.get('/_ah/health', (_, res) => {
 //SERVE STATIC FILES
 if (process.env.NODE_ENV === 'production') {
   const staticPath = path.join(__dirname, '../../');
-  app.use('/assets', express.static(
-    path.join(staticPath, 'assets').replace(/\\/g, '/'),
-    {
-    // Cache settings (optional)
-      maxAge: '1y',
-      immutable: true,
-      // Fallthrough: false (ensure 404 if file missing)
-      fallthrough: false,
-    },
-  ));
 
   console.log('[DEBUG] Static path:', staticPath);
   console.log('[DEBUG] Assets path:', path.join(staticPath, 'assets'));
   app.use(express.static(staticPath));
-  app.use(express.static(path.join(__dirname, '../../src')));
   app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../../index.html'));
   });
