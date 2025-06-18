@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
+import React, { useEffect, useState } from 'react';
+import '../css/gamesShowcase.css';
 import GameNav from './GameNav';
 import LoadingOverlay from './LoadingOverlay';
-import '../css/gamesShowcase.css';
 import ScrollToTopButton from './ui/ScrollToTopArror';
 // import { BlurImage } from './ui/BlurImage';
 
@@ -22,9 +22,10 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   onPrev,
 }) => {
   const game = appDetails;
-  const price = game?.price_overview?.final_formatted ?? 'N/A';
+  const price = game?.price_overview?.final_formatted ?? (game?.is_free ? 'FREE' : 'N/A');
 
   const [isImageLoading, setIsImageLoading] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,20 +57,44 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
     __html: DOMPurify.sanitize(html || ''),
   });
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartX;
+
+    if (deltaX > 50) {
+      onPrev();
+    } else if (deltaX < -50) {
+      onNext();
+    }
+
+    setTouchStartX(null);
+  };
+
   return (
     <div className={`recommendations-wrapper ${sidebarOpened ? 'sidebar-opened' : ''}`}>
       <GameNav
+        className={`game-nav ${sidebarOpened ? 'sidebar-opened' : ''}`}
         title={game?.name || 'Loading...'}
         onPrev={onPrev}
         onNext={onNext}
       />
 
-      <div className="game-showcase">
+      {/* Karuzela z gestami */}
+      <div
+        className="game-showcase"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {(isLoading || isImageLoading) && <LoadingOverlay />}
 
         <section className="game-showcase__description">
           <h2 className="section-title">Description</h2>
-          {game?.short_description?.trim() !== game?.about_the_game?.trim() && <p>{game?.short_description || "No description available"}</p>}
+          {game?.short_description?.trim() !== game?.about_the_game?.trim() && <p>{game?.short_description || 'No description available'}</p>}
           {game?.about_the_game && (
             <div
               className="html-content"
@@ -78,10 +103,14 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
           )}
 
           <div className="game-details">
-            {game?.release_date?.date && (<p>
-              <strong>Released:</strong> {new Date(game?.release_date?.date?.toString()).toLocaleDateString('de-DE')}
-            </p>)
-            }
+            {game?.release_date?.date && (
+              <p>
+                <strong>Released:</strong>{' '}
+                {new Date(
+                  game?.release_date?.date?.toString(),
+                ).toLocaleDateString('de-DE')}
+              </p>
+            )}
             {game?.metacritic?.score && (
               <p>
                 <strong>Metacritic Score:</strong> {game.metacritic.score}
@@ -89,47 +118,14 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
             )}
           </div>
         </section>
-        <section>
-          {game?.pros?.length > 0 && (
-            <section className="game-pros">
-              <h3>Pros</h3>
-              <ul>
-                {game.pros.map((pro: string, i: number) => (
-                  <li key={`pro-${i}`}>{pro}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {game?.cons?.length > 0 && (
-            <section className="game-cons">
-              <h3>Cons</h3>
-              <ul>
-                {game.cons.map((con: string, i: number) => (
-                  <li key={`con-${i}`}>{con}</li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </section>
 
         <aside className="game-showcase__media">
           <div className="image-container">
-            {/* {game?.blur_image ? BlurImage({ src: game.header_image, blurhash: game.blur_image }) : game.header_image ? (
-              <img
-                src={game.header_image}
-                alt={`Cover art for ${game.name}`}
-                loading='eager'
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = '/fallback-image.jpg';
-                }}
-              />
-            ) : <></>} */}
             {game.header_image && (
               <img
                 src={game.header_image}
                 alt={`Cover art for ${game.name}`}
-                loading='eager'
+                loading="eager"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/fallback-image.jpg';
                 }}
@@ -139,6 +135,30 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
               {price}
             </div>
           </div>
+
+          <section className="trade-offs">
+            {game?.pros?.length > 0 && (
+              <section className="game-pros">
+                <h3>Pros</h3>
+                <ul>
+                  {game.pros.map((pro: string, i: number) => (
+                    <li key={`pro-${i}`}>{pro}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {game?.cons?.length > 0 && (
+              <section className="game-cons">
+                <h3>Cons</h3>
+                <ul>
+                  {game.cons.map((con: string, i: number) => (
+                    <li key={`con-${i}`}>{con}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </section>
         </aside>
       </div>
       <ScrollToTopButton />

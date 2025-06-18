@@ -90,6 +90,7 @@ p {
   --f-large: 20px;
   --f-xlarge: 30px;
   --f-xxlarge: 42px;
+
   
   font-family: var(--font-inter);
   line-height: 1.5;

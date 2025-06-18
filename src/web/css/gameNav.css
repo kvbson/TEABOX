@@ -4,6 +4,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 32px;
+  box-sizing: border-box;
+}
+
+.game-nav.sidebar-opened {
+  padding-right: calc(32px + 235px); /* więcej miejsca na tytuł */
 }
 
 .nav-button {
@@ -44,4 +49,19 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   flex-shrink: 1;
+}
+
+/* Ukryj GameNav na mobilkach i tabletach */
+@media screen and (max-width: 1000px) {
+  .game-nav {
+    justify-content: center;
+  }
+
+  .game-nav .nav-button {
+    display: none;
+  }
+
+  .game-nav .game-title {
+    max-width: 100% !important;
+  }
 }

@@ -1,7 +1,21 @@
-import React, { useEffect, useRef, useMemo } from 'react';
-import { createSwapy, Swapy } from 'swapy';
+import React, { useMemo, useState } from 'react';
+import { useTopmostTags } from '../hooks/useTopmostTags';
 import PriorityArrow from './ui/PriorityArrow';
-import { useTopmostTags } from '../hooks/useTopmostTags'; // ścieżkę dopasuj do siebie
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type SidebarProps = {
   sidebarOpened: boolean;
@@ -9,15 +23,36 @@ type SidebarProps = {
   setSidebarTags: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSidebarTags }) => {
-  const swapyRef = useRef<Swapy | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { data, loading, error } = useTopmostTags();
+type Option = {
+  id: string;
+  text: string;
+};
 
-  // Przekształcamy dane z API do formatu {id, text} + ewentualnie sortujemy wg localStorage
+const SortableItem = ({ id }: { id: string }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="swapy-slot">
+      <div className="swapy-item">{id}</div>
+    </div>
+  );
+};
+
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSidebarTags }) => {
+  const { data, loading, error } = useTopmostTags();
+  const [arrowHeight, setArrowHeight] = useState<number>(0);
+  const [orderedOptions, setOrderedOptions] = useState<Option[]>([]);
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
   const options = useMemo(() => {
-    const baseOptions = (selectedTags.length > 0 ? selectedTags : data).map((text, index) => ({
-      id: (index + 1).toString(),
+    const baseOptions = (selectedTags.length > 0 ? selectedTags : data).map((text) => ({
+      id: text,
       text,
     }));
 
@@ -27,14 +62,12 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
     try {
       const savedOptions: { id: string; text: string }[] = JSON.parse(saved);
 
-      // Odtwarzamy kolejność zapisaną w localStorage, zachowując tylko istniejące elementy
       const sorted = savedOptions
         .map((savedItem) => baseOptions.find((item) => item.text === savedItem.text))
         .filter(Boolean) as { id: string; text: string }[];
 
-      // Dodajemy brakujące elementy (np. nowe tagi z API)
       const missing = baseOptions.filter(
-        (item) => !sorted.some((sortedItem) => sortedItem.text === item.text),
+        (item) => !sorted.some((sortedItem) => sortedItem.text === item.text)
       );
 
       return [...sorted, ...missing];
@@ -43,34 +76,29 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
     }
   }, [data, selectedTags]);
 
-  useEffect(() => {
-    if (!containerRef.current || loading || !options.length) return;
+  React.useEffect(() => {
+    setOrderedOptions(options);
+    setSidebarTags(options.map((opt) => opt.text));
+    localStorage.setItem('sidebar-items', JSON.stringify(options));
+  }, [options]);
 
-    swapyRef.current = createSwapy(containerRef.current, {
-      animation: 'dynamic',
-      dragAxis: 'y',
-    });
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
 
-    swapyRef.current.onSwapEnd(({ slotItemMap }) => {
-      const sortedIds = Object.values(slotItemMap.asArray).map(({ item }) => item);
+    const oldIndex = orderedOptions.findIndex((item) => item.id === active.id);
+    const newIndex = orderedOptions.findIndex((item) => item.id === over.id);
 
-      const sortedOptions = sortedIds
-        .map((id) => options.find((option) => option.id === id))
-        .filter(Boolean);
+    const newOrder = arrayMove(orderedOptions, oldIndex, newIndex);
+    setOrderedOptions(newOrder);
+    setSidebarTags(newOrder.map((item) => item.text));
+    localStorage.setItem('sidebar-items', JSON.stringify(newOrder));
+  };
 
-      setSidebarTags(sortedOptions.map(el => el?.text).filter(Boolean) as string[]);
-      const dbSaveJSON = JSON.stringify(sortedOptions);
-      console.log('[Swapy] Zapisano:', dbSaveJSON);
-      localStorage.setItem('sidebar-items', dbSaveJSON);
-    });
-
-    return () => {
-      swapyRef.current?.destroy();
-    };
-  }, [options, loading, setSidebarTags]);
-
-  if (loading) return ;
-  if (error) return <div className="sidebar">Error: {error instanceof Error ? error.message : String(error)}</div>;
+  if (loading) return null;
+  if (error) {
+    return <div className="sidebar">Error: {error instanceof Error ? error.message : String(error)}</div>;
+  }
 
   return (
     <div className={`sidebar ${!sidebarOpened ? 'hide' : ''}`}>
@@ -78,23 +106,36 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpened, selectedTags, setSideb
       <div className="swapy-container">
         <div className="priority-arrow">
           <span className="top">MOST</span>
-          <div className="arrow-line">
+          <div
+            className="arrow-line"
+            style={{
+              height: arrowHeight ? `${arrowHeight - 150}px` : '50px',
+              width: '40px',
+              minWidth: '40px',
+              maxWidth: '40px',
+            }}
+          >
             <PriorityArrow />
           </div>
           <span className="bottom">LEAST</span>
         </div>
-        {((loading) => loading ? <div className="sidebar">Loading...</div> : <div className="swapy-list" ref={containerRef}>
-          {options.map(({ id, text }) => (
-            <div className="swapy-slot" data-swapy-slot={id} key={id}>
-              <div className="swapy-item" data-swapy-item={id}>
-                {text}
-              </div>
-            </div>
-          ))}
-        </div>)(loading)}
 
+        <div
+          className="swapy-list"
+          ref={(el) => {
+            if (el) setArrowHeight(el.offsetHeight);
+          }}
+        >
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={orderedOptions.map((opt) => opt.id)} strategy={verticalListSortingStrategy}>
+              {orderedOptions.map((option) => (
+                <SortableItem key={option.id} id={option.id} />
+              ))}
+            </SortableContext>
+          </DndContext>
+        </div>
       </div>
-      <p>
+      <p className="bottom-text">
         Drag and drop your preferences to set sorting for the recommendations
       </p>
     </div>

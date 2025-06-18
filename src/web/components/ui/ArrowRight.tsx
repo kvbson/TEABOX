@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import '../../css/ui/arrowRight.css';
 
 interface ArrowRightProps {
@@ -9,8 +9,8 @@ interface ArrowRightProps {
 }
 
 const ArrowRight: React.FC<ArrowRightProps> = ({
-  color = "var(--color-primary)",
-  className = "",
+  color = 'var(--color-primary)',
+  className = '',
   width = 42,
   height = 16,
 }) => {
