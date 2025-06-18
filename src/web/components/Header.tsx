@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, sidebarOpened }) => {
 
         <nav className="header-right">
           <Link to="/user/recommendations">RECOMMENDATIONS</Link>
-          <Link to="/user/preferences">PREFERENCES</Link>
+          {/* <Link to="/user/preferences">PREFERENCES</Link> */}
           <Link to="/user/statistics">STATISTICS</Link>
           <Link to="/logout">LOG OUT</Link>
           {/* Sidebar trigger (zostaje) */}
