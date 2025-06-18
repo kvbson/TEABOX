@@ -28,10 +28,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PREFIX = '/api/steam';
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8080;
 const allowedOrigins =
   process.env.NODE_ENV === 'development'
-    ? ['https://localhost:5173', 'http://localhost:4173', 'http://localhost:8081', 'https://localhost:8080', 'http://localhost:5000']
+    ? ['https://localhost:5173'] //vite dev server
     : ['https://emerald-water-462206-d0.lm.r.appspot.com', ...(process.env.DOMAIN ? [process.env.DOMAIN] : [])];
 
 app.set('trust proxy', true);
