@@ -6,10 +6,10 @@ dotenv.config();
 const DB_URI = process.env.MONGODB_URI;
 
 const connectDB = async () => {
-  if (!DB_URI) {
-    return console.log('No MONGODB_URI in .env file');
-  }
   try {
+    if (!DB_URI) {
+      throw new Error('No MONGODB_URI in .env file');
+    }
     await mongoose.connect(DB_URI, {
       serverSelectionTimeoutMS: 5000,
       maxPoolSize: 5,
@@ -23,9 +23,6 @@ const connectDB = async () => {
 
 mongoose.connection.on('connected', () => {
   console.log('✅ DB connected!');
-  // fillGameInfo(500, 6000);
-  // initializeFirestore();
-  // migrateData();
 });
 
 mongoose.connection.on('error', (err) => {

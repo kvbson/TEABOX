@@ -18,6 +18,7 @@ import userPlaytime from './routes/user/GetPlaytime.js';
 import userProfileData from './routes/user/GetProfileData.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
 import topmostTags from './routes/utils/getTopmostTags.js';
+import errorHandler from './routes/utils/errorHandler.js';
 
 dotenv.config();
 
@@ -28,9 +29,20 @@ const app = express();
 const PREFIX = '/api/steam';
 const PORT = process.env.PORT || 8081;
 
+const allowedOrigins =
+  process.env.NODE_ENV === 'development'
+    ? ['https://localhost:5173', 'http://localhost:4173', 'http://localhost:8081', 'http://localhost:5000']
+    : ['https://emerald-water-462206-d0.lm.r.appspot.com', ...(process.env.DOMAIN ? [process.env.DOMAIN] : [])];
+
 app.set('trust proxy', true);
 app.use(cors({
-  origin: ['https://localhost:5173', 'http://localhost:4173', 'http://localhost:8081', 'http://localhost:5000', 'https://emerald-water-462206-d0.lm.r.appspot.com', ...(process.env.DOMAIN ? [process.env.DOMAIN] : [])], //[vite client url, vite preview client url]
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -58,7 +70,7 @@ app.get('/_ah/health', (_, res) => {
 
 //SERVE STATIC FILES
 if (process.env.NODE_ENV === 'production') {
-  const staticPath = path.join(__dirname, '../../'); // Changed from 'src' to 'dist'
+  const staticPath = path.join(__dirname, '../../');
   app.use('/assets', express.static(
     path.join(staticPath, 'assets').replace(/\\/g, '/'),
     {
@@ -69,8 +81,9 @@ if (process.env.NODE_ENV === 'production') {
       fallthrough: false,
     },
   ));
-  console.log('[DEBUG] Static path:', staticPath); // Add this line
-  console.log('[DEBUG] Assets path:', path.join(staticPath, 'assets')); // Add this line
+
+  console.log('[DEBUG] Static path:', staticPath);
+  console.log('[DEBUG] Assets path:', path.join(staticPath, 'assets'));
   app.use(express.static(staticPath));
   app.use(express.static(path.join(__dirname, '../../src')));
   app.get('/', (req, res) => {
@@ -78,23 +91,17 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-//MIDDLEWARE
-// app.use((err: Error, _: express.Request, res: express.Response) => {
-// console.error(err);
-// res.status(500).json({ error: 'Something went wrong!' });
-// });
+app.use(errorHandler);
 
 async function startServer() {
 
   console.log(`[ENV] NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
   console.log(`[ENV] PORT: ${PORT}`);
 
-  if (process.env.NODE_ENV !== 'production') {
-    if (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`)) {
-      await checkForCerts(KEY_FILE, CERT_FILE);
-    }
+  if (process.env.NODE_ENV !== 'production' && (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`))) {
+    await checkForCerts(KEY_FILE, CERT_FILE);
   }
-
+  // using 0.0.0.0 because server is behing reverse proxy (e.g. GCP App Engine)
   const server = process.env.NODE_ENV === 'production'
     ? app.listen(Number(PORT), '0.0.0.0', () => {
       connectDB();
@@ -108,6 +115,8 @@ async function startServer() {
       console.log(`🔐 Dev server running at https://localhost:${PORT}`);
     });
 
+  // Set server timeouts
+  server.timeout = 70000; // 70 seconds
   server.keepAliveTimeout = 65000;
   server.headersTimeout = 66000;
 

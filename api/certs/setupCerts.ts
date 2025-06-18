@@ -6,7 +6,7 @@ export const CERTS_DIR = './api/certs/';
 export const CERT_FILE = 'localhost.crt';
 export const KEY_FILE = 'localhost-key.pem';
 
-async function generateCertificates(keyFile: string, certFile: string) {
+async function generateCertificates(keyFile: string, certFile: string, next?: (message: string, error?: Error) => void) {
   try {
     console.log('🔐 Generating TLS certificates...');
     const ca = await createCA({
@@ -24,8 +24,8 @@ async function generateCertificates(keyFile: string, certFile: string) {
     fs.writeFileSync(path.join(CERTS_DIR, keyFile), cert.key);
     fs.writeFileSync(path.join(CERTS_DIR, certFile), cert.cert);
     console.log('✅ Certificates generated successfully');
-  } catch (error) {
-    console.error('❌ Error generating certificates:', error);
+  } catch (error: Error | any) {
+    next?.('❌ Error generating certificates:', error);
   }
 }
 

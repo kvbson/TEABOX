@@ -1,7 +1,7 @@
 import fs from 'node:fs';
-import { getAllGameInfo } from './server/routes/utils/getAllGameInfo.js';
-import { bulkUpsertGames } from './db/utils/upsertGamesList.js';
-import { ExtendedGameInfo } from './types/gameInfo.types.js';
+import { getAllGameInfo } from '../server/routes/utils/getAllGameInfo.js';
+import { bulkUpsertGames } from '../db/utils/upsertGamesList.js';
+import { ExtendedGameInfo } from '../types/gameInfo.types.js';
 
 type JsonFile = Record<string, { Pros: { pro1: string; pro2: string; pro3: string; pro4: string; }, Cons: { con1: string; con2: string; con3: string; con4: string; }}>
 

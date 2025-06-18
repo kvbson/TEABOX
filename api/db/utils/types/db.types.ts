@@ -1,4 +1,4 @@
-import { GameInfoSchemaType } from "../../models/GameInfo.js";
+import { GameInfoSchemaType } from '../../models/GameInfo.js';
 
 type UpsertResult = {
     success: boolean;
