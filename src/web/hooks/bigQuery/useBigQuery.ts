@@ -12,7 +12,7 @@ export const useBigQueryData = (bigQueryType: BigQueryTypes) => {
     const fetchBigQueryData = async () => {
       setLoading(true);
 
-      const { data, error } = await callServer<string[], any>('bigQueryReviews', { bigQueryType });
+      const { data, error } = await callServer<string[], any>('bigQueryData', { bigQueryType });
       if (error) {
         setError(error);
       }

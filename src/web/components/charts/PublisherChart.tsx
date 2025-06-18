@@ -1,13 +1,13 @@
 import {
-    Bar,
-    CartesianGrid,
-    ComposedChart,
-    Legend,
-    Line,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Bar,
+  CartesianGrid,
+  ComposedChart,
+  Legend,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
 
 export type PublisherChartData = { publisher: string; review_count: number; avg_score: number;}

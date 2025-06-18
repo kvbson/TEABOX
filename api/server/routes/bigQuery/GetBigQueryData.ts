@@ -8,7 +8,7 @@ const bigQueryData = Router();
 
 const bigQueryAccount = JSON.parse(fs.readFileSync('api/certs/bigquery-acc.json', 'utf-8'));
 const bigQuery = new BigQuery({
-  projectId: bigQueryAccount.project_id,
+  projectId: bigQueryAccount.project_id || 'emerald-water-462206-d0',
   keyFilename: 'api/certs/bigquery-acc.json',
 });
 
@@ -38,11 +38,15 @@ ORDER BY review_count DESC`,
 };
 
 const getBigQueryData = async (bigQueryType: BigQueryTypes) => {
+  console.log('test');
+
   const [rows] = await bigQuery.query({ query: queries[bigQueryType] });
   return rows;
 };
 
-bigQueryData.get('/reviews', async (req, res) => {
+bigQueryData.get('/queries', async (req, res) => {
+  console.log('test');
+
   const bigQueryType = req.query.bigQueryType as BigQueryTypes;
 
   try {

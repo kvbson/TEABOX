@@ -1,12 +1,12 @@
 import {
-    Bar,
-    CartesianGrid,
-    ComposedChart,
-    Legend,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Bar,
+  CartesianGrid,
+  ComposedChart,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
 
 export type GenreChartData = { genre: string; review_count: number;}
