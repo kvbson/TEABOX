@@ -20,6 +20,11 @@ export default defineConfig(({ mode }) => {
       assetsDir: 'assets', // Explicitly set assets directory
       rollupOptions: {
         input: path.resolve(__dirname, 'index.html'),
+        output: {
+          entryFileNames: 'assets/[name].[hash].js',
+          chunkFileNames: 'assets/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash].[ext]',
+        },
         external: [
           /^node:.*/,
           'express',

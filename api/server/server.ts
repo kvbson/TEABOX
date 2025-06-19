@@ -76,9 +76,21 @@ if (process.env.NODE_ENV === 'production') {
 
   console.log('[DEBUG] Static path:', staticPath);
   console.log('[DEBUG] Assets path:', path.join(staticPath, 'assets'));
-  app.use(express.static(staticPath));
+
+  app.use(express.static(staticPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-store');
+      } else {
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      }
+    },
+  }));
+
+  //index.html without cahce
   app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../index.html'));
+    res.set('Cache-Control', 'no-store');
+    res.sendFile(path.join(staticPath, 'index.html'));
   });
 }
 
