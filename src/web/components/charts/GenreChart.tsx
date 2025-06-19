@@ -12,7 +12,7 @@ import {
 export type GenreChartData = { genre: string; review_count: number;}
 
 const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
-  <ResponsiveContainer width="80%" height={400} >
+  <ResponsiveContainer width="100%" height={400}>
     <ComposedChart
       data={data}
       margin={{ top: 10, right: 20, left: 10, bottom: 40 }}

@@ -1,8 +1,11 @@
 import { ReactNode } from 'react';
 
-const ChartWrapper: React.FC<{children: ReactNode}> = ({ children }) => (
-  <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '5%' }}>
-    {children}
+const ChartWrapper: React.FC<{children: ReactNode, title: string}> = ({ children, title }) => (
+  <div className="game-showcase">
+    <div style={{ width: '100%', textAlign: 'center', marginBottom: '1rem', fontFamily: '--font-inter' }}>
+      <h3 style={{ color: '--color-text', marginBottom: '1rem', fontSize: '1.5rem' }}>{title}</h3>
+      {children}
+    </div>
   </div>
 );
 

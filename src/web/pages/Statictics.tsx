@@ -17,11 +17,11 @@ const StatisticsCharts = () => {
 
   return (
     <>
-      <ChartWrapper>
+      <ChartWrapper title='Best publishers based on reviews'>
         <PublisherChart data={bestPublishersData} />
       </ChartWrapper>
 
-      <ChartWrapper>
+      <ChartWrapper title='Most rated genres'>
         <GenreChart data={bestGenresData} />
       </ChartWrapper>
     </>
