@@ -18,16 +18,17 @@ const Header: React.FC<HeaderProps> = ({ onToggleMenu, sidebarOpened }) => {
   return (
     <>
       <header className="header">
-        <div className="header-left">
+        <Link to="/" className="header-left">
           <TeacupIcon />
           <span className="header-title">TEABOX</span>
-        </div>
+        </Link>
 
         <nav className="header-right">
           <Link to="/user/recommendations">RECOMMENDATIONS</Link>
           <Link to="/user/preferences">PREFERENCES</Link>
           <Link to="/user/statistics">STATISTICS</Link>
           <Link to="/logout">LOG OUT</Link>
+
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight
               className={`burger ${
