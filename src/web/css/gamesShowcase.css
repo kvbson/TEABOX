@@ -84,7 +84,7 @@
   }
 
   .game-showcase__description {
-    padding: 0 20px;
+    padding: 0 10px;
   }
 
   .game-showcase__description .bb_img {
@@ -108,7 +108,7 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 0 20px;
-    margin-top: 40px;
+    margin-top: 20px;
   }
 }
 
