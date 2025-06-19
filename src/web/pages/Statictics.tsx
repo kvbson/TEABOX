@@ -4,7 +4,7 @@ import PublisherChart, { PublisherChartData } from '../components/charts/Publish
 import { useBigQueryData } from '../hooks/bigQuery/useBigQuery';
 
 const StatisticsCharts = () => {
-  const bestPublishers = useBigQueryData('bestPublishers');
+  const bestPublishers = useBigQueryData('bestPublishers', { limit: 30 });
   const bestGenres = useBigQueryData('mostRatedGenres');
 
   const bestPublishersData: PublisherChartData[] = (bestPublishers.data ?? []).map(
@@ -14,8 +14,6 @@ const StatisticsCharts = () => {
   const bestGenresData: GenreChartData[] = (bestGenres.data ?? []).map(
     ({ genre, review_count }) => ({ genre, review_count }),
   );
-
-  console.log(bestPublishersData);
 
   return (
     <>

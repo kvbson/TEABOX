@@ -1,0 +1,1 @@
+export type BigQueryTypes = 'bestPublishers' |'mostRatedGenres'
