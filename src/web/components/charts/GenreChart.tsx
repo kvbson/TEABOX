@@ -29,7 +29,7 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
       <YAxis
         yAxisId="left"
         label={{ value: "Review's count", angle: -90, position: 'insideLeft', dx: -5 }}
-        tickFormatter={(value) => `${(value / 1000).toFixed(1)}K`}
+        tickFormatter={(value) => value === 0 ? '0' : `${(value / 1000)}K`}
         tick={{ fill: '#ccc' }}
       />
       <YAxis
