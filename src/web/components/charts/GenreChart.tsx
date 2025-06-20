@@ -3,6 +3,7 @@ import {
   CartesianGrid,
   ComposedChart,
   Legend,
+  Line,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -45,6 +46,15 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
         fill="#8884d8"
         barSize={30}
         offset={10}
+      />
+      <Line
+        yAxisId="right"
+        type="monotone"
+        dataKey="avg_score"
+        name="AVG"
+        stroke="#ffa500"
+        strokeWidth={2}
+        dot={{ r: 4, stroke: '#fff', strokeWidth: 1 }}
       />
     </ComposedChart>
   </ResponsiveContainer>

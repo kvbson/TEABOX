@@ -1,4 +1,5 @@
 import ChartWrapper from '../components/charts/ChartWrapper';
+import GamesChart, { GamesChartData } from '../components/charts/GamesChart';
 import GenreChart, { GenreChartData } from '../components/charts/GenreChart';
 import PublisherChart, { PublisherChartData } from '../components/charts/PublisherChart';
 import { useBigQueryData } from '../hooks/bigQuery/useBigQuery';
@@ -6,6 +7,7 @@ import { useBigQueryData } from '../hooks/bigQuery/useBigQuery';
 const StatisticsCharts = () => {
   const bestPublishers = useBigQueryData('bestPublishers', { limit: 30 });
   const bestGenres = useBigQueryData('mostRatedGenres');
+  const bestReviewedGames = useBigQueryData('bestReviewedGames', { limit: 25 });
 
   const bestPublishersData: PublisherChartData[] = (bestPublishers.data ?? []).map(
     ({ publisher, review_count, avg_score }) => ({ publisher, review_count, avg_score }),
@@ -15,6 +17,15 @@ const StatisticsCharts = () => {
     ({ genre, review_count }) => ({ genre, review_count }),
   );
 
+  const bestReviewedGamesData: GamesChartData[] = (bestReviewedGames.data ?? []).map(
+    ({ steam_appid, review_count, upvotes, positive_ratio, name: steamAppName }) => ({
+      steam_appid,
+      name: steamAppName,
+      review_count,
+      upvotes,
+      positive_ratio,
+    }));
+
   return (
     <>
       <ChartWrapper title='Best publishers based on reviews'>
@@ -23,6 +34,10 @@ const StatisticsCharts = () => {
 
       <ChartWrapper title='Most rated genres'>
         <GenreChart data={bestGenresData} />
+      </ChartWrapper>
+
+      <ChartWrapper title='Best reviewed games'>
+        <GamesChart data={bestReviewedGamesData} />
       </ChartWrapper>
     </>
   );

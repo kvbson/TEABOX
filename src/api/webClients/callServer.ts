@@ -8,9 +8,13 @@ const errorMessages: Record<number, string> = {
   [HTTP_STATUS_NOT_FOUND]: 'Error 404: Resource not found.',
 };
 
+type AdditionalParams = {
+  limit?: number; // default limit is 100
+}
+
 export const callServer = async <T extends Record<string, unknown> | any[], M extends keyof ModeParams>(
   mode: M,
-  params: ModeParams[M],
+  params: ModeParams[M] & AdditionalParams,
 ): Promise<ApiResponse<T> | { data: null; error: any }> => {
   try {
     const endpoint = API_ENDPOINTS[mode];
@@ -44,6 +48,9 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
       return { data: null, error: json };
     }
     const data: ApiResponse<T> = await response.json();
+    if (Array.isArray(data.data)) {
+      return { ...data, data: data.data.slice(0, params.limit || 100) as T };
+    }
     return data;
   } catch (error) {
     console.error('Network error:', error instanceof Error ? error.message : String(error));
