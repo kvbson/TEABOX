@@ -22,7 +22,7 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
       <CartesianGrid strokeDasharray="3 3" stroke="#444" />
       <XAxis
         dataKey="genre"
-        angle={-35}
+        angle={-20}
         textAnchor="end"
         tick={{ fill: '#ccc', fontSize: 12 }}
       />
@@ -37,19 +37,19 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
         orientation="right"
         domain={[0.95, 1]}
         tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
-        label={{ value: 'Positive reviews ratio (%)', angle: -90, position: 'insideRight', dx: 10 }}
+        label={{ value: 'Positive reviews (%)', angle: -90, position: 'insideRight', dx: 25 }}
         tick={{ fill: '#ffa500' }}
       />
       <Tooltip
         formatter={(value, name) =>
-          name === 'AVG' ? `${(Number(value) * 100).toFixed(2)}%` : value
+          name === 'Positive' ? `${(Number(value) * 100).toFixed(2)}%` : value
         }
       />
       <Legend
         layout="horizontal"
         verticalAlign="bottom"
         align="center"
-        wrapperStyle={{ paddingTop: 35 }}
+        wrapperStyle={{ paddingTop: 45 }}
       />
       <Bar
         yAxisId="left"
@@ -63,7 +63,7 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
         yAxisId="right"
         type="monotone"
         dataKey="avg_score"
-        name="AVG"
+        name="Positive"
         stroke="#ffa500"
         strokeWidth={2}
         dot={{ r: 4, stroke: '#fff', strokeWidth: 1 }}

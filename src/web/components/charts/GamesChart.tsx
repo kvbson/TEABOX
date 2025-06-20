@@ -18,7 +18,7 @@ const GamesChart: React.FC<{data: GamesChartData[]}> = ({ data }) => (
       <CartesianGrid strokeDasharray="3 3" stroke="#444" />
       <XAxis
         dataKey="name"
-        angle={-15}
+        angle={-20}
         textAnchor="end"
         interval={0}
         tick={{ fill: '#ccc', fontSize: 12 }}
@@ -33,19 +33,19 @@ const GamesChart: React.FC<{data: GamesChartData[]}> = ({ data }) => (
         orientation="right"
         domain={[0.95, 1]}
         tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
-        label={{ value: 'Positive reviews ratio (%)', angle: -90, position: 'insideRight', dx: 25 }}
+        label={{ value: 'Positive reviews (%)', angle: -90, position: 'insideRight', dx: 25 }}
         tick={{ fill: '#ffa500' }}
       />
       <Tooltip
         formatter={(value, name) =>
-          name === 'RATIO' ? `${(Number(value) * 100).toFixed(2)}%` : value
+          name === 'Positive' ? `${(Number(value) * 100).toFixed(2)}%` : value
         }
       />
       <Legend
         layout="horizontal"
         verticalAlign="bottom"
         align="center"
-        wrapperStyle={{ paddingTop: 45 }}
+        wrapperStyle={{ paddingTop: 55 }}
       />
       <Bar
         yAxisId="left"
@@ -59,7 +59,7 @@ const GamesChart: React.FC<{data: GamesChartData[]}> = ({ data }) => (
         yAxisId="right"
         type="monotone"
         dataKey="positive_ratio"
-        name="RATIO"
+        name="Positive"
         stroke="#ffa500"
         strokeWidth={2}
         dot={{ r: 4, stroke: '#fff', strokeWidth: 1 }}

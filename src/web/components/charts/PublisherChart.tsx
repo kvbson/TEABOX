@@ -33,12 +33,12 @@ const PublisherChart: React.FC<{data: PublisherChartData[]}> = ({ data }) => (
         orientation="right"
         domain={[0.95, 1]}
         tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
-        label={{ value: 'AVG (%)', angle: -90, position: 'insideRight', dx: 25 }}
+        label={{ value: 'Positive reviews (%)', angle: -90, position: 'insideRight', dx: 25 }}
         tick={{ fill: '#ffa500' }}
       />
       <Tooltip
         formatter={(value, name) =>
-          name === 'AVG' ? `${(Number(value) * 100).toFixed(2)}%` : value
+          name === 'Positive' ? `${(Number(value) * 100).toFixed(2)}%` : value
         }
       />
       <Legend
@@ -59,7 +59,7 @@ const PublisherChart: React.FC<{data: PublisherChartData[]}> = ({ data }) => (
         yAxisId="right"
         type="monotone"
         dataKey="avg_score"
-        name="AVG"
+        name="Positive"
         stroke="#ffa500"
         strokeWidth={2}
         dot={{ r: 4, stroke: '#fff', strokeWidth: 1 }}
