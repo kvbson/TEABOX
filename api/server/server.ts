@@ -92,6 +92,13 @@ if (process.env.NODE_ENV === 'production') {
     res.set('Cache-Control', 'no-store');
     res.sendFile(path.join(staticPath, 'index.html'));
   });
+
+  // Catch-all route to serve index.html for all paths other than API requests (used by SPA in web React app)
+  app.get('/*splat', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next(); // let API requests pass through
+    res.set('Cache-Control', 'no-store');
+    res.sendFile(path.join(staticPath, 'index.html'));
+  });
 }
 
 app.use(errorHandler);
