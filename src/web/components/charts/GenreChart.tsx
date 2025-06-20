@@ -37,7 +37,7 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
         orientation="right"
         domain={[0.95, 1]}
         tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
-        label={{ value: 'Positive reviews (%)', angle: -90, position: 'insideRight', dx: 25 }}
+        label={{ value: 'Positive reviews (%)', angle: -90, position: 'insideRight', dx: 10 }}
         tick={{ fill: '#ffa500' }}
       />
       <Tooltip
