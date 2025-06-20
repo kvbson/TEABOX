@@ -28,11 +28,23 @@ const GenreChart: React.FC<{data: GenreChartData[]}> = ({ data }) => (
       />
       <YAxis
         yAxisId="left"
-        label={{ value: "Review's count", angle: -90, position: 'insideLeft', dx: -20 }}
+        label={{ value: "Review's count", angle: -90, position: 'insideLeft', dx: -5 }}
+        tickFormatter={(value) => `${(value / 1000).toFixed(1)}K`}
         tick={{ fill: '#ccc' }}
       />
-      <YAxis yAxisId="right" />
-      <Tooltip />
+      <YAxis
+        yAxisId="right"
+        orientation="right"
+        domain={[0.95, 1]}
+        tickFormatter={(value) => `${(value * 100).toFixed(1)}%`}
+        label={{ value: 'Positive reviews ratio (%)', angle: -90, position: 'insideRight', dx: 10 }}
+        tick={{ fill: '#ffa500' }}
+      />
+      <Tooltip
+        formatter={(value, name) =>
+          name === 'AVG' ? `${(Number(value) * 100).toFixed(2)}%` : value
+        }
+      />
       <Legend
         layout="horizontal"
         verticalAlign="bottom"

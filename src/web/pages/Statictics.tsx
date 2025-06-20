@@ -14,7 +14,7 @@ const StatisticsCharts = () => {
   );
 
   const bestGenresData: GenreChartData[] = (bestGenres.data ?? []).map(
-    ({ genre, review_count }) => ({ genre, review_count }),
+    ({ genre, review_count, avg_score }) => ({ genre, review_count, avg_score }),
   );
 
   const bestReviewedGamesData: GamesChartData[] = (bestReviewedGames.data ?? []).map(
