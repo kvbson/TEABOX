@@ -28,7 +28,7 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
       url.searchParams.append(key, String(value));
     });
 
-    console.log('Web making request to: ', url);
+    // console.log('Web making request to: ', url);
 
     const response = await fetch(url, {
       method: 'GET',
@@ -48,7 +48,7 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
       return { data: null, error: json };
     }
     const data: ApiResponse<T> = await response.json();
-    console.log('Web API response:', data);
+    // console.log('Web API response:', data);
     if (Array.isArray(data.data)) {
       return { ...data, data: data.data.slice(0, params.limit || 100) as T };
     }

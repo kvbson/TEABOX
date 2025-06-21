@@ -9,11 +9,11 @@ export const useTopmostTags = () => {
   useEffect(() => {
     const fetchTopmostTags = async () => {
       setLoading(true);
-      console.log('[TopmostTags] Fetching...');
+      // console.log('[TopmostTags] Fetching...');
       const { data, error } = await callServer<string[], any>('topmostTags', {});
-      console.log('[TopmostTags] API response:', data);
+      // console.log('[TopmostTags] API response:', data);
       if (error) {
-        console.log(`[TopmostTags] Failed fetching topmost tags. Error: ${error instanceof Error ? error.message : String(error)}`);
+        // console.log(`[TopmostTags] Failed fetching topmost tags. Error: ${error instanceof Error ? error.message : String(error)}`);
         setError(error);
       }
       if (data) {

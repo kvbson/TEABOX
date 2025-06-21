@@ -10,11 +10,11 @@ export const useGameInfo = (appId: number | string) => {
   useEffect(() => {
     const fetchGameInfo = async () => {
       setLoading(true);
-      console.log('[GameInfo] Fetching for appId:', appId);
+      // console.log('[GameInfo] Fetching for appId:', appId);
       const { data, error } = await callServer('gameInfo', { appId }) as any;
-      console.log('[GameInfo] API response:', data);
+      // console.log('[GameInfo] API response:', data);
       if (error) {
-        console.log(`[GameInfo] Failed fetching game. Error: ${error instanceof Error ? error.message : String(error)}`);
+        // console.log(`[GameInfo] Failed fetching game. Error: ${error instanceof Error ? error.message : String(error)}`);
         setError(error);
       }
       if (data?.[appId]) {

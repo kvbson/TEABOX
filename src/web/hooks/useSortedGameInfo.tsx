@@ -11,11 +11,11 @@ export const useSortedGameInfo = (sidebarTags: string[]) => {
     const fetchGameInfo = async () => {
       if (sidebarTags.length > 0) {
         setLoading(true);
-        console.log('[SortedGameInfo] Fetching for tags:', sidebarTags);
+        // console.log('[SortedGameInfo] Fetching for tags:', sidebarTags);
         const games = await callServer('sortedGameInfo', { sidebarTags });
-        console.log('[SortedGameInfo] API response:', (games.data as any || []).slice(0, 20));
+        // console.log('[SortedGameInfo] API response:', (games.data as any || []).slice(0, 20));
         if (error) {
-          console.log(`[SortedGameInfo] Failed fetching games info. Error: ${error instanceof Error ? error.message : String(error)}`);
+          // console.log(`[SortedGameInfo] Failed fetching games info. Error: ${error instanceof Error ? error.message : String(error)}`);
           setError(error);
         }
         if (games.data) {
@@ -30,5 +30,5 @@ export const useSortedGameInfo = (sidebarTags: string[]) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sidebarTags]);
 
-  return { data, loading, error };
+  return { data, loading, error, setLoading };
 };

@@ -37,11 +37,19 @@ prosNCons.get('/prosNCons', async (req, res) => {
         data,
       });
     } else {
-      res.status(200).json({ pros: [], cons: [] });
+      // dont want to throw error here, high chance of no pros and cons - if not it will use pros n cons from DB
+      res.status(200).json({
+        success: false,
+        data: { pros: [], cons: [] },
+      });
 
     }
   } catch {
-    res.status(200).json({ pros: [], cons: [] });
+    // same
+    res.status(200).json({
+      success: false,
+      data: { pros: [], cons: [] },
+    });
   }
 });
 

@@ -13,7 +13,7 @@ interface RecommendationsProps {
 }
 
 const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setError, sidebarTags }) => {
-  const { data, error, loading } = useSortedGameInfo(sidebarTags);
+  const { data, error, loading, setLoading } = useSortedGameInfo(sidebarTags);
   const [enrichedGame, setEnrichedGame] = useState<typeof data[0] & { pros?: string[]; cons?: string[] } | null>(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
   useEffect(() => {
     const fetchProsNCons = async () => {
       try {
-
+        setLoading(true);
         const { data: prosNCons } = await callServer('prosNCons', {
           appId: data[selectedGameIndex].steam_appid.toString(),
         }) as any;
@@ -38,11 +38,11 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
         }
         const fullGame = {
           ...data[selectedGameIndex],
-          pros,
-          cons,
+          pros: pros.length > 0 ? pros : data[selectedGameIndex].pros,
+          cons: cons.length > 0 ? cons : data[selectedGameIndex].cons,
         };
-        console.log('[Recommendations] Pros and cons fetched:', fullGame);
         setEnrichedGame(fullGame as any);
+        setLoading(false);
       } catch {
         setEnrichedGame(null);
       }
