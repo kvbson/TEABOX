@@ -30,15 +30,19 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PREFIX = '/api/steam';
 const PORT = process.env.PORT || 8080;
-const allowedOrigins =
-  process.env.NODE_ENV === 'development'
-    ? ['https://localhost:5173'] //vite dev server
-    : ['https://emerald-water-462206-d0.lm.r.appspot.com', ...(process.env.DOMAIN ? [process.env.DOMAIN] : [])];
 
+// set for google app engine
 app.set('trust proxy', true);
+
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const devOrigins = ['http://localhost:5173', 'https://localhost:5173', 'http://127.0.0.1:5173'];
+    if (
+      !origin || // same-origin / tools
+      process.env.NODE_ENV === 'production' || // prod: same origin expected
+      (isDev && devOrigins.includes(origin)) // dev: allow Vite
+    ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
