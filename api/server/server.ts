@@ -62,12 +62,6 @@ for (const route of routes) {
   app.use(PREFIX, route);
 }
 
-//HEALTH CHECK
-app.get('/_ah/health', (_, res) => {
-  console.log('Server status - OK');
-  res.status(200).json({ status: 'OK', dbState: mongoose.connection.readyState });
-});
-
 app.use('/api/bigquery', bigQueryData);
 
 //SERVE STATIC FILES
