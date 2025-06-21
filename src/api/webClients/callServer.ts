@@ -48,6 +48,7 @@ export const callServer = async <T extends Record<string, unknown> | any[], M ex
       return { data: null, error: json };
     }
     const data: ApiResponse<T> = await response.json();
+    console.log('Web API response:', data);
     if (Array.isArray(data.data)) {
       return { ...data, data: data.data.slice(0, params.limit || 100) as T };
     }

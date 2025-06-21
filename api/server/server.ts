@@ -20,6 +20,7 @@ import userProfileData from './routes/user/GetProfileData.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
 import errorHandler from './routes/utils/errorHandler.js';
 import topmostTags from './routes/utils/getTopmostTags.js';
+import prosNCons from './routes/other/prosNCons.js';
 
 dotenv.config();
 
@@ -57,7 +58,7 @@ app.use(
 );
 
 //ROUTES
-const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags, topmostTags, sortedGameInfo];
+const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags, topmostTags, sortedGameInfo, prosNCons];
 for (const route of routes) {
   app.use(PREFIX, route);
 }
