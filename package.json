@@ -14,7 +14,7 @@
     "dev": "concurrently -n CLIENT,SERVER,TYPECHECK -c purple,green,blue \"vite\" \"npm run dev:server\" \"npm run typecheck\"",
     "build": "npm run build:client && npm run build:server",
     "start": "node dist/api/server/server.js",
-    "deploy": "npm run lint && npx tsc --project tsconfig.app.json && npm run build && gcloud auth login && gcloud app deploy --quiet --project emerald-water-462206-d0"
+    "deploy": "npm run lint && npx tsc --project tsconfig.app.json && npm run build && gcloud auth login && gcloud app deploy --quiet --project=emerald-water-462206-d0"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
