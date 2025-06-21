@@ -35,8 +35,13 @@ app.set('trust proxy', true);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // dont need cors for production same origin requests
-    if (process.env.NODE_ENV === 'production' || !origin || origin === 'https://localhost:5173' /*vite dev server*/) {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const devOrigins = ['http://localhost:5173', 'https://localhost:5173', 'http://127.0.0.1:5173'];
+    if (
+      !origin || // same-origin / tools
+      process.env.NODE_ENV === 'production' || // prod: same origin expected
+      (isDev && devOrigins.includes(origin)) // dev: allow Vite
+    ) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
