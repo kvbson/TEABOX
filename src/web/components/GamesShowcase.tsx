@@ -1,9 +1,9 @@
-import DOMPurify from "dompurify";
-import React, { useEffect, useRef, useState } from "react";
-import "../css/gamesShowcase.css";
-import GameNav from "./GameNav";
-import LoadingOverlay from "./LoadingOverlay";
-import ScrollToTopButton from "./ui/ScrollToTopArror";
+import DOMPurify from 'dompurify';
+import React, { useEffect, useRef, useState } from 'react';
+import '../css/gamesShowcase.css';
+import GameNav from './GameNav';
+import LoadingOverlay from './LoadingOverlay';
+import ScrollToTopButton from './ui/ScrollToTopArror';
 
 interface GameShowcaseProps {
   appDetails: Record<string, any>;
@@ -22,14 +22,14 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
 }) => {
   const game = appDetails;
   const price =
-    game?.price_overview?.final_formatted ?? (game?.is_free ? "FREE" : "N/A");
+    game?.price_overview?.final_formatted ?? (game?.is_free ? 'FREE' : 'N/A');
 
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
   function decodeHTMLEntities(text: string): string {
-    const textarea = document.createElement("textarea");
+    const textarea = document.createElement('textarea');
     textarea.innerHTML = text;
     return textarea.value;
   }
@@ -49,7 +49,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   }, [game?.header_image]);
 
   const sanitizeHTML = (html: string | undefined) => ({
-    __html: DOMPurify.sanitize(decodeHTMLEntities(html || "")),
+    __html: DOMPurify.sanitize(decodeHTMLEntities(html || '')),
   });
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -73,12 +73,12 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   return (
     <div
       className={`recommendations-wrapper ${
-        sidebarOpened ? "sidebar-opened" : ""
+        sidebarOpened ? 'sidebar-opened' : ''
       }`}
     >
       <GameNav
-        className={`game-nav ${sidebarOpened ? "sidebar-opened" : ""}`}
-        title={game?.name || "Loading..."}
+        className={`game-nav ${sidebarOpened ? 'sidebar-opened' : ''}`}
+        title={game?.name || 'Loading...'}
         onPrev={onPrev}
         onNext={onNext}
       />
@@ -103,10 +103,10 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
           <div className="game-details">
             {game?.release_date?.date && (
               <p>
-                <strong>Released:</strong>{" "}
+                <strong>Released:</strong>{' '}
                 {new Date(
-                  game?.release_date?.date?.toString()
-                ).toLocaleDateString("de-DE")}
+                  game?.release_date?.date?.toString(),
+                ).toLocaleDateString('de-DE')}
               </p>
             )}
             {game?.metacritic?.score && (
@@ -127,10 +127,10 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
                 alt={`Cover art for ${game.name}`}
                 loading="eager"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/fallback-image.jpg";
+                  (e.target as HTMLImageElement).src = '/fallback-image.jpg';
                   setIsImageLoading(false);
                 }}
-                className={!isImageLoading ? "loaded" : ""}
+                className={!isImageLoading ? 'loaded' : ''}
               />
             )}
             <div className="price-tag" aria-label="Game price">
