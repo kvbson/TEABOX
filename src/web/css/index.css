@@ -1,7 +1,7 @@
 /* === FONT-FACE: Inter === */
 @font-face {
   font-family: "Inter";
-  src: url("/fonts/inter/Inter_18pt-Regular.ttf") format("truetype");
+  src: url("../../../public/assets/fonts/Inter_18pt-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -9,7 +9,7 @@
 
 @font-face {
   font-family: "Inter";
-  src: url("/fonts/inter/Inter_18pt-Bold.ttf") format("truetype");
+  src: url("../../../public/assets/fonts/Inter_18pt-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -18,7 +18,7 @@
 /* === FONT-FACE: Archivo === */
 @font-face {
   font-family: "Archivo";
-  src: url("/fonts/archivo/Archivo-Regular.ttf") format("truetype");
+  src: url("../../../public/assets/fonts/Archivo-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -26,7 +26,7 @@
 
 @font-face {
   font-family: "Archivo";
-  src: url("/fonts/archivo/Archivo-Bold.ttf") format("truetype");
+  src: url("../../../public/assets/fonts/Archivo-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
