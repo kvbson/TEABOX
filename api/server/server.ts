@@ -29,15 +29,14 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PREFIX = '/api/steam';
 const PORT = process.env.PORT || 8080;
-const allowedOrigins =
-  process.env.NODE_ENV === 'development'
-    ? ['https://localhost:5173'] //vite dev server
-    : ['https://teabox.games', 'https://emerald-water-462206-d0.lm.r.appspot.com', ...(process.env.DOMAIN ? [process.env.DOMAIN] : [])];
 
+// set for google app engine
 app.set('trust proxy', true);
+
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // dont need cors for production same origin requests
+    if (process.env.NODE_ENV === 'production' || !origin || origin === 'https://localhost:5173' /*vite dev server*/) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
