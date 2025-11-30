@@ -2,12 +2,12 @@
 // import Bottleneck from 'bottleneck';
 import { AnyBulkWriteOperation } from 'mongoose';
 import { getGameDetails, getReviews } from '../GetGameInfo.js';
-import { GameInfo, GameInfoSchemaType } from '../../../db/models/GameInfo.js';
-import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '../../../db/models/other/MissingAppIds.js';
-import { Reviews, ReviewsSchemaType } from '../../../db/models/Reviews.js';
-import { parseGameData } from '../../../db/utils/params/parseGameData.js';
-import { parseReviewData } from '../../../db/utils/params/parseReviewData.js';
+import { GameInfo, GameInfoSchemaType } from '../../../db/mongoDB/models/GameInfo.js';
+import { handleFailedAppId, handleFailedReviewAppId, MissingApp, MissingReviewApp } from '../../../db/mongoDB/models/other/MissingAppIds.js';
+import { Reviews, ReviewsSchemaType } from '../../../db/mongoDB/models/Reviews.js';
 import { GamesObj } from '../../../types/gameInfo.types.js';
+import { parseGameData } from '../../../db/mongoDB/utils/params/parseGameData.js';
+import { parseReviewData } from '../../../db/mongoDB/utils/params/parseReviewData.js';
 
 // const gameQueue = new Bottleneck({
 //   maxConcurrent: 1,

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { PipelineStage } from 'mongoose';
-import { GameInfo } from '../../../db/models/GameInfo.js';
+import { GameInfo } from '../../../db/mongoDB/models/GameInfo.js';
 
 export async function getTopmostTags({ limit = 15 }: { limit?: number } = {}) {
   const pipeline = [

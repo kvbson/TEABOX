@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { MissingApp } from '../../../db/models/other/MissingAppIds.js';
+import { MissingApp } from '../../../db/mongoDB/models/other/MissingAppIds.js';
 
 const missingIds = Router();
 

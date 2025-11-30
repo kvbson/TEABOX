@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-import { Tag } from '../db/models/Tags.js';
+import { Tag } from '../db/mongoDB/models/Tags.js';
 
 export async function scrapeTags() {
   const browser = await puppeteer.launch({ headless: true });
