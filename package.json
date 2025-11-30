@@ -13,15 +13,12 @@
     "typecheck": "npx tsc --noEmit --watch --project tsconfig.app.json --preserveWatchOutput",
     "dev": "concurrently -n CLIENT,SERVER,TYPECHECK -c purple,green,blue \"vite\" \"npm run dev:server\" \"npm run typecheck\"",
     "build": "npm run build:client && npm run build:server",
-    "start": "node dist/api/server/server.js",
-    "deploy": "npm run lint && npx tsc --project tsconfig.app.json && npm run build && gcloud auth login && gcloud app deploy --quiet --project=emerald-water-462206-d0"
+    "start": "node dist/api/server/server.js"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@google-cloud/bigquery": "^8.1.0",
-    "@google-cloud/firestore": "^7.11.1",
     "axios": "^1.10.0",
     "blurhash": "^2.0.5",
     "cors": "^2.8.5",
@@ -31,7 +28,6 @@
     "helmet": "^8.1.0",
     "mkcert": "^3.2.0",
     "mongoose": "^8.13.0",
-    "puppeteer": "^24.10.1",
     "react": "^19.0.0",
     "react-blurhash": "^0.3.0",
     "react-dom": "^19.0.0",
@@ -59,6 +55,7 @@
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
     "eslint": "^9.22.0",
+    "puppeteer": "^24.10.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",

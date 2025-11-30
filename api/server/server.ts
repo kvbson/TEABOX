@@ -28,6 +28,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PREFIX = '/api/steam';
 const PORT = process.env.PORT || 8080;
+const VITE_DEV_SERVER_URL = 'https://localhost:5173';
 
 // set for reverse proxy later
 // app.set('trust proxy', true);
@@ -35,7 +36,7 @@ const PORT = process.env.PORT || 8080;
 app.use(cors({
   origin: function (origin, callback) {
     const isDev = process.env.NODE_ENV !== 'production';
-    const devOrigins = ['http://localhost:5173', 'https://localhost:5173', 'http://127.0.0.1:5173'];
+    const devOrigins = ['http://localhost:5173', VITE_DEV_SERVER_URL, 'http://127.0.0.1:5173'];
     if (
       !origin || // same-origin / tools
       process.env.NODE_ENV === 'production' || // prod: same origin expected
@@ -118,6 +119,7 @@ async function startServer() {
     }, app).listen(PORT, () => {
       connectDB();
       console.log(`🔐 Dev server running at https://localhost:${PORT}`);
+      console.log(`🌐 Web Dev server running at ${VITE_DEV_SERVER_URL}`);
     });
 
   // Set server timeouts
