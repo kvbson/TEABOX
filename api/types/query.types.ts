@@ -1,0 +1,1 @@
+export type QueryTypes = 'bestPublishers' |'mostRatedGenres' | 'bestReviewedGames';

@@ -1,1 +1,0 @@
-export type BigQueryTypes = 'bestPublishers' |'mostRatedGenres' | 'bestReviewedGames';

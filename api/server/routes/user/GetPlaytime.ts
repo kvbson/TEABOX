@@ -13,7 +13,7 @@ export const getUserPlaytime = async (steamId: string, appId: string | number) =
     appid: appId,
     format: 'json',
   };
-  
+
   const { data } = await steamApi.get('IPlayerService/GetSingleGamePlaytime/v0001/', {
     params,
   });

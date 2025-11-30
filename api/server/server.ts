@@ -8,7 +8,6 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
 import { connectDB, mongoose } from '../db/connections.js';
-import bigQueryData from './routes/bigQuery/GetBigQueryData.js';
 import missingIds from './routes/db/GetMissingIds.js';
 import sortedGameInfo from './routes/db/GetSortedGameInfo.js';
 import gameInfo from './routes/GetGameInfo.js';
@@ -30,8 +29,8 @@ const app = express();
 const PREFIX = '/api/steam';
 const PORT = process.env.PORT || 8080;
 
-// set for google app engine
-app.set('trust proxy', true);
+// set for reverse proxy later
+// app.set('trust proxy', true);
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -65,8 +64,6 @@ const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, 
 for (const route of routes) {
   app.use(PREFIX, route);
 }
-
-app.use('/api/bigquery', bigQueryData);
 
 //SERVE STATIC FILES
 if (process.env.NODE_ENV === 'production') {
@@ -109,7 +106,7 @@ async function startServer() {
   if (process.env.NODE_ENV !== 'production' && (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`))) {
     await checkForCerts(KEY_FILE, CERT_FILE);
   }
-  // using 0.0.0.0 because server is behing reverse proxy (e.g. GCP App Engine)
+  // using 0.0.0.0 because server is behing reverse proxy in prod
   const server = process.env.NODE_ENV === 'production'
     ? app.listen(Number(PORT), '0.0.0.0', () => {
       connectDB();

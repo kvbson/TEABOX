@@ -1,6 +1,8 @@
-import { BigQueryTypes } from '../../../types/bigQuery.types.js';
+import { QueryTypes } from '../../../types/query.types.js';
 
-export const queries = (limit?: number): Record<BigQueryTypes, string> => {
+// TODO: maybe switch to mongoose queries??
+
+export const queries = (limit?: number): Record<QueryTypes, string> => {
   const limitCondition = limit ? `LIMIT ${limit}` : '';
 
   return {
