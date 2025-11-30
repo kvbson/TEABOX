@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import { Bounce, ToastContainer } from 'react-toastify';
 import { callServer } from '../api/webClients/callServer';
 import Header from './components/Header';
@@ -9,6 +14,7 @@ import ToastSuccess from './components/ToastSuccess';
 import PreferencesPage from './pages/Prefferences';
 import Recommendations from './pages/Recommendations';
 import StatisticsCharts from './pages/Statictics';
+import LoginPage from './pages/LoginPage';
 
 function App() {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -19,75 +25,99 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [sidebarTags, setSidebarTags] = useState<string[]>(selectedTags);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const steamId = '76561198199623266';
 
-  const toggleMenu = () => {
-    setSidebarOpened((prev) => !prev);
-  };
+  const toggleMenu = () => setSidebarOpened((prev) => !prev);
 
-  //TODO: poprawic - poprawic przeladowanie gier
-  const recommendationsComponents = <Recommendations
-    sidebarOpened={sidebarOpened}
-    setError={setError}
-    steamId={steamId}
-    sidebarTags={sidebarTags}
-  />;
+  const recommendationsComponents = (
+    <Recommendations
+      sidebarOpened={sidebarOpened}
+      setError={setError}
+      steamId={steamId}
+      sidebarTags={sidebarTags}
+    />
+  );
+
+  console.log('!@#!@#!@', isLoggedIn);
+
   return (
-    <div className="App">
-      <Router>
-        <Header onToggleMenu={toggleMenu} sidebarOpened={sidebarOpened} />
-        <Sidebar sidebarOpened={sidebarOpened} selectedTags={selectedTags} setSidebarTags={setSidebarTags} />
-        <ToastContainer
-          position="bottom-left"
-          autoClose={4000}
-          hideProgressBar
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable
-          pauseOnHover
-          theme="dark"
-          transition={Bounce}
+    <Router>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={4000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
+      {successSave && <ToastSuccess success={successSave} />}
+      {error && (
+        <ToastError
+          error={error instanceof Error ? error.message : String(error)}
         />
-        {successSave && <ToastSuccess success={successSave} />}
-        {error && <ToastError error={error instanceof Error ? error.message : String(error)} />}
+      )}
 
-        <Routes>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/user/recommendations" />
+            ) : (
+              <LoginPage onLogin={() => setIsLoggedIn(true)} />
+            )
+          }
+        />
+        {isLoggedIn && (
           <Route
-            path="/user/recommendations"
+            path="/user/*"
             element={
-              recommendationsComponents
+              <div>
+                <Header
+                  onToggleMenu={toggleMenu}
+                  sidebarOpened={sidebarOpened}
+                  onLogout={() => setIsLoggedIn(false)}
+                />
+                <Sidebar
+                  sidebarOpened={sidebarOpened}
+                  selectedTags={selectedTags}
+                  setSidebarTags={setSidebarTags}
+                />
+                <Routes>
+                  <Route
+                    path="recommendations"
+                    element={recommendationsComponents}
+                  />
+                  <Route
+                    path="preferences"
+                    element={
+                      <PreferencesPage
+                        getTags={() =>
+                          callServer<string[], any>('topmostTags', {
+                            limit: 60,
+                          })
+                        }
+                        selectedTags={selectedTags}
+                        setSelectedTags={setSelectedTags}
+                        setSuccessSave={setSuccessSave}
+                        setError={setError}
+                      />
+                    }
+                  />
+                  <Route path="statistics" element={<StatisticsCharts />} />
+                </Routes>
+              </div>
             }
           />
-          <Route
-            path="/"
-            element={
-              recommendationsComponents
-            }
-          />
-          <Route
-            path="/user/preferences"
-            element={
-              <PreferencesPage
-                getTags={() => callServer<string[], any>('topmostTags', { limit: 60 })}
-                selectedTags={selectedTags}
-                setSelectedTags={setSelectedTags}
-                setSuccessSave={setSuccessSave}
-                setError={setError}
-              />
-            }
-          />
-          <Route
-            path="/user/statistics"
-            element={
-              <StatisticsCharts
-              />
-            }
-          />
-        </Routes>
-      </Router>
-    </div>
+        )}
+      </Routes>
+    </Router>
   );
 }
 
