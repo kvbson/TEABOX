@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 999999;
-  background-color: var(--color-bg);
+  background-color: 'var(bg)';
   box-shadow: var(--shadow);
   display: flex;
   justify-content: space-between;
