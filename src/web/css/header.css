@@ -37,7 +37,7 @@
   display: flex;
   text-decoration: none;
   color: var(--color-primary);
-  font-size: var(--f-medium);
+  font-size: var(--f-small);
   transition: color 0.3s;
   align-items: center;
 }

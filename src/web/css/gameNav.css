@@ -2,13 +2,13 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   padding: 16px 32px;
   box-sizing: border-box;
 }
 @media screen and (min-width: 610px) {
   .game-nav.sidebar-opened {
-    padding-right: calc(32px + 235px); /* więcej miejsca na tytuł */
+    padding-right: calc(32px + 235px);
   }
 }
 
@@ -39,18 +39,17 @@
 }
 
 .game-title {
-  font-size: var(--f-xxlarge);
+  font-size: var(--f-xlarge);
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;
   margin: 0;
-  max-width: 50vw; /* <= ogranicza długość do połowy ekranu */
+  max-width: 50vw; 
   
   flex-shrink: 1;
 }
 
-/* Ukryj GameNav na mobilkach i tabletach */
 @media screen and (max-width: 1000px) {
   .game-nav {
     justify-content: center;
@@ -62,8 +61,8 @@
 
   .game-nav .game-title {
     max-width: 100% !important;
-    white-space: normal;      /* pozwala na zawijanie */
-    word-break: break-word;   /* zawija długie słowa */
+    white-space: normal;   
+    word-break: break-word;  
     overflow-wrap: break-word;
     line-height: 1.2;
     font-size: clamp(4vw, 7vw, 32px);

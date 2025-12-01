@@ -8,7 +8,7 @@ const TeaboxLogo = () => {
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "center",
-        gap: 1.5,
+        gap: 0.5,
       }}
     >
       <Box
@@ -20,7 +20,7 @@ const TeaboxLogo = () => {
           height: 48,
           objectFit: "contain",
           userSelect: "none",
-          transform: "translateY(-7px)", 
+          transform: "translateY(-6.5px)", 
         }}
       />
 
