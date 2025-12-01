@@ -2,7 +2,7 @@
   position: sticky;
   top: 0;
   z-index: 999999;
-  background-color: 'var(bg)';
+  background-color: var(--color-bg);
   box-shadow: var(--shadow);
   display: flex;
   justify-content: space-between;
@@ -148,4 +148,8 @@
   .arrow-button {
     display: flex;
   }
+}
+
+button {
+  color: var(--color-primary);
 }

@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({
           <Link to="/user/recommendations">RECOMMENDATIONS</Link>
           <Link to="/user/preferences">PREFERENCES</Link>
           <Link to="/user/statistics">STATISTICS</Link>
-          <button onClick={handleLogout}>LOG OUT</button>
+          <Link to="/" onClick={handleLogout}>LOG OUT</Link>
 
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight
