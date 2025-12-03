@@ -1,4 +1,4 @@
-import { ReviewsSchemaType } from '../db/models/Reviews.js';
+import { ReviewsSchemaType } from '../db/mongoDB/models/Reviews.js';
 
 /**
  * Represents a Steam review author's profile data.

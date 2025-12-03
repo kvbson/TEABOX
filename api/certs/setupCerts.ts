@@ -5,6 +5,7 @@ import path from 'node:path';
 export const CERTS_DIR = './api/certs/';
 export const CERT_FILE = 'localhost.crt';
 export const KEY_FILE = 'localhost-key.pem';
+export const AIVEN_FILE = 'aiven-ca.crt';
 
 async function generateCertificates(keyFile: string, certFile: string, next?: (message: string, error?: Error) => void) {
   try {
@@ -30,6 +31,9 @@ async function generateCertificates(keyFile: string, certFile: string, next?: (m
 }
 
 export async function checkForCerts(keyFile: string, certFile: string) {
+  if (!fs.existsSync(AIVEN_FILE)) {
+    throw new Error(`Missing Aiven CA file at api/certs. Please download it from your Aiven console or contact owner. Expected path: api/certs/${AIVEN_FILE}`);
+  }
   if (fs.existsSync(certFile) && fs.existsSync(keyFile)) {
     console.log('✅ TLS certificates already exist.');
   } else {

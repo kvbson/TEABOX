@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Tag } from '../../db/models/Tags.js';
+import { Tag } from '../../db/mongoDB/models/Tags.js';
 import { scrapeTags } from '../../utils/scrapeTags.js';
 
 export const getTags = async () => {
