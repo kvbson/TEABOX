@@ -1,9 +1,9 @@
-import { getMySqlConnection } from '../connections.js';
+import { getMySqlPool } from '../../connections.js';
 
 export async function prepareGameInfoSchema() {
-  const conn = await getMySqlConnection();
-
-  await conn.query(`
+  const pool = await getMySqlPool();
+  console.log('🔧 Preparing GameInfo schema...');
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS game_info (
       steam_appid INT PRIMARY KEY,
       name VARCHAR(255) NOT NULL,
@@ -17,7 +17,7 @@ export async function prepareGameInfoSchema() {
       capsule_image TEXT,
       blur_image TEXT,
       website TEXT,
-      controller_support ENUM('full','partial'),
+      controller_support TEXT,
       about_the_game TEXT,
       supported_languages TEXT,
       background TEXT,
@@ -42,41 +42,41 @@ export async function prepareGameInfoSchema() {
     );
   `);
 
-  await conn.query(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS game_categories (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      appid INT NOT NULL,
+      steam_appid INT NOT NULL,
       category_id INT,
       description TEXT,
-      FOREIGN KEY (appid) REFERENCES game_info(steam_appid)
+      FOREIGN KEY (steam_appid) REFERENCES game_info(steam_appid)
     );
   `);
 
-  await conn.query(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS game_genres (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      appid INT NOT NULL,
+      steam_appid INT NOT NULL,
       genre_id INT,
       description TEXT,
-      FOREIGN KEY (appid) REFERENCES game_info(steam_appid)
+      FOREIGN KEY (steam_appid) REFERENCES game_info(steam_appid)
     );
   `);
 
-  await conn.query(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS game_screenshots (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      appid INT NOT NULL,
+      steam_appid INT NOT NULL,
       screenshot_id INT,
       path_thumbnail TEXT,
       path_full TEXT,
-      FOREIGN KEY (appid) REFERENCES game_info(steam_appid)
+      FOREIGN KEY (steam_appid) REFERENCES game_info(steam_appid)
     );
   `);
 
-  await conn.query(`
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS game_movies (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      appid INT NOT NULL,
+      steam_appid INT NOT NULL,
       movie_id INT,
       name VARCHAR(255),
       thumbnail TEXT,
@@ -84,8 +84,16 @@ export async function prepareGameInfoSchema() {
       webm_max TEXT,
       mp4_480 TEXT,
       mp4_max TEXT,
-      highlight BOOLEAN,
-      FOREIGN KEY (appid) REFERENCES game_info(steam_appid)
+      FOREIGN KEY (steam_appid) REFERENCES game_info(steam_appid)
+    );
+  `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS game_publishers (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      steam_appid INT NOT NULL,
+      publisher_name VARCHAR(255),
+      FOREIGN KEY (steam_appid) REFERENCES game_info(steam_appid)
     );
   `);
   console.log('✅ GameInfo schema prepared.');

@@ -19,7 +19,7 @@ import userProfileData from './routes/user/GetProfileData.js';
 import userRecentGames from './routes/user/GetRecentGames.js';
 import errorHandler from './routes/utils/errorHandler.js';
 import topmostTags from './routes/utils/getTopmostTags.js';
-import { getMySqlConnection } from '../db/mysql/connections.js';
+import { getMySqlPool } from '../db/mysql/connections.js';
 // import { get } from 'mongoose';
 
 dotenv.config();
@@ -113,15 +113,15 @@ async function startServer() {
   const server = process.env.NODE_ENV === 'production'
     ? app.listen(Number(PORT), '0.0.0.0', () => {
       // connectDB();
-      getMySqlConnection();
+      // getMySqlPool();
       console.log(`✅ Server running on port ${PORT}`);
     })
     : https.createServer({
       cert: fs.readFileSync(`${CERTS_DIR}${CERT_FILE}`),
       key: fs.readFileSync(`${CERTS_DIR}${KEY_FILE}`),
     }, app).listen(PORT, () => {
-      // connectDB();
-      getMySqlConnection();
+        // connectDB();
+      getMySqlPool();
       console.log(`🔐 Dev server running at https://localhost:${PORT}`);
       console.log(`🌐 Web Dev server running at ${VITE_DEV_SERVER_URL}`);
     });
@@ -135,8 +135,8 @@ async function startServer() {
     console.log('Shutting down server...');
     // mongoose.connection.close(false);
     // console.log('ℹ️  MongoDB connection closed');
-    getMySqlConnection().then(conn => {
-      conn.end();
+    getMySqlPool().then(pool => {
+      pool.end();
     });
 
     server.close(() => {
