@@ -7,20 +7,27 @@ import https from 'node:https';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
+import { createMySQLSessionStore, setupSession } from './session/setupSession.js';
 // import { connectDB, mongoose } from '../db/mongoDB/connections.js';
 import missingIds from './routes/db/GetMissingIds.js';
 import sortedGameInfo from './routes/db/GetSortedGameInfo.js';
 import gameInfo from './routes/GetGameInfo.js';
 import tags from './routes/GetTags.js';
-import userBadges from './routes/user/GetBadges.js';
-import userOwnedGames from './routes/user/GetOwnedGames.js';
-import userPlaytime from './routes/user/GetPlaytime.js';
-import userProfileData from './routes/user/GetProfileData.js';
-import userRecentGames from './routes/user/GetRecentGames.js';
+import userBadges from './routes/steamUser/GetBadges.js';
+import userOwnedGames from './routes/steamUser/GetOwnedGames.js';
+import userPlaytime from './routes/steamUser/GetPlaytime.js';
+import userProfileData from './routes/steamUser/GetProfileData.js';
+import userRecentGames from './routes/steamUser/GetRecentGames.js';
 import errorHandler from './routes/utils/errorHandler.js';
 import topmostTags from './routes/utils/getTopmostTags.js';
 import { getMySqlPool } from '../db/mysql/connections.js';
 import { connectDB } from '../db/mongoDB/connections.js';
+import addUser from './routes/mysql/addUser.js';
+import deleteUser from './routes/mysql/deleteUser.js';
+import getUser from './routes/mysql/getUser.js';
+import loginUser from './routes/mysql/loginUser.js';
+import logoutUser from './routes/mysql/logoutUser.js';
+import meUser from './routes/mysql/meUser.js';
 // import { get } from 'mongoose';
 
 dotenv.config();
@@ -62,9 +69,14 @@ app.use(
     },
   }),
 );
+const sessionStore = await createMySQLSessionStore();
+if (sessionStore !== null) {
+  const session = setupSession(sessionStore);
+  app.use(session);
+}
 
 //ROUTES
-const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags, topmostTags, sortedGameInfo];
+const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags, topmostTags, sortedGameInfo, addUser, deleteUser, getUser, loginUser, logoutUser, meUser];
 for (const route of routes) {
   app.use(PREFIX, route);
 }
@@ -110,11 +122,11 @@ async function startServer() {
   if (process.env.NODE_ENV !== 'production' && (!fs.existsSync(`${CERTS_DIR}${CERT_FILE}`) || !fs.existsSync(`${CERTS_DIR}${KEY_FILE}`))) {
     await checkForCerts(KEY_FILE, CERT_FILE);
   }
+
   // using 0.0.0.0 because server is behing reverse proxy in prod
   const server = process.env.NODE_ENV === 'production'
     ? app.listen(Number(PORT), '0.0.0.0', () => {
       // connectDB();
-      // getMySqlPool();
       console.log(`✅ Server running on port ${PORT}`);
     })
     : https.createServer({
@@ -124,7 +136,7 @@ async function startServer() {
       console.log(`🔐 Dev server running at https://localhost:${PORT}`);
       console.log(`🌐 Web Dev server running at ${VITE_DEV_SERVER_URL}`);
       connectDB();
-      getMySqlPool();
+
     });
 
   // Set server timeouts
