@@ -20,6 +20,7 @@ import userRecentGames from './routes/user/GetRecentGames.js';
 import errorHandler from './routes/utils/errorHandler.js';
 import topmostTags from './routes/utils/getTopmostTags.js';
 import { getMySqlPool } from '../db/mysql/connections.js';
+import { connectDB } from '../db/mongoDB/connections.js';
 // import { get } from 'mongoose';
 
 dotenv.config();
@@ -120,10 +121,10 @@ async function startServer() {
       cert: fs.readFileSync(`${CERTS_DIR}${CERT_FILE}`),
       key: fs.readFileSync(`${CERTS_DIR}${KEY_FILE}`),
     }, app).listen(PORT, () => {
-        // connectDB();
-      getMySqlPool();
       console.log(`🔐 Dev server running at https://localhost:${PORT}`);
       console.log(`🌐 Web Dev server running at ${VITE_DEV_SERVER_URL}`);
+      connectDB();
+      getMySqlPool();
     });
 
   // Set server timeouts
