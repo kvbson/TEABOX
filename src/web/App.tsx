@@ -15,6 +15,7 @@ import PreferencesPage from './pages/Prefferences';
 import Recommendations from './pages/Recommendations';
 import StatisticsCharts from './pages/Statictics';
 import LoginPage from './pages/LoginPage';
+import HomePage from './pages/HomePage';
 
 function App() {
   const [sidebarOpened, setSidebarOpened] = useState(false);
@@ -68,7 +69,7 @@ function App() {
           path="/"
           element={
             isLoggedIn ? (
-              <Navigate to="/user/recommendations" />
+              <Navigate to="/user/home" />
             ) : (
               <LoginPage onLogin={() => setIsLoggedIn(true)} />
             )
@@ -90,6 +91,10 @@ function App() {
                   setSidebarTags={setSidebarTags}
                 />
                 <Routes>
+                  <Route
+                    path="home"
+                    element={<HomePage />}
+                  />
                   <Route
                     path="recommendations"
                     element={recommendationsComponents}
