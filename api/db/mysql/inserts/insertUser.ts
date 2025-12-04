@@ -1,5 +1,6 @@
 import { getMySqlPool } from '../connections.js';
 import { normalizeValue, parse10Int } from '../utils/functions.js';
+import { getOutId } from '../utils/getOutId.js';
 
 export type UserSchemaType = {
     steam_appid: number | null;
@@ -14,12 +15,14 @@ export async function insertUser(user: UserSchemaType) {
   }
 
   const pool = await getMySqlPool();
-  await pool.query(
-    'REPLACE INTO users SET ?',
+  const response = await pool.query(
+    'INSERT INTO users SET ?',
     [{
       steam_appid: parse10Int(user.steam_appid),
       email: normalizeValue(user.email),
       password_hash: normalizeValue(user.password_hash),
     }],
   );
+  const outId = getOutId(response);
+  return outId;
 }
