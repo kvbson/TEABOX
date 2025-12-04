@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
-import { getUserByEmail } from './getUser.js';
+import { getUserByEmail } from './get/byEmail.js';
 
 const loginUser = Router();
 
@@ -31,7 +31,7 @@ loginUser.post('/dbUser/login', async (req, res) => {
   sess.userId = user.id;
   sess.email = user.email;
 
-  res.json({ ok: true, userId: user.id, login: user.login });
+  res.json({ ok: true, userId: user.id });
 });
 
 export default loginUser;
