@@ -9,25 +9,10 @@ import { fileURLToPath } from 'node:url';
 import { CERT_FILE, CERTS_DIR, checkForCerts, KEY_FILE } from '../certs/setupCerts.js';
 import { createMySQLSessionStore, setupSession } from './session/setupSession.js';
 // import { connectDB, mongoose } from '../db/mongoDB/connections.js';
-import missingIds from './routes/db/GetMissingIds.js';
-import sortedGameInfo from './routes/db/GetSortedGameInfo.js';
-import gameInfo from './routes/GetGameInfo.js';
-import tags from './routes/GetTags.js';
-import userBadges from './routes/steamUser/GetBadges.js';
-import userOwnedGames from './routes/steamUser/GetOwnedGames.js';
-import userPlaytime from './routes/steamUser/GetPlaytime.js';
-import userProfileData from './routes/steamUser/GetProfileData.js';
-import userRecentGames from './routes/steamUser/GetRecentGames.js';
 import errorHandler from './routes/utils/errorHandler.js';
-import topmostTags from './routes/utils/getTopmostTags.js';
 import { getMySqlPool } from '../db/mysql/connections.js';
 import { connectDB } from '../db/mongoDB/connections.js';
-import addUser from './routes/mysql/addUser.js';
-import deleteUser from './routes/mysql/deleteUser.js';
-import getUser from './routes/mysql/getUser.js';
-import loginUser from './routes/mysql/loginUser.js';
-import logoutUser from './routes/mysql/logoutUser.js';
-import meUser from './routes/mysql/meUser.js';
+import { getRoutes } from './routes/getRoutes.js';
 // import { get } from 'mongoose';
 
 dotenv.config();
@@ -76,7 +61,7 @@ if (sessionStore !== null) {
 }
 
 //ROUTES
-const routes = [userPlaytime, userRecentGames, userOwnedGames, userProfileData, userBadges, gameInfo, missingIds, tags, topmostTags, sortedGameInfo, addUser, deleteUser, getUser, loginUser, logoutUser, meUser];
+const routes = getRoutes();
 for (const route of routes) {
   app.use(PREFIX, route);
 }
