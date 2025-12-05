@@ -22,15 +22,15 @@ const connectDB = async () => {
 };
 
 mongoose.connection.on('connected', () => {
-  console.log('✅ DB connected!');
+  console.log('✅ MongoDB connected!');
 });
 
 mongoose.connection.on('error', (err) => {
-  console.error('❌ Mongoose connection error:', err);
+  console.error('❌ MongoDB connection error:', err);
 });
 
 mongoose.connection.on('disconnected', () => {
-  console.log('Mongoose disconnected.');
+  console.log('MongoDB disconnected.');
 });
 
 export const disconnectDB = async (): Promise<void> => {
