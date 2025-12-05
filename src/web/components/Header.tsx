@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ArrowRight from '../components/ui/ArrowRight';
 import TeacupIcon from './ui/TeacupIcon';
-import { useNavigate } from 'react-router-dom';
 
 type HeaderProps = {
   onToggleMenu: () => void;
@@ -21,10 +20,10 @@ const Header: React.FC<HeaderProps> = ({
     setMobileMenuOpen((prev) => !prev);
   };
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const handleLogout = () => {
     onLogout(); // reset stanu logowania
-    navigate('/'); // przejście na LoginPage
+    // navigate('/user/statistics'); // przejście na LoginPage
   };
 
   return (
@@ -39,7 +38,9 @@ const Header: React.FC<HeaderProps> = ({
           <Link to="/user/recommendations">RECOMMENDATIONS</Link>
           <Link to="/user/preferences">PREFERENCES</Link>
           <Link to="/user/statistics">STATISTICS</Link>
-          <Link to="/" onClick={handleLogout}>LOG OUT</Link>
+          <Link to="/" onClick={handleLogout}>
+            LOG OUT
+          </Link>
 
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight

@@ -15,7 +15,7 @@ export async function createMySQLSessionStore() {
       schema: {
         tableName: 'sessions',
         columnNames: {
-          session_id: sessionName,
+          session_id: 'session_id',
           expires: 'expires',
           data: 'data',
         },

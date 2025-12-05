@@ -15,8 +15,10 @@ import PreferencesPage from './pages/Prefferences';
 import Recommendations from './pages/Recommendations';
 import StatisticsCharts from './pages/Statictics';
 import LoginPage from './pages/LoginPage';
+import { useAuth } from './hooks/useAuth';
 
 function App() {
+  const { isLoggedIn, handleLogin } = useAuth();
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
@@ -25,7 +27,6 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [sidebarTags, setSidebarTags] = useState<string[]>(selectedTags);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const steamId = '76561198199623266';
 
   const toggleMenu = () => setSidebarOpened((prev) => !prev);
@@ -70,7 +71,7 @@ function App() {
             isLoggedIn ? (
               <Navigate to="/user/recommendations" />
             ) : (
-              <LoginPage onLogin={() => setIsLoggedIn(true)} />
+              <LoginPage handleLogin={handleLogin} />
             )
           }
         />
@@ -82,7 +83,7 @@ function App() {
                 <Header
                   onToggleMenu={toggleMenu}
                   sidebarOpened={sidebarOpened}
-                  onLogout={() => setIsLoggedIn(false)}
+                  onLogout={() => handleLogin('', '')}
                 />
                 <Sidebar
                   sidebarOpened={sidebarOpened}

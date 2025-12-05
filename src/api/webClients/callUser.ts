@@ -6,7 +6,7 @@ const PATHS: Record<CallUserParams['mode'], string> = {
   GET_USER_BY_ID: '/dbUser/get/id',
   GET_USER_BY_EMAIL: '/dbUser/get/email',
   DELETE_USER: '/dbUser/delete',
-  LOGOUT_USER : '/dbUser/logout',
+  LOGOUT_USER: '/dbUser/logout',
   CHECK_USER_SESSION: '/dbUser/me',
 } as const;
 
@@ -16,12 +16,12 @@ const REQUIRED_FIELDS: Record<CallUserParams['mode'], string[]> = {
   GET_USER_BY_EMAIL: ['email'],
   GET_USER_BY_ID: ['userId'],
   DELETE_USER: ['userId'],
-  LOGOUT_USER : [],
-  CHECK_USER_SESSION : [],
+  LOGOUT_USER: [],
+  CHECK_USER_SESSION: [],
 };
 
 const expressServerUrl =
-  import.meta.env.VITE_SERVER_URL || 'https://localhost:8081';
+  import.meta.env.VITE_SERVER_URL || 'https://localhost:8080';
 
 export async function callUser(
   params: CallUserParams,
@@ -46,12 +46,16 @@ export async function callUser(
   }
 
   try {
+    console.log(url);
+
     const response = await fetch(url.toString(), {
       method,
       headers,
       body,
       credentials: 'include',
     });
+
+    console.log(response);
 
     const json = await response.json().catch(() => ({}));
     return {

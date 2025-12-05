@@ -16,24 +16,6 @@ export const useAuth = (): UseAuthResult => {
   const [currentUserId, setCurrentUserId] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginStatus, setLoginStatus] = useState('');
-  // const [files, setFiles] = useState<string[]>([]);
-
-  // const fetchFiles = useCallback(async () => {
-  //   if (!isLoggedIn) {
-  //     setFiles([]);
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await callUser({ mode: 'LIST_FILES', method: 'GET' });
-  //     console.log(response);
-  //     if (response.success && Array.isArray(response.data.params.files)) {
-  //       setFiles(response.data.params.files);
-  //     }
-  //   } catch (error) {
-  //     console.error('Failed to fetch files:', error);
-  //   }
-  // }, [isLoggedIn]);
 
   const checkSession = useCallback(async () => {
     try {
@@ -82,8 +64,7 @@ export const useAuth = (): UseAuthResult => {
           email,
         });
 
-        //         const userNotFound = !userCheck.success || userCheck.data?.length === 0;
-
+        const userNotFound = !userCheck.success || userCheck.data?.length === 0;
         if (userNotFound && isRegister) {
           setLoginStatus('Creating user...');
           await callUser({
@@ -102,6 +83,8 @@ export const useAuth = (): UseAuthResult => {
           password,
         });
 
+        console.log('$$', loginRes);
+
         if (loginRes.success) {
           setIsLoggedIn(true);
           setCurrentUserId(loginRes.data.userId);
@@ -109,7 +92,7 @@ export const useAuth = (): UseAuthResult => {
         } else {
           setLoginStatus(
             '❌ Login failed.' +
-              (loginRes.status === 401 ? ' Incorrect credentials.' : '')
+              (loginRes.status === 401 ? ' Incorrect credentials.' : ''),
           );
         }
       } catch (err) {
@@ -117,12 +100,12 @@ export const useAuth = (): UseAuthResult => {
         setLoginStatus('❌ Unexpected error');
       }
     },
-    [isLoggedIn]
+    [isLoggedIn],
   );
 
-  //   useEffect(() => {
-  //     checkSession();
-  //   }, [checkSession]);
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
 
   return {
     currentUserId,

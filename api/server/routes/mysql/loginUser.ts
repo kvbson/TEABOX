@@ -6,7 +6,7 @@ const loginUser = Router();
 
 loginUser.post('/dbUser/login', async (req, res) => {
   const sess = (req as any).session;
-  if (sess) {
+  if (!sess) {
     res.status(500).json({ error: 'Session not found' });
     return;
   }
@@ -16,7 +16,7 @@ loginUser.post('/dbUser/login', async (req, res) => {
     return;
   }
 
-  const user = await getUserByEmail(email) as Record<string, any> | null;
+  const user = (await getUserByEmail(email)) as Record<string, any> | null;
   if (!user) {
     res.status(401).json({ error: 'User not found in DB' });
     return;
