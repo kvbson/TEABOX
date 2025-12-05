@@ -21,7 +21,7 @@ const REQUIRED_FIELDS: Record<CallUserParams['mode'], string[]> = {
 };
 
 const expressServerUrl =
-  import.meta.env.VITE_SERVER_URL || 'https://localhost:8080';
+  import.meta.env.VITE_SERVER_URL || 'https://localhost:8081';
 
 export async function callUser(
   params: CallUserParams,
@@ -46,16 +46,12 @@ export async function callUser(
   }
 
   try {
-    console.log(url);
-
     const response = await fetch(url.toString(), {
       method,
       headers,
       body,
       credentials: 'include',
     });
-
-    console.log(response);
 
     const json = await response.json().catch(() => ({}));
     return {
