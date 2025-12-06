@@ -1,10 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
 import { callUser } from '../../api/webClients/callUser';
 
+type LoginStatus = {
+  type: 'success' | 'error';
+  message: string;
+};
 interface UseAuthResult {
   currentUserId: number;
   isLoggedIn: boolean;
-  loginStatus: string;
+  loginStatus: LoginStatus | null;
   handleLogin: (
     email: string,
     password: string,
@@ -16,7 +20,7 @@ interface UseAuthResult {
 export const useAuth = (): UseAuthResult => {
   const [currentUserId, setCurrentUserId] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginStatus, setLoginStatus] = useState('');
+  const [loginStatus, setLoginStatus] = useState<LoginStatus | null>(null);
 
   const checkSession = useCallback(async () => {
     try {
@@ -53,7 +57,7 @@ export const useAuth = (): UseAuthResult => {
     } finally {
       setIsLoggedIn(false);
       setCurrentUserId(0);
-      setLoginStatus('✅ Logged out.');
+      setLoginStatus({ type: 'success', message: 'Logged out.' });
     }
   }, []);
 
@@ -73,7 +77,7 @@ export const useAuth = (): UseAuthResult => {
 
         const userNotFound = !userCheck.success || userCheck.data?.length === 0;
         if (userNotFound && isRegister) {
-          setLoginStatus('Creating user...');
+          setLoginStatus({ type: 'success', message: 'Creating user...' });
           await callUser({
             mode: 'ADD_USER',
             method: 'POST',
@@ -95,16 +99,16 @@ export const useAuth = (): UseAuthResult => {
         if (loginRes.success) {
           setIsLoggedIn(true);
           setCurrentUserId(loginRes.data.userId);
-          setLoginStatus('✅ Logged in.');
+          setLoginStatus({ type: 'success', message: 'Logged in.' });
         } else {
-          setLoginStatus(
-            '❌ Login failed.' +
-              (loginRes.status === 401 ? ' Incorrect credentials.' : ''),
-          );
+          setLoginStatus({
+            type: 'error',
+            message: 'Login failed.' + (loginRes.status === 401 ? ' Incorrect credentials.' : ''),
+          });
         }
       } catch (err) {
         console.error(err);
-        setLoginStatus('❌ Unexpected error');
+        setLoginStatus({ type: 'error', message: 'Unexpected error' });
       }
     },
     [],
