@@ -1,8 +1,8 @@
-import express from 'express';
+import { Router } from 'express';
 
-const meUser = express.Router();
+const meUser = Router();
 
-meUser.get('/dbUser/session', (req, res) => {
+meUser.get('/dbUser/me', (req, res) => {
   const session = req.session as any;
   if (!session) {
     res.status(401).json({ error: 'Not authenticated' });
