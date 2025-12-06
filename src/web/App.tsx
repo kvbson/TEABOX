@@ -17,6 +17,7 @@ import StatisticsCharts from './pages/Statictics';
 import LoginPage from './pages/LoginPage';
 import { useAuth } from './hooks/useAuth';
 import RegisterPage from './pages/RegisterPage';
+import HomePage from './pages/HomePage';
 
 function App() {
   const { isLoggedIn, handleLogin, handleLogout } = useAuth();
@@ -69,7 +70,7 @@ function App() {
           path="/login"
           element={
             isLoggedIn ? (
-              <Navigate to="/user/recommendations" replace />
+              <Navigate to="/user/home" />
             ) : (
               <LoginPage handleLogin={handleLogin} />
             )
@@ -95,6 +96,10 @@ function App() {
                   setSidebarTags={setSidebarTags}
                 />
                 <Routes>
+                  <Route
+                    path="home"
+                    element={<HomePage />}
+                  />
                   <Route
                     path="recommendations"
                     element={recommendationsComponents}
