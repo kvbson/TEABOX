@@ -5,13 +5,14 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
 
 interface RecommendationsProps {
+  currentUserId: number;
   sidebarOpened: boolean;
   setError: React.Dispatch<React.SetStateAction<string | Error | null>>;
   steamId: string;
   sidebarTags: string[];
 }
 
-const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setError, sidebarTags }) => {
+const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sidebarOpened, setError, sidebarTags }) => {
   const { data, error, loading } = useSortedGameInfo(sidebarTags);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
     <div className="mt-10">
       {currentAppDetails && (
         <GamesShowcase
+          currentUserId={currentUserId}
           appDetails={currentAppDetails}
           isLoading={loading}
           onNext={handleNext}

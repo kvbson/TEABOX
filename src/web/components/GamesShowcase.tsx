@@ -6,6 +6,7 @@ import LoadingOverlay from './LoadingOverlay';
 import ScrollToTopButton from './ui/ScrollToTopArror';
 
 interface GameShowcaseProps {
+  currentUserId: number;
   appDetails: Record<string, any>;
   isLoading: boolean;
   sidebarOpened: boolean;
@@ -14,6 +15,7 @@ interface GameShowcaseProps {
 }
 
 const GamesShowcase: React.FC<GameShowcaseProps> = ({
+  currentUserId,
   appDetails,
   isLoading,
   sidebarOpened,
@@ -77,6 +79,8 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
       }`}
     >
       <GameNav
+        currentUserId={currentUserId}
+        steamapp_id={game.steam_appid}
         className={`game-nav ${sidebarOpened ? 'sidebar-opened' : ''}`}
         title={game?.name || 'Loading...'}
         onPrev={onPrev}

@@ -3,16 +3,18 @@ import { prepareGameInfoSchema } from './tables/prepareGameInfoSchema.js';
 import { prepareReviewsSchema } from './tables/prepareReviewSchema.js';
 import { prepareUserSchema } from './tables/prepareUserSchema.js';
 import { prepareTagsSchema } from './tables/prepareTagsSchema.js';
+import { prepareBannedGamesSchema } from './tables/prepareBannedGamesSchema.js';
 
 export const tableNames = {
   gameInfo: 'game_info',
   reviews: 'game_reviews',
   users: 'users',
   tags: 'tags',
+  bannedGames: 'banned_games',
 };
 
 export const initializeMySqlDB = async (pool: Pool, schemaName: string) => {
-  const { gameInfo, reviews, users, tags } = tableNames;
+  const { gameInfo, reviews, users, tags, bannedGames } = tableNames;
 
   await pool.query(`CREATE DATABASE IF NOT EXISTS \`${schemaName}\`;`);
   await pool.query(`USE \`${schemaName}\`;`);
@@ -29,6 +31,9 @@ export const initializeMySqlDB = async (pool: Pool, schemaName: string) => {
   }
   if (!await checkTable(tags)) {
     await prepareTagsSchema();
+  }
+  if (!await checkTable(bannedGames)) {
+    await prepareBannedGamesSchema();
   }
 };
 

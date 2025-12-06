@@ -30,7 +30,7 @@ const toastProperties: ToastOptions = {
 };
 
 function App() {
-  const { isLoggedIn, loginStatus, handleLogin, handleLogout } = useAuth();
+  const { isLoggedIn, loginStatus, handleLogin, handleLogout, currentUserId } = useAuth();
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
@@ -45,6 +45,7 @@ function App() {
 
   const recommendationsComponents = (
     <Recommendations
+      currentUserId={currentUserId}
       sidebarOpened={sidebarOpened}
       setError={setError}
       steamId={steamId}
