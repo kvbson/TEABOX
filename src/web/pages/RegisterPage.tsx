@@ -1,17 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Box,
   Button,
   Container,
+  FormControl,
+  FormHelperText,
   Paper,
   TextField,
   Typography,
 } from '@mui/material';
 import TeaboxLogo from '../components/ui/TeaboxLogo';
-import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 
-export interface LoginPageProps {
+export interface RegisterPageProps {
   handleLogin: (
     username: string,
     password: string,
@@ -35,18 +36,28 @@ const inputStyles = {
   },
 };
 
-const LoginPage: React.FC<LoginPageProps> = ({ handleLogin }) => {
-  const loginInputRef = useRef<HTMLInputElement | null>(null);
+const RegisterPage: React.FC<RegisterPageProps> = ({ handleLogin }) => {
+  const emailInputRef = useRef<HTMLInputElement | null>(null);
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeat, setRepeat] = useState('');
+  const passwordsMatch = password === repeat;
+
+  const isValidEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const isDisabled = email.length === 0 ||
+    password.length === 0 ||
+    repeat.length === 0 ||
+    !passwordsMatch;
 
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault(); // zatrzymuje domyślne submitowanie formularza
-    const username = loginInputRef.current?.value || '';
+    const username = emailInputRef.current?.value || '';
     const password = passwordInputRef.current?.value || '';
-
-    await handleLogin(username, password);
-    // jeśli rejestracja się udała, wracamy do login
-    // navigate('/');
+    await handleLogin(username, password, true);
   };
   const navigate = useNavigate();
 
@@ -95,52 +106,59 @@ const LoginPage: React.FC<LoginPageProps> = ({ handleLogin }) => {
           </Box>
 
           <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              inputRef={loginInputRef}
-              placeholder="Email"
-              fullWidth
-              // value={login}
-              // onChange={(e) => setLogin(e.target.value)}
-              sx={inputStyles}
-            />
+            <FormControl fullWidth sx={{ ...inputStyles }}>
+              <TextField
+                inputRef={emailInputRef}
+                placeholder="Email"
+                fullWidth
+                sx={inputStyles}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <FormHelperText error sx={{ height: '20px' }}>
+                {email.length > 0 && !isValidEmail(email) ? 'Niepoprawny adres e-mail' : ''}
+              </FormHelperText>
+            </FormControl>
 
             <TextField
-              inputRef={passwordInputRef}
               type="password"
               placeholder="Password"
               fullWidth
-              // value={password}
-              // onChange={(e) => setPassword(e.target.value)}
               sx={inputStyles}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
-            {/* <Button
-              variant="contained"
-              size="large"
-              fullWidth
-              sx={{
-                mt: 1,
-                bgcolor: 'primary.main',
-                '&:hover': { bgcolor: 'primary.dark' },
-              }}
-              onClick={handleLogin('a', 'a')}
-            >
-              Sign in
-            </Button> */}
+            <FormControl fullWidth sx={{ ...inputStyles }}>
+              <TextField
+                inputRef={passwordInputRef}
+                type="password"
+                placeholder="Repeat password"
+                onChange={(e) => setRepeat(e.target.value)}
+                error={repeat.length > 0 && !passwordsMatch}
+              />
+              <FormHelperText error sx={{ height: '20px' }}>
+                {repeat.length > 0 && !passwordsMatch ? 'Hasła nie są takie same' : ''}
+              </FormHelperText>
+            </FormControl>
+
             <Button
               type="submit"
               variant="contained"
               fullWidth
               onClick={onLogin}
+              disabled={isDisabled}
             >
-              Login
+      Register
             </Button>
-            <Typography sx={{ mt: 2 }}>
-                Don't have an account?{' '}
-              <Link component='button' onClick={() => navigate('/register')}>
-                  Register
-              </Link>
-            </Typography>
+
+            <Button
+              type="button"
+              variant="contained"
+              fullWidth
+              onClick={() => navigate('/')}
+            >
+      Back to login
+            </Button>
           </Box>
         </Paper>
       </Container>
@@ -148,4 +166,4 @@ const LoginPage: React.FC<LoginPageProps> = ({ handleLogin }) => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

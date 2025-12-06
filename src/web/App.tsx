@@ -16,9 +16,10 @@ import Recommendations from './pages/Recommendations';
 import StatisticsCharts from './pages/Statictics';
 import LoginPage from './pages/LoginPage';
 import { useAuth } from './hooks/useAuth';
+import RegisterPage from './pages/RegisterPage';
 
 function App() {
-  const { isLoggedIn, handleLogin } = useAuth();
+  const { isLoggedIn, handleLogin, handleLogout } = useAuth();
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
@@ -39,8 +40,6 @@ function App() {
       sidebarTags={sidebarTags}
     />
   );
-
-  console.log('!@#!@#!@', isLoggedIn);
 
   return (
     <Router>
@@ -65,15 +64,20 @@ function App() {
       )}
 
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route
-          path="/"
+          path="/login"
           element={
             isLoggedIn ? (
-              <Navigate to="/user/recommendations" />
+              <Navigate to="/user/recommendations" replace />
             ) : (
               <LoginPage handleLogin={handleLogin} />
             )
           }
+        />
+        <Route
+          path="/register"
+          element={<RegisterPage handleLogin={handleLogin} />}
         />
         {isLoggedIn && (
           <Route
@@ -83,7 +87,7 @@ function App() {
                 <Header
                   onToggleMenu={toggleMenu}
                   sidebarOpened={sidebarOpened}
-                  onLogout={() => handleLogin('', '')}
+                  onLogout={handleLogout}
                 />
                 <Sidebar
                   sidebarOpened={sidebarOpened}

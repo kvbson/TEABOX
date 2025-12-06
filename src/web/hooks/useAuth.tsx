@@ -8,8 +8,9 @@ interface UseAuthResult {
   handleLogin: (
     email: string,
     password: string,
-    isRegister?: boolean
+    isRegister?: boolean,
   ) => Promise<void>;
+  handleLogout: () => void;
 }
 
 export const useAuth = (): UseAuthResult => {
@@ -40,18 +41,24 @@ export const useAuth = (): UseAuthResult => {
     }
   }, []);
 
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await callUser({ mode: 'LOGOUT_USER', method: 'GET' });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoggedIn(false);
+      setCurrentUserId(0);
+      setLoginStatus('✅ Logged out.');
+    }
+  }, []);
+
   const handleLogin = useCallback(
     async (email: string, password: string, isRegister?: boolean) => {
-      if (isLoggedIn) {
-        // Logout
-        await callUser({ mode: 'LOGOUT_USER', method: 'GET' });
-        setIsLoggedIn(false);
-        setCurrentUserId(0);
-        setLoginStatus('✅ Logged out.');
-        // setFiles([]);
-        return;
-      }
-
       if (!email || !password) return;
 
       //       setLoginStatus('Logging in...');
@@ -100,17 +107,14 @@ export const useAuth = (): UseAuthResult => {
         setLoginStatus('❌ Unexpected error');
       }
     },
-    [isLoggedIn],
+    [],
   );
-
-  useEffect(() => {
-    checkSession();
-  }, [checkSession]);
 
   return {
     currentUserId,
     isLoggedIn,
     loginStatus,
     handleLogin,
+    handleLogout,
   };
 };

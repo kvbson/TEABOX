@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ArrowRight from '../components/ui/ArrowRight';
 import TeacupIcon from './ui/TeacupIcon';
 
 type HeaderProps = {
   onToggleMenu: () => void;
   sidebarOpened: boolean;
-  onLogout: () => void;
+  onLogout: () => Promise<void> | void;
 };
 
 const Header: React.FC<HeaderProps> = ({
@@ -19,11 +19,11 @@ const Header: React.FC<HeaderProps> = ({
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
   };
+  const navigate = useNavigate();
 
-  // const navigate = useNavigate();
-  const handleLogout = () => {
-    onLogout(); // reset stanu logowania
-    // navigate('/user/statistics'); // przejście na LoginPage
+  const handleLogout = async () => {
+    await onLogout(); // wykonaj logout
+    navigate('/login', { replace: true }); // przekierowanie po wylogowaniu
   };
 
   return (
@@ -38,9 +38,9 @@ const Header: React.FC<HeaderProps> = ({
           <Link to="/user/recommendations">RECOMMENDATIONS</Link>
           <Link to="/user/preferences">PREFERENCES</Link>
           <Link to="/user/statistics">STATISTICS</Link>
-          <Link to="/" onClick={handleLogout}>
-            LOG OUT
-          </Link>
+          <a onClick={handleLogout} className='header-right a' style={{ cursor: 'pointer' }}>
+            LOGOUT
+          </a>
 
           <button onClick={onToggleMenu} className="arrow-button">
             <ArrowRight
@@ -75,9 +75,9 @@ const Header: React.FC<HeaderProps> = ({
             <Link to="/user/statistics" onClick={toggleMobileMenu}>
               STATISTICS
             </Link>
-            <Link to="/logout" onClick={toggleMobileMenu}>
-              LOG OUT
-            </Link>
+            <a onClick={handleLogout} className='mobile-menu-content a'>
+            LOGOUT
+            </a>
           </div>
         </div>
       )}
