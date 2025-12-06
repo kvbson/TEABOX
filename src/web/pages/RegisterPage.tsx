@@ -53,13 +53,14 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ handleLogin }) => {
     repeat.length === 0 ||
     !passwordsMatch;
 
+  const navigate = useNavigate();
   const onLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // zatrzymuje domyślne submitowanie formularza
+    e.preventDefault();
     const username = emailInputRef.current?.value || '';
     const password = passwordInputRef.current?.value || '';
     await handleLogin(username, password, true);
+    navigate('/user/home');
   };
-  const navigate = useNavigate();
 
   return (
     <Box
@@ -155,7 +156,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ handleLogin }) => {
               type="button"
               variant="contained"
               fullWidth
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/login')}
             >
       Back to login
             </Button>
