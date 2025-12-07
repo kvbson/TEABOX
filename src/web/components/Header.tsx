@@ -38,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({
           <Link to="/user/recommendations">RECOMMENDATIONS</Link>
           <Link to="/user/preferences">PREFERENCES</Link>
           <Link to="/user/statistics">STATISTICS</Link>
+          <Link to="/user/bannedGames">BANNED GAMES</Link>
           <a onClick={handleLogout} className='header-right a' style={{ cursor: 'pointer' }}>
             LOGOUT
           </a>
@@ -74,6 +75,9 @@ const Header: React.FC<HeaderProps> = ({
             </Link>
             <Link to="/user/statistics" onClick={toggleMobileMenu}>
               STATISTICS
+            </Link>
+            <Link to="/user/bannedGames" onClick={toggleMobileMenu}>
+              BANNED GAMES
             </Link>
             <a onClick={handleLogout} className='mobile-menu-content a'>
             LOGOUT

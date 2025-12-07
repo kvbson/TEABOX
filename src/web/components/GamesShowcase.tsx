@@ -12,6 +12,10 @@ interface GameShowcaseProps {
   sidebarOpened: boolean;
   onNext: () => void;
   onPrev: () => void;
+  handleBanGame: ({ currentUserId, steamapp_id }: {
+  currentUserId: number;
+  steamapp_id: number;
+}) => Promise<void>
 }
 
 const GamesShowcase: React.FC<GameShowcaseProps> = ({
@@ -21,6 +25,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
   sidebarOpened,
   onNext,
   onPrev,
+  handleBanGame,
 }) => {
   const game = appDetails;
   const price =
@@ -85,6 +90,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
         title={game?.name || 'Loading...'}
         onPrev={onPrev}
         onNext={onNext}
+        handleBanGame={handleBanGame}
       />
 
       <div

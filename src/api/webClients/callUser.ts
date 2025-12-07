@@ -8,6 +8,9 @@ const PATHS: Record<CallUserParams['mode'], string> = {
   DELETE_USER: '/dbUser/delete',
   LOGOUT_USER: '/dbUser/logout',
   CHECK_USER_SESSION: '/dbUser/me',
+  GET_BANNED_GAMES: '/dbUser/get/bannedGames',
+  BAN_GAME: '/dbUser/banGame',
+  UNBAN_GAME: '/dbUser/unbanGame',
 } as const;
 
 const REQUIRED_FIELDS: Record<CallUserParams['mode'], string[]> = {
@@ -18,10 +21,12 @@ const REQUIRED_FIELDS: Record<CallUserParams['mode'], string[]> = {
   DELETE_USER: ['userId'],
   LOGOUT_USER: [],
   CHECK_USER_SESSION: [],
+  GET_BANNED_GAMES: ['currentUserId'],
+  BAN_GAME: ['currentUserId', 'steamapp_id'],
+  UNBAN_GAME: ['currentUserId', 'gameId'],
 };
 
-const expressServerUrl =
-  import.meta.env.VITE_SERVER_URL || 'https://localhost:8081';
+const expressServerUrl = import.meta.env.VITE_SERVER_URL || 'https://localhost:8080';
 
 export async function callUser(
   params: CallUserParams,

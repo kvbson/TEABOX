@@ -52,5 +52,25 @@ export type ParamsUserCheckUserSess = {
   method: 'GET';
 }
 
+export type ParamsUserGetBannedGames = {
+  mode: 'GET_BANNED_GAMES';
+  method: 'POST';
+  currentUserId: number;
+}
+
+export type ParamsUserBanGame = {
+  mode: 'BAN_GAME';
+  method: 'POST';
+  currentUserId: number;
+  steamapp_id: number;
+}
+
+export type ParamsUserUnbanGame = {
+  mode: 'UNBAN_GAME';
+  method: 'POST';
+  currentUserId: number;
+  gameId: number;
+}
+
 /*Union type for all possible parameter types*/
-export type CallUserParams = ParamsUserAdd | ParamsUserGetId | ParamsUserGetEmail | ParamsUserLogout | ParamsUserDelete | ParamsUserLogin | ParamsUserCheckUserSess;
+export type CallUserParams = ParamsUserAdd | ParamsUserGetId | ParamsUserGetEmail | ParamsUserLogout | ParamsUserDelete | ParamsUserLogin | ParamsUserCheckUserSess | ParamsUserGetBannedGames | ParamsUserBanGame | ParamsUserUnbanGame;

@@ -10,9 +10,13 @@ interface RecommendationsProps {
   setError: React.Dispatch<React.SetStateAction<string | Error | null>>;
   steamId: string;
   sidebarTags: string[];
+  handleBanGame: ({ currentUserId, steamapp_id }: {
+    currentUserId: number;
+    steamapp_id: number;
+}) => Promise<void>
 }
 
-const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sidebarOpened, setError, sidebarTags }) => {
+const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sidebarOpened, setError, sidebarTags, handleBanGame }) => {
   const { data, error, loading } = useSortedGameInfo(sidebarTags);
 
   useEffect(() => {
@@ -32,6 +36,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sideba
       prev === 0 ? data.length - 1 : prev - 1,
     );
   };
+
   const currentAppDetails = data[selectedGameIndex];
 
   if (loading || data.length === 0) return <LoadingOverlay />;
@@ -47,6 +52,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sideba
           onNext={handleNext}
           onPrev={handlePrev}
           sidebarOpened={sidebarOpened}
+          handleBanGame={handleBanGame}
         />
       )}
     </div>

@@ -10,9 +10,18 @@ interface GameNavProps {
   title?: string;
   onPrev: () => void;
   onNext: () => void;
+  handleBanGame: ({ currentUserId, steamapp_id }: {
+  currentUserId: number;
+  steamapp_id: number;
+  }) => Promise<void>
 }
 
-const GameNav: React.FC<GameNavProps> = ({ currentUserId, steamapp_id, title, onPrev, onNext, className }) => {
+const GameNav: React.FC<GameNavProps> = ({ currentUserId, steamapp_id, title, onPrev, onNext, className, handleBanGame }) => {
+
+  const onBan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleBanGame({ currentUserId, steamapp_id });
+  };
   return (
     <div className={`game-nav ${className}`}>
       <button className="nav-button" onClick={onPrev}>
@@ -23,11 +32,8 @@ const GameNav: React.FC<GameNavProps> = ({ currentUserId, steamapp_id, title, on
         <h1 className="game-title">
           {title}
           <button
-            onClick={() => {
-              console.log(steamapp_id);
-              console.log(currentUserId);
-
-            }}
+            /*TODO: Dodać progress i komunikat**/
+            onClick={onBan}
             style={{ background: 'unset', border: 'unset', cursor: 'pointer' }}
             className="game-title">
 

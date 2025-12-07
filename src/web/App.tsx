@@ -17,6 +17,9 @@ import { useAuth } from './hooks/useAuth';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import 'react-toastify/dist/ReactToastify.css';
+import BannedGamesTable from './pages/BannedGames';
+import { useBanGame } from './hooks/useBanGame';
+import { useUnbanGame } from './hooks/useUnbanGame';
 
 const toastProperties: ToastOptions = {
   position: 'bottom-left',
@@ -31,6 +34,8 @@ const toastProperties: ToastOptions = {
 
 function App() {
   const { isLoggedIn, loginStatus, handleLogin, handleLogout, currentUserId } = useAuth();
+  const { handleBanGame } = useBanGame();
+  const { handleUnbanGame } = useUnbanGame();
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
@@ -50,6 +55,7 @@ function App() {
       setError={setError}
       steamId={steamId}
       sidebarTags={sidebarTags}
+      handleBanGame={handleBanGame}
     />
   );
 
@@ -133,6 +139,7 @@ function App() {
                     }
                   />
                   <Route path="statistics" element={<StatisticsCharts />} />
+                  <Route path="bannedGames" element={<BannedGamesTable currentUserId={currentUserId} handleBanGame={handleUnbanGame}/>} />
                 </Routes>
               </div>
             }
