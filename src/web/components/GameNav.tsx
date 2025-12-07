@@ -21,6 +21,7 @@ const GameNav: React.FC<GameNavProps> = ({ currentUserId, steamapp_id, title, on
   const onBan = async (e: React.FormEvent) => {
     e.preventDefault();
     await handleBanGame({ currentUserId, steamapp_id });
+    //TODO: Dodać refetch
   };
   return (
     <div className={`game-nav ${className}`}>

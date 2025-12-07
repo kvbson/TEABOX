@@ -17,7 +17,7 @@ interface RecommendationsProps {
 }
 
 const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sidebarOpened, setError, sidebarTags, handleBanGame }) => {
-  const { data, error, loading } = useSortedGameInfo(sidebarTags);
+  const { data, error, loading } = useSortedGameInfo(sidebarTags, currentUserId);
 
   useEffect(() => {
     if (error) {
@@ -25,7 +25,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sideba
     }
   }, [error, setError]);
 
-  const [selectedGameIndex, setSelectedGameIndex] = useState(1); //changed to 1 for now, cuz theres a bugged game at beggining
+  const [selectedGameIndex, setSelectedGameIndex] = useState(0);
 
   const handleNext = () => {
     setSelectedGameIndex((prev) => (prev + 1) % data.length);

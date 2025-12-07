@@ -22,7 +22,7 @@ export const useBannedGamesWithInfo = ({ currentUserId }: { currentUserId: numbe
           const { data } = await fetchGameInfo(game.steamapp_id);
           const gameName = data.gameDetails.data.name;
           const capsuleImage = data.gameDetails.data.capsule_image;
-          return { id: game.id, ban_date: game.created_date, gameName, capsuleImage };
+          return { id: game.id, steamapp_id: game.steamapp_id, ban_date: game.created_date, gameName, capsuleImage };
         });
 
         const results = await Promise.all(promises);

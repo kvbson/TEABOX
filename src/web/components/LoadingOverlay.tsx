@@ -4,7 +4,8 @@ import '../css/loadingOverlay.css';
 const LoadingOverlay: React.FC<{info?: string}> = ({ info }: {info?: string}) => {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
-    const show = setTimeout(() => setVisible(true), 2000); // trigger opacity transition
+    //TODO: Trzeba to jakoś ogarnąć, żeby wyłączało się faktycznie, kiedy isLoading = false //src\web\pages\Recommendations.tsx
+    const show = setTimeout(() => setVisible(true), 5000); // trigger opacity transition
     return () => clearTimeout(show);
   }, []);
 
