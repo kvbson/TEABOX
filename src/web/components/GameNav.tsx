@@ -38,11 +38,13 @@ const GameNav: React.FC<GameNavProps> = ({
 
   const [animating, setAnimating] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [bannedTitle, setBannedTitle] = useState<string | null>(null);
 
   const onBan = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (loading || animating) return;
 
+    setBannedTitle(title ?? null);
     setLoading(true);
     setAnimating(true);
 
@@ -54,6 +56,11 @@ const GameNav: React.FC<GameNavProps> = ({
       setTimeout(() => setAnimating(false), 80);
       setLoading(false);
     }
+  };
+
+  const closePopup = () => {
+    setAnimating(false);
+    setBannedTitle(null);
   };
 
   return (
@@ -132,7 +139,7 @@ const GameNav: React.FC<GameNavProps> = ({
             }}
           >
             <IconButton
-              onClick={() => setAnimating(false)}
+              onClick={closePopup}
               sx={{
                 position: 'absolute',
                 top: 8,
@@ -182,25 +189,23 @@ const GameNav: React.FC<GameNavProps> = ({
                 You dropped the ban-hammer
               </Typography>
 
-              {title && (
-                <Typography
-                  variant="h5"
-                  title={title}
-                  sx={{
-                    color: palette.common.white,
-                    fontWeight: 600,
-                    opacity: 0.95,
-                    textShadow: '0 6px 20px rgba(0,0,0,0.6)',
-                    maxWidth: '60ch',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    ml: 1,
-                  }}
-                >
-                  {title}
-                </Typography>
-              )}
+              <Typography
+                variant="h5"
+                title={bannedTitle ?? ''}
+                sx={{
+                  color: palette.common.white,
+                  fontWeight: 600,
+                  opacity: 0.95,
+                  textShadow: '0 6px 20px rgba(0,0,0,0.6)',
+                  maxWidth: '60ch',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  ml: 1,
+                }}
+              >
+                {bannedTitle}
+              </Typography>
 
               <Typography variant="body2" sx={{ color: palette.grey[300], mt: 1, ml: 1 }}>
                 This game was added to your banned list.

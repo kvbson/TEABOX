@@ -20,6 +20,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import BannedGamesTable from './pages/BannedGames';
 import { useBanGame } from './hooks/useBanGame';
 import { useUnbanGame } from './hooks/useUnbanGame';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const toastProperties: ToastOptions = {
   position: 'bottom-left',
@@ -89,7 +90,7 @@ function App() {
         showErrorToast(loginStatus.message);
       }
     }
-  }, [loginStatus]);
+  }, [loginStatus, showSuccessToast, showErrorToast]);
 
   return (
     <Router>
@@ -97,17 +98,33 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
+
         <Route
           path="/login"
           element={
-            isLoggedIn ? <Navigate to="/user/home" /> : <LoginPage handleLogin={handleLogin} />
+            isLoggedIn ? (
+              <Navigate to="/user/home" replace />
+            ) : (
+              <LoginPage handleLogin={handleLogin} />
+            )
           }
         />
-        <Route path="/register" element={<RegisterPage handleLogin={handleLogin} />} />
-        {isLoggedIn && (
-          <Route
-            path="/user/*"
-            element={
+
+        <Route
+          path="/register"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/user/home" replace />
+            ) : (
+              <RegisterPage handleLogin={handleLogin} />
+            )
+          }
+        />
+
+        <Route
+          path="/user/*"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <div>
                 <Header
                   onToggleMenu={toggleMenu}
@@ -139,12 +156,20 @@ function App() {
                     }
                   />
                   <Route path="statistics" element={<StatisticsCharts />} />
-                  <Route path="bannedGames" element={<BannedGamesTable currentUserId={currentUserId} handleBanGame={handleUnbanGame}/>} />
+                  <Route
+                    path="bannedGames"
+                    element={
+                      <BannedGamesTable
+                        currentUserId={currentUserId}
+                        handleBanGame={handleUnbanGame}
+                      />
+                    }
+                  />
                 </Routes>
               </div>
-            }
-          />
-        )}
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
