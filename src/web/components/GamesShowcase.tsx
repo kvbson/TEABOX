@@ -12,10 +12,7 @@ interface GameShowcaseProps {
   sidebarOpened: boolean;
   onNext: () => void;
   onPrev: () => void;
-  handleBanGame: ({ currentUserId, steamapp_id }: {
-  currentUserId: number;
-  steamapp_id: number;
-}) => Promise<void>
+  handleBanGame: (args: { currentUserId: number; steamapp_id: number }) => Promise<void>;
 }
 
 const GamesShowcase: React.FC<GameShowcaseProps> = ({
@@ -77,6 +74,17 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
     setTouchStartX(null);
   };
 
+  const handleBanGameAndNext = async ({
+    currentUserId,
+    steamapp_id,
+  }: {
+    currentUserId: number;
+    steamapp_id: number;
+  }) => {
+    await handleBanGame({ currentUserId, steamapp_id });
+    onNext();
+  };
+
   return (
     <div
       className={`recommendations-wrapper ${
@@ -90,7 +98,7 @@ const GamesShowcase: React.FC<GameShowcaseProps> = ({
         title={game?.name || 'Loading...'}
         onPrev={onPrev}
         onNext={onNext}
-        handleBanGame={handleBanGame}
+        handleBanGame={handleBanGameAndNext}
       />
 
       <div

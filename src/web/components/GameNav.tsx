@@ -1,4 +1,3 @@
-// src/components/GameNav.tsx
 import React, { useState } from 'react';
 import ArrowDivider from './ui/ArrowDivider';
 import '../css/gameNav.css';
@@ -59,7 +58,6 @@ const GameNav: React.FC<GameNavProps> = ({
 
   return (
     <>
-      {/* Top Navigation */}
       <div className={`game-nav ${className}`}>
         <button className="nav-button" onClick={onPrev} aria-label="Previous game">
           PREV GAME
@@ -69,7 +67,6 @@ const GameNav: React.FC<GameNavProps> = ({
         {title && (
           <h1 className="game-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <span style={{ flex: 1 }}>{title}</span>
-
             <form onSubmit={onBan} style={{ margin: 0 }}>
               <Tooltip title="Ban game" arrow>
                 <span>
@@ -83,7 +80,7 @@ const GameNav: React.FC<GameNavProps> = ({
                     {loading ? (
                       <CircularProgress size={28} />
                     ) : (
-                      <RemoveCircleOutline  sx={{ color: palette.primary.main, fontSize: '28px'}} />
+                      <RemoveCircleOutline sx={{ color: palette.primary.main, fontSize: '28px' }} />
                     )}
                   </IconButton>
                 </span>
@@ -98,7 +95,6 @@ const GameNav: React.FC<GameNavProps> = ({
         </button>
       </div>
 
-      {/* Popup Overlay */}
       <Fade in={animating} timeout={220} unmountOnExit>
         <Box
           role="status"
@@ -135,7 +131,6 @@ const GameNav: React.FC<GameNavProps> = ({
               boxShadow: shadows[12],
             }}
           >
-            {/* Close Button X */}
             <IconButton
               onClick={() => setAnimating(false)}
               sx={{
