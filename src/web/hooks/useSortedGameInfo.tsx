@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { callServer } from '../../api/webClients/callServer';
 import { useBannedGamesWithInfo } from './useBannedGamesWithInfo';
 
-export const useSortedGameInfo = (sidebarTags: string[], currentUserId: number) => {
+export const useSortedGameInfo = (sidebarTags: string[], currentUserId: number, quickRecommendations?: boolean) => {
   const [data, setData] = useState<Record<string, any>[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | Error | null>(null);
@@ -22,8 +22,13 @@ export const useSortedGameInfo = (sidebarTags: string[], currentUserId: number) 
         console.log('[SortedGameInfo] Fetching for tags:', sidebarTags);
         const games = await callServer('sortedGameInfo', { sidebarTags });
         if (!isMounted) return;
+        let fetchedData = (games.data as any) || [];
 
-        setData(games.data as any || []);
+        if (quickRecommendations) {
+          fetchedData = fetchedData.slice(0, 10);
+        }
+
+        setData(fetchedData);
         console.log('[SortedGameInfo] Fetched games:', (games.data as any || []).slice(0, 20));
       } catch (err) {
         if (!isMounted) return;
@@ -39,7 +44,7 @@ export const useSortedGameInfo = (sidebarTags: string[], currentUserId: number) 
     return () => {
       isMounted = false;
     };
-  }, [sidebarTags, bannedGames, bannedLoading]);
+  }, [sidebarTags, bannedGames, bannedLoading, quickRecommendations]);
 
   const filteredData = useMemo(() => {
     if (!bannedGames || bannedGames.length === 0) return data;
