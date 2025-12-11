@@ -7,7 +7,7 @@
   align-items: center;
   right: 4.5vh;
   top: 85%;
-  color: var(--color-primary);
+  color: var(--primary);
   font-size: 2rem;
   cursor: pointer;
   transition: transform 1s, opacity 0.2s ease;
@@ -16,8 +16,10 @@
 }
 
 .scroll-to-top:hover {
-  background-color: var(--color-secondary);
+  background-color: var(--paper);
+  color: var(--primary);
   transform: scale(1.1);
+  border-radius: 8px;
 }
 
 .scroll-to-top.visible {
@@ -26,7 +28,10 @@
 }
 
 .scroll-to-top-text {
-    font-family: var(--font-archivo);
-    font-size: var(--f-xsmall);
-    color: var(--color-text);
+  font-family: "Archivo", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 4px;
+  color: var(--text);
+  text-align: center;
 }

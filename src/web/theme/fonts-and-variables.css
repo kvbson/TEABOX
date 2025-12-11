@@ -52,21 +52,11 @@ body {
   scroll-behavior: smooth;
 }
 
-/* tua typografia */
-h1, h2, h3, h4 {
-  color: var(--color-primary);
-}
-
 h1 { font-size: var(--f-xxlarge); }
 h2 { font-size: var(--f-xlarge); }
 p  { font-size: var(--f-medium); }
 
 :root {
-  /* Kolory (defaulty zgodne z Twoim starym theme) */
-  --color-bg: #301f24;
-  --color-text: #e3d1aa;
-  --color-primary: #d83557;
-  --color-secondary: #ffffff; /* fallback */
 
   /* Fonty */
   --font-inter: "Inter", sans-serif;
@@ -91,15 +81,14 @@ p  { font-size: var(--f-medium); }
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  color: var(--text);
+  background-color: var(--bg);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* mała klasa App (jeśli używasz) */
 .App {
   flex-direction: column;
 }

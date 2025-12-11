@@ -10,7 +10,7 @@ interface ArrowDividerProps {
 const ArrowDivider: React.FC<ArrowDividerProps> = ({
   width = 150,
   height = 30,
-  color = 'var(--color-primary)',
+  color = 'var(--primary)',
   className = '',
 }) => {
   return (

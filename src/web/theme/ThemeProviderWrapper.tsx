@@ -1,52 +1,90 @@
-// src/web/theme/ThemeProviderWrapper.tsx
 import React, { createContext, useEffect, useMemo, useState } from 'react';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import { buildTheme } from './theme';
+import { ThemeProvider, CssBaseline, GlobalStyles } from '@mui/material';
+import { createAppThemeFromDef, THEMES, ThemeDef } from './theme';
 
-export type ThemeMode = 'light' | 'dark';
-
-export type ThemeContextType = {
-  mode: ThemeMode;
+type ThemeCtx = {
+  themeId: string;
+  setThemeId: (id: string) => void;
+  mode: 'light' | 'dark';
+  setMode: (m: 'light' | 'dark') => void;
   toggleMode: () => void;
-  setMode: (m: ThemeMode) => void;
+  currentDef: ThemeDef;
 };
 
-export const ThemeModeContext = createContext<ThemeContextType | undefined>(undefined);
-
-const STORAGE_KEY = 'teabox_theme_mode';
-
-// Example: update a few CSS variables on theme change
-function applyCssVarsForMode(mode: ThemeMode) {
-  if (typeof document === 'undefined') return;
-
-  const root = document.documentElement;
-}
+const STORAGE_KEY = 'teabox:themeId';
+export const ThemeModeContext = createContext<ThemeCtx | null>(null);
 
 export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mode, setModeState] = useState<ThemeMode>(() => {
-    const saved = typeof window !== 'undefined'
-      ? (localStorage.getItem(STORAGE_KEY) as ThemeMode | null)
-      : null;
-    return saved ?? 'light';
+  const availableIds = Object.keys(THEMES);
+  const defaultId = availableIds.includes('crimson') ? 'crimson' : availableIds[0] ?? 'light';
+
+  const [themeId, setThemeIdState] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && THEMES[stored]) return stored;
+    } catch (e) {}
+    return defaultId;
   });
 
-  // Save + update CSS variables
   useEffect(() => {
-    applyCssVarsForMode(mode);
-    localStorage.setItem(STORAGE_KEY, mode);
-  }, [mode]);
+    try {
+      localStorage.setItem(STORAGE_KEY, themeId);
+    } catch (e) {}
+  }, [themeId]);
 
-  const theme = useMemo(() => buildTheme(mode), [mode]);
+  const currentDef = THEMES[themeId] ?? THEMES[defaultId];
 
-  const toggleMode = () => setModeState((m) => (m === 'light' ? 'dark' : 'light'));
-  const setMode = (m: ThemeMode) => setModeState(m);
+  const theme = useMemo(() => createAppThemeFromDef(currentDef), [currentDef]);
+
+  const setThemeId = (id: string) => {
+    if (!THEMES[id]) {
+      console.warn('Unknown theme id', id);
+      return;
+    }
+    setThemeIdState(id);
+  };
+
+  const setMode = (m: 'light' | 'dark') => {
+    // find theme with matching mode; prefer current if same mode exists
+    const sameMode = Object.values(THEMES).find((t) => t.palette.mode === m);
+    if (sameMode) setThemeIdState(sameMode.id);
+  };
+
+  const toggleMode = () => {
+    setThemeIdState((prev) => {
+      const current = THEMES[prev] ?? THEMES[defaultId];
+      const targetMode = current.palette.mode === 'dark' ? 'light' : 'dark';
+      const candidate = Object.values(THEMES).find((t) => t.palette.mode === targetMode);
+      return candidate ? candidate.id : prev;
+    });
+  };
+
+  const cssVars = {
+    '--bg': currentDef.palette.background.default,
+    '--paper': currentDef.palette.background.paper,
+    '--text': currentDef.palette.text?.primary ?? (currentDef.palette.mode === 'dark' ? '#fff' : '#111'),
+    '--muted': currentDef.palette.text?.secondary ?? (currentDef.palette.mode === 'dark' ? '#bbb' : '#666'),
+    '--primary': currentDef.palette.primary.main,
+    '--error': currentDef.palette.error?.main ?? '#ff5252',
+  } as Record<string, string>;
 
   return (
-    <ThemeModeContext.Provider value={{ mode, toggleMode, setMode }}>
+    <ThemeModeContext.Provider value={{ themeId, setThemeId, mode: currentDef.palette.mode, setMode, toggleMode, currentDef }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <GlobalStyles
+          styles={{
+            ':root': cssVars,
+            body: {
+              backgroundColor: 'var(--bg)',
+              color: 'var(--text)',
+            },
+          }}
+        />
         {children}
       </ThemeProvider>
     </ThemeModeContext.Provider>
   );
 };
+
+export default ThemeProviderWrapper;

@@ -15,21 +15,21 @@
   font-size: var(--f-xsmall);
   font-weight: bold;
   cursor: pointer;
-  color: var(--color-text);
+  color: var(--text);
   border: 1px solid;
   text-transform: uppercase;
-  background: var(--color-bg);
+  background: var(--bg);
 }
 
 .tag-button.selected {
-  background-color: var(--color-primary);
-  color: var(--color-bg);
+  background-color: var(--primary);
+  color: var(--bg);
 }
 
 .save-button {
   padding: 10px 20px;
-  background: var(--color-primary);
-  color: var(--color-text);
+  background: var(--primary);
+  color: var(--text);
   border: none;
   cursor: pointer;
   margin: 15px 5px 15px 0;
@@ -38,7 +38,7 @@
 .remove-button {
   padding: 10px 20px;
   background: red;
-  color: var(--color-text);
+  color: var(--text);
   border: none;
   cursor: pointer;
 }

@@ -58,7 +58,7 @@ const StatItem: React.FC<{ label: string; value: React.ReactNode }> = ({ label, 
     <Typography variant="caption" sx={{ color: 'rgba(227,209,170,0.7)' }}>
       {label}
     </Typography>
-    <Typography variant="h6" sx={{ color: 'var(--color-text)', fontWeight: 700 }}>
+    <Typography variant="h6" sx={{ color: 'var(--text)', fontWeight: 700 }}>
       {value}
     </Typography>
   </Box>
@@ -109,7 +109,7 @@ const HomePage: React.FC = () => {
       <Container maxWidth="lg" sx={{ pt: 4 }}>
         {/* header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h3" sx={{ color: 'var(--color-primary)', fontWeight: 800 }}>
+          <Typography variant="h3" sx={{ color: 'var(--primary)', fontWeight: 800 }}>
             {data.name}
           </Typography>
 
@@ -119,11 +119,11 @@ const HomePage: React.FC = () => {
               size="small"
               sx={{
                 bgcolor: 'transparent',
-                color: 'var(--color-primary)',
+                color: 'var(--primary)',
                 border: '1px dashed rgba(216,53,87,0.12)',
               }}
             />
-            <Button variant="text" sx={{ color: 'var(--color-primary)' }}>
+            <Button variant="text" sx={{ color: 'var(--primary)' }}>
               Preferences
             </Button>
           </Stack>
@@ -173,7 +173,7 @@ const HomePage: React.FC = () => {
                 border: '1px solid rgba(227,209,170,0.04)',
               }}
             >
-              <Typography variant="subtitle1" sx={{ color: 'var(--color-primary)', mb: 1 }}>
+              <Typography variant="subtitle1" sx={{ color: 'var(--primary)', mb: 1 }}>
                 Profile Summary
               </Typography>
               <Typography variant="body2" sx={{ color: 'rgba(227,209,170,0.8)' }}>
@@ -221,7 +221,7 @@ const HomePage: React.FC = () => {
                         <Typography variant="body2" sx={{ color: 'var(--color-text)' }} noWrap>
                           {r.title}
                         </Typography>
-                        <Button size="small" variant="contained" sx={{ mt: 1, bgcolor: 'var(--color-primary)' }}>
+                        <Button size="small" variant="contained" sx={{ mt: 1, bgcolor: 'var(--primary)' }}>
                           View
                         </Button>
                       </CardContent>
