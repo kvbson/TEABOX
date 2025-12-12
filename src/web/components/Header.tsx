@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ArrowRight from '../components/ui/ArrowRight';
 import TeacupIcon from './ui/TeacupIcon';
+import TeaboxLogo from './ui/TeaboxLogo';
 
 type HeaderProps = {
   onToggleMenu: () => void;
@@ -30,8 +31,7 @@ const Header: React.FC<HeaderProps> = ({
     <>
       <header className="header">
         <Link to="/" className="header-left">
-          <TeacupIcon />
-          <span className="header-title">TEABOX</span>
+          <TeaboxLogo />
         </Link>
 
         <nav className="header-right">
@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({
               className={`burger ${
                 !sidebarOpened ? 'menu-hiden' : 'menu-opened'
               }`}
-              color="var(--color-primary)"
+              color="var(--primary)"
             />
           </button>
           {!mobileMenuOpen ? (

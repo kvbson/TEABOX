@@ -22,14 +22,14 @@ export interface RegisterPageProps {
 
 const inputStyles = {
   '& input::placeholder': {
-    color: 'var(--color-text)',
+    color: 'var(--text)',
     opacity: 1,
   },
   '& .MuiOutlinedInput-root': {
-    '& fieldset': { borderColor: 'var(--color-text)' },
-    '&:hover fieldset': { borderColor: 'var(--color-primary)' },
+    '& fieldset': { borderColor: 'var(--text)' },
+    '&:hover fieldset': { borderColor: 'var(--primary)' },
     '&.Mui-focused fieldset': {
-      borderColor: 'var(--color-primary)',
+      borderColor: 'var(--primary)',
       borderWidth: '2px',
       boxShadow: '0 0 0 6px rgba(216,53,87,0.06)',
     },

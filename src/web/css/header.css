@@ -2,8 +2,8 @@
   position: sticky;
   top: 0;
   z-index: 999999;
-  background-color: var(--color-bg);
-  box-shadow: var(--shadow);
+  background-color: var(--bg);
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -21,9 +21,10 @@
 }
 
 .header-title {
-  font-size: var(--f-xlarge);
+  font-size: 1.875rem;
   font-weight: bold;
   line-height: 1.1;
+  color: var(--text);
 }
 
 .header-right {
@@ -36,8 +37,8 @@
 .header-right a {
   display: flex;
   text-decoration: none;
-  color: var(--color-primary);
-  font-size: var(--f-small);
+  color: var(--primary);
+  font-size: 0.9375rem;
   transition: color 0.3s;
   align-items: center;
 }
@@ -50,9 +51,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: var(--primary);
 }
 
-.burger{
+.burger {
   height: 100%;
   margin-left: 3px;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
@@ -63,9 +65,8 @@
   transform: rotate(180deg);
 }
 
-.header-right a:hover
- {
-  color: var(--color-text);
+.header-right a:hover {
+  color: var(--text);
 }
 
 .hamburger-button {
@@ -76,8 +77,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  color: var(--color-primary);
+  color: var(--primary);
 }
 
 .mobile-menu-overlay {
@@ -85,7 +85,7 @@
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background-color: var(--color-bg);
+  background-color: var(--bg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,9 +94,9 @@
 }
 
 .mobile-menu-content a {
-  font-size: var(--f-large);
+  font-size: 1.25rem;
   text-decoration: none;
-  color: var(--color-primary);
+  color: var(--primary);
   font-weight: 700;
   transition: color 0.3s;
   display: flex;
@@ -107,7 +107,7 @@
 }
 
 .mobile-menu-content a:hover {
-  color: var(--color-text);
+  color: var(--text);
 }
 
 .close-button {
@@ -118,7 +118,7 @@
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: var(--color-primary);
+  color: var(--primary);
 }
 
 @media (max-width: 1000px) {
@@ -131,11 +131,10 @@
   }
 
   .hamburger-button {
-    display: flex; 
+    display: flex;
   }
 }
 
-/* DESKTOP */
 @media (min-width: 1000px) {
   .hamburger-button {
     display: none !important;
@@ -151,5 +150,5 @@
 }
 
 button {
-  color: var(--color-primary);
+  color: var(--primary);
 }

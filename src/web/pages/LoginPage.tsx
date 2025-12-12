@@ -1,12 +1,5 @@
 import React, { useRef } from 'react';
-import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Container, Paper, TextField, Typography } from '@mui/material';
 import TeaboxLogo from '../components/ui/TeaboxLogo';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
@@ -21,34 +14,38 @@ export interface LoginPageProps {
 
 const inputStyles = {
   '& input::placeholder': {
-    color: 'var(--color-text)',
+    color: 'var(--text)',
     opacity: 1,
   },
   '& .MuiOutlinedInput-root': {
-    '& fieldset': { borderColor: 'var(--color-text)' },
-    '&:hover fieldset': { borderColor: 'var(--color-primary)' },
+    '& fieldset': { borderColor: 'rgba(255,255,255,0.12)' },
+    '&:hover fieldset': { borderColor: 'var(--primary)' },
     '&.Mui-focused fieldset': {
-      borderColor: 'var(--color-primary)',
+      borderColor: 'var(--primary)',
       borderWidth: '2px',
       boxShadow: '0 0 0 6px rgba(216,53,87,0.06)',
     },
+    color: 'var(--text)',
+  },
+  input: {
+    color: 'var(--text)',
+  },
+  '& .MuiInputLabel-root': {
+    color: 'var(--text)',
   },
 };
 
 const LoginPage: React.FC<LoginPageProps> = ({ handleLogin }) => {
   const loginInputRef = useRef<HTMLInputElement | null>(null);
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate();
 
   const onLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // zatrzymuje domyślne submitowanie formularza
+    e.preventDefault();
     const username = loginInputRef.current?.value || '';
     const password = passwordInputRef.current?.value || '';
-
     await handleLogin(username, password);
-    // jeśli rejestracja się udała, wracamy do login
-    // navigate('/');
   };
-  const navigate = useNavigate();
 
   return (
     <Box
@@ -57,9 +54,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ handleLogin }) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background:
-          "url('/assets/images/background.png') center/cover no-repeat",
+        background: "url('/assets/images/background.png') center/cover no-repeat",
         position: 'relative',
+        color: 'var(--text)',
       }}
     >
       <Box
@@ -84,24 +81,25 @@ const LoginPage: React.FC<LoginPageProps> = ({ handleLogin }) => {
             p: 4,
             width: '100%',
             borderRadius: 3,
-            backgroundColor: 'rgba(48,31,36,0.85)',
+            backgroundColor: 'var(--paper)',
+            color: 'var(--text)',
+            boxShadow: (theme) => theme.shadows[6],
           }}
         >
           <Box sx={{ textAlign: 'center', mb: 2 }}>
             <TeaboxLogo />
-            <Typography sx={{ mt: 2 }}>
+            <Typography sx={{ mt: 2, color: 'var(--text)' }}>
               Steep, sip, and discover great games.
             </Typography>
           </Box>
 
-          <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box component="form" onSubmit={onLogin} sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               inputRef={loginInputRef}
               placeholder="Email"
               fullWidth
-              // value={login}
-              // onChange={(e) => setLogin(e.target.value)}
               sx={inputStyles}
+              variant="outlined"
             />
 
             <TextField
@@ -109,36 +107,28 @@ const LoginPage: React.FC<LoginPageProps> = ({ handleLogin }) => {
               type="password"
               placeholder="Password"
               fullWidth
-              // value={password}
-              // onChange={(e) => setPassword(e.target.value)}
               sx={inputStyles}
+              variant="outlined"
             />
 
-            {/* <Button
-              variant="contained"
-              size="large"
-              fullWidth
-              sx={{
-                mt: 1,
-                bgcolor: 'primary.main',
-                '&:hover': { bgcolor: 'primary.dark' },
-              }}
-              onClick={handleLogin('a', 'a')}
-            >
-              Sign in
-            </Button> */}
             <Button
               type="submit"
               variant="contained"
               fullWidth
-              onClick={onLogin}
+              sx={{
+                mt: 1,
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                '&:hover': { bgcolor: 'primary.dark' },
+              }}
             >
               Login
             </Button>
-            <Typography sx={{ mt: 2 }}>
-                Don't have an account?{' '}
-              <Link component='button' onClick={() => navigate('/register')}>
-                  Register
+
+            <Typography sx={{ mt: 2, color: 'var(--text)' }}>
+              Don't have an account?{' '}
+              <Link component="button" onClick={() => navigate('/register')} sx={{ color: 'var(--primary)' }}>
+                Register
               </Link>
             </Typography>
           </Box>

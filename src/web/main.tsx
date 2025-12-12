@@ -5,7 +5,7 @@ import './/theme/fonts-and-variables.css';
 
 import.meta.glob('./css/**/*.css', { eager: true });
 
-import { ThemeProviderWrapper } from './theme/ThemeProviderWrapper'; // jeśli używasz wrappera
+import  ThemeProviderWrapper from './theme/ThemeProviderWrapper'; 
 import React from 'react';
 
 createRoot(document.getElementById('root')!).render(

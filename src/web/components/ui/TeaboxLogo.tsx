@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import teacupIcon from "../../../../public/assets/images/teacup-default.png"
+import TeacupIcon from "./TeacupIcon";
 
 const TeaboxLogo = () => {
   return (
@@ -11,10 +11,7 @@ const TeaboxLogo = () => {
         gap: 0.5,
       }}
     >
-      <Box
-        component="img"
-        src={teacupIcon}
-        alt="Teabox cup"
+      <TeacupIcon
         sx={{
           width: 48,
           height: 48,
@@ -24,12 +21,13 @@ const TeaboxLogo = () => {
         }}
       />
 
+
       <Typography
         variant="h4"
         sx={{
           fontWeight: 700,
           fontFamily: "var(--font-archivo)",
-          color: "var(--color-text)",
+          color: "var(--text)",
           letterSpacing: 1.2,
         }}
       >
@@ -40,3 +38,4 @@ const TeaboxLogo = () => {
 };
 
 export default TeaboxLogo;
+
