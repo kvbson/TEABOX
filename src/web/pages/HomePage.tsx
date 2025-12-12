@@ -68,7 +68,7 @@ const StatItem: React.FC<{ label: string; value: React.ReactNode }> = ({
   value,
 }) => (
   <Box>
-    <Typography variant="caption" sx={{ color: 'rgba(227,209,170,0.7)' }}>
+    <Typography variant="caption" sx={{ color: 'var(--primary)' }}>
       {label}
     </Typography>
     <Typography variant="h6" sx={{ color: 'var(--text)', fontWeight: 700 }}>
@@ -98,7 +98,7 @@ const GameCard: React.FC<{ title: string; cover?: string }> = ({
       sx={{ height: 'auto', objectFit: 'cover' }}
     />
     <CardContent sx={{ p: 1 }}>
-      <Typography variant="body2" sx={{ color: 'var(--color-text)' }} noWrap>
+      <Typography variant="body2" sx={{ color: 'var(--text)' }} noWrap>
         {title}
       </Typography>
     </CardContent>
@@ -247,7 +247,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
   mockData.quickRecs = quickRecommendations ?? [];
 
   return (
-    <Box sx={{ minHeight: '100vh', pb: 6, backgroundColor: 'var(--color-bg)' }}>
+    <Box sx={{ minHeight: '100vh', pb: 6, backgroundColor: 'var(--bg)' }}>
       <Container maxWidth="lg" sx={{ pt: 4 }}>
         {/* header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -294,7 +294,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
                 <Box>
                   <Typography
                     variant="subtitle2"
-                    sx={{ color: 'var(--color-text)', mb: 1 }}
+                    sx={{ color: 'var(--primary)', mb: 1 }}
                   >
                     Top tags
                   </Typography>
@@ -305,7 +305,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
                         label={t}
                         size="small"
                         sx={{
-                          color: 'var(--color-text)',
+                          color: 'var(--text)',
                           bgcolor: 'transparent',
                           border: '1px solid rgba(227,209,170,0.06)',
                         }}
@@ -330,7 +330,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: 'rgba(227,209,170,0.8)' }}
+                sx={{ color: 'var(--text)' }}
               >
                 {mockData.profileSummary}
               </Typography>
@@ -338,7 +338,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
           </Grid>
 
           <Grid size={12}>
-            <Typography variant="h6" sx={{ color: 'var(--color-text)', mb: 1 }}>
+            <Typography variant="h6" sx={{ color: 'var(--text)', mb: 1 }}>
               Top 5 Most Played
             </Typography>
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
@@ -347,7 +347,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
               ))}
             </Stack>
 
-            <Typography variant="h6" sx={{ color: 'var(--color-text)', mb: 1 }}>
+            <Typography variant="h6" sx={{ color: 'var(--text)', mb: 1 }}>
               Quick recommendations
             </Typography>
 
@@ -380,7 +380,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
                       <CardContent sx={{ p: 1 }}>
                         <Typography
                           variant="body2"
-                          sx={{ color: 'var(--color-text)' }}
+                          sx={{ color: 'var(--text)' }}
                           noWrap
                         >
                           {r.title}
@@ -388,7 +388,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
                         <Button
                           size="small"
                           variant="contained"
-                          sx={{ mt: 1, bgcolor: 'var(--color-primary)' }}
+                          sx={{ mt: 1, bgcolor: 'var(--primary)' }}
                           onClick={() => navigate('/user/recommendations')}
                         >
                           View
@@ -402,7 +402,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
           </Grid>
 
           <Grid size={12}>
-            <Typography variant="h6" sx={{ color: 'var(--color-text)', mb: 1 }}>
+            <Typography variant="h6" sx={{ color: 'var(--text)', mb: 1 }}>
               Recently played
             </Typography>
 
@@ -429,13 +429,13 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
                   <Box>
                     <Typography
                       variant="body1"
-                      sx={{ color: 'var(--color-text)' }}
+                      sx={{ color: 'var(--text)' }}
                     >
                       {r.title}
                     </Typography>
                     {/* <Typography
                       variant="caption"
-                      sx={{ color: 'rgba(227,209,170,0.7)' }}
+                      sx={{ color: ''var(--text)' }}
                     >
                       Played 3 days ago
                     </Typography> */}
