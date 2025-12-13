@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useProfileData } from '../hooks/useProfileData';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
 import LoadingOverlay from '../components/LoadingOverlay';
+import { staticProfileSummary } from '../static/staticProfileSummary';
 
 type GameItem = {
   id: string;
@@ -315,7 +316,7 @@ const HomePage: React.FC<{
                 variant="body2"
                 sx={{ color: 'var(--text)', wordBreak: 'break-word' }}
               >
-                Byle co tu można wkleić
+                {staticProfileSummary[steamId]}
               </Typography>
             </Paper>
           </Grid>
