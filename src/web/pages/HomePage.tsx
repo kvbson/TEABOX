@@ -24,6 +24,7 @@ type GameItem = {
   id: string;
   title: string;
   cover?: string;
+  playtime_2weeks?: number;
 };
 
 type SteamProfileData = {
@@ -139,11 +140,14 @@ const HomePage: React.FC<{
 
     if (recentGamesData) {
       recentGames = Object.values(recentGamesData)
-        .map(game => ({
-          id: `recent_${game.appid}_${game.name}`,
-          title: game.name,
-          cover: game.gameDetails?.data?.header_image,
-        }))
+        .map(game => (
+          {
+            id: `recent_${game.appid}_${game.name}`,
+            title: game.name,
+            cover: game.gameDetails?.data?.header_image,
+            playtime_2weeks: Math.round((game.playtime_2weeks) / 60),
+
+          }))
         .slice(0, 10);
     }
 
@@ -211,6 +215,8 @@ const HomePage: React.FC<{
     playerData,
     playerLevel,
   } = processedProfileData;
+
+  console.log('#!@#@!#@!', recentGames);
 
   return (
     <Box sx={{ minHeight: '100vh', pb: 6, backgroundColor: 'var(--bg)' }}>
@@ -392,36 +398,43 @@ const HomePage: React.FC<{
 
           <Grid size={12}>
             <Typography variant="h6" sx={{ color: 'var(--text)', mb: 1 }}>
-              Recently played
+              Recently played in 2 weeks
             </Typography>
             <Stack spacing={2}>
-              {recentGames.map((r) => (
-                <Paper
-                  key={r.id}
-                  elevation={0}
-                  sx={{
-                    display: 'flex',
-                    gap: 2,
-                    alignItems: 'center',
-                    p: 1.25,
-                    borderRadius: 2,
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(227,209,170,0.03)',
-                  }}
-                >
-                  <Avatar
-                    src={r.cover}
-                    variant="rounded"
-                    sx={{ width: 56, height: 56 }}
-                  />
-                  <Typography
-                    variant="body1"
-                    sx={{ color: 'var(--text)' }}
+              {recentGames.map((r) =>
+                (
+                  <Paper
+                    key={r.id}
+                    elevation={0}
+                    sx={{
+                      display: 'flex',
+                      gap: 2,
+                      alignItems: 'center',
+                      p: 1.25,
+                      borderRadius: 2,
+                      background: 'rgba(255,255,255,0.02)',
+                      border: '1px solid rgba(227,209,170,0.03)',
+                    }}
                   >
-                    {r.title}
-                  </Typography>
-                </Paper>
-              ))}
+                    <Avatar
+                      src={r.cover}
+                      variant="rounded"
+                      sx={{ width: 56, height: 56 }}
+                    />
+                    <Box sx={{ display: 'flex', flexDirection: ' column' }}>
+                      <Typography variant="body1" sx={{ color: 'var(--text)' }}>
+                        {r.title}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'var(--text)', opacity: 0.7 }}>
+                        {(() => {
+                          const hours = Number(r.playtime_2weeks) || 0;
+                          if (hours < 1) return '< 1 hour';
+                          return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+                        })()}
+                      </Typography>
+                    </Box>
+                  </Paper>
+                ))}
             </Stack>
           </Grid>
         </Grid>
