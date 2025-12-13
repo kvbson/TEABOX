@@ -225,14 +225,14 @@ const HomePage: React.FC<{
                 border: '1px solid rgba(227,209,170,0.04)',
               }}
             >
-              <Box sx={{ display: 'flex', gap: 3, mb: 3, alignItems: 'flex-start' }}>
+              <Box sx={{ display: 'flex', gap: 3, mb: 3, alignItems: 'flex-start', justifyContent: 'space-between' }}>
                 <Avatar
                   src={playerData?.avatarFull}
                   variant="rounded"
                   sx={{ width: 100, height: 100 }}
                 />
 
-                <Box sx={{ flex: 1 }}>
+                <Box sx={{ width: 'fit-content' }}>
                   <Typography
                     variant="h4"
                     component="a"
@@ -243,6 +243,7 @@ const HomePage: React.FC<{
                       color: 'var(--primary)',
                       fontWeight: 800,
                       textDecoration: 'none',
+                      display: 'block',
                     }}
                   >
                     {playerData?.name}
@@ -258,6 +259,7 @@ const HomePage: React.FC<{
                   </Typography>
                 </Box>
               </Box>
+
 
               <Stack spacing={2}>
                 <StatItem label="Games in library" value={gamesInLibrary} />
