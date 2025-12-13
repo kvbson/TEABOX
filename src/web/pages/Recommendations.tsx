@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import GamesShowcase from '../components/GamesShowcase';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
+import { useLocation } from 'react-router-dom';
 
 interface RecommendationsProps {
   currentUserId: number;
@@ -18,6 +19,8 @@ interface RecommendationsProps {
 
 const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sidebarOpened, setError, sidebarTags, handleBanGame }) => {
   const { data, error, loading } = useSortedGameInfo(sidebarTags, currentUserId);
+  const { state } = useLocation();
+  console.log('state', state);
 
   useEffect(() => {
     if (error) {
@@ -25,7 +28,8 @@ const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sideba
     }
   }, [error, setError]);
 
-  const [selectedGameIndex, setSelectedGameIndex] = useState(0);
+  const startIndex = 'selectedGameId' in state ? Number(state.selectedGameId) : 0;
+  const [selectedGameIndex, setSelectedGameIndex] = useState(startIndex);
 
   const handleNext = () => {
     setSelectedGameIndex((prev) => (prev + 1) % data.length);

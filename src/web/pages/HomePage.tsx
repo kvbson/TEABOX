@@ -103,7 +103,8 @@ const HomePage: React.FC<{
   const navigate = useNavigate();
 
   const { profileData: rawProfileData, loading: profileLoading } =
-    useProfileData(steamId);
+    // useProfileData(steamId, 1500); //High limit as hell but we want only legit data
+    useProfileData(steamId, 10); //High limit as hell but we want only legit data
 
   const profileData = rawProfileData as SteamProfileData | null;
 
@@ -112,10 +113,11 @@ const HomePage: React.FC<{
 
   const processedGameInfoData = useMemo(() => {
     if (!gameInfoData) return [];
-    return gameInfoData.map((gi: any) => ({
-      id: `gameInfo_${gi.steam_appid}_${gi.name}`,
-      title: gi.name,
-      cover: gi.header_image,
+    return gameInfoData.map((game, index) => ({
+      id: `gameInfo_${game.steam_appid}_${game.name}`,
+      title: game.name,
+      cover: game.header_image,
+      gameIndex: index,
     }));
   }, [gameInfoData]);
 
@@ -137,19 +139,19 @@ const HomePage: React.FC<{
 
     if (recentGamesData) {
       recentGames = Object.values(recentGamesData)
-        .map((g: any) => ({
-          id: `recent_${g.appid}`,
-          title: g.name,
-          cover: g.gameDetails?.data?.header_image,
+        .map(game => ({
+          id: `recent_${game.appid}_${game.name}`,
+          title: game.name,
+          cover: game.gameDetails?.data?.header_image,
         }))
         .slice(0, 10);
     }
 
     if (ownedGames) {
       const gamesArray = Object.values(ownedGames)
-        .sort((a: any, b: any) => b.playtime_forever - a.playtime_forever)
-        .map((game: any) => ({
-          id: `game_${game.appid}`,
+        .sort((a: Record<string, any>, b: Record<string, any>) => b.playtime_forever - a.playtime_forever)
+        .map(game => ({
+          id: `game_${game.appid}_${game.name}`,
           title: game.name,
           cover: game.gameDetails?.data?.header_image,
           playtime: game.playtime_forever,
@@ -159,14 +161,14 @@ const HomePage: React.FC<{
       topFive = gamesArray.slice(0, 5);
       gamesInLibrary = gamesArray.length;
       totalHours =
-        gamesArray.reduce((sum: number, g: any) => sum + g.playtime, 0) / 60;
+        gamesArray.reduce((sum: number, game: Record<string, any>) => sum + game.playtime, 0) / 60;
       mostPlayedGame = gamesArray[0]?.title ?? '';
 
       const genreMap: Record<string, number> = {};
       const uniqueSet = new Set<string>();
 
-      gamesArray.forEach((game: any) => {
-        game.genres.forEach((g: any) => {
+      gamesArray.forEach((game: Record<string, any>) => {
+        game.genres.forEach((g: Record<string, any>) => {
           genreMap[g.description] =
             (genreMap[g.description] || 0) + game.playtime;
           uniqueSet.add(g.description);
@@ -260,7 +262,6 @@ const HomePage: React.FC<{
                 </Box>
               </Box>
 
-
               <Stack spacing={2}>
                 <StatItem label="Games in library" value={gamesInLibrary} />
                 <StatItem label="Unique tags" value={uniqueTags} />
@@ -343,8 +344,8 @@ const HomePage: React.FC<{
               }}
             >
               <HorizontalScroll>
-                {processedGameInfoData.map((r) => (
-                  <Box key={r.id} sx={{ minWidth: 160 }}>
+                {processedGameInfoData.map((game) => (
+                  <Box key={game.id} sx={{ minWidth: 160 }}>
                     <Card
                       sx={{
                         borderRadius: 2,
@@ -355,8 +356,8 @@ const HomePage: React.FC<{
                     >
                       <CardMedia
                         component="img"
-                        image={r.cover}
-                        alt={r.title}
+                        image={game.cover}
+                        alt={game.title}
                         sx={{ height: 120 }}
                       />
                       <CardContent sx={{ p: 1 }}>
@@ -365,14 +366,18 @@ const HomePage: React.FC<{
                           sx={{ color: 'var(--text)' }}
                           noWrap
                         >
-                          {r.title}
+                          {game.title}
                         </Typography>
                         <Button
                           size="small"
                           variant="contained"
                           sx={{ mt: 1, bgcolor: 'var(--primary)' }}
                           onClick={() =>
-                            navigate('/user/recommendations')
+                            navigate('/user/recommendations', {
+                              state: {
+                                selectedGameId: game.gameIndex,
+                              },
+                            })
                           }
                         >
                           View
