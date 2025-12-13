@@ -11,6 +11,7 @@ const PATHS: Record<CallUserParams['mode'], string> = {
   GET_BANNED_GAMES: '/dbUser/get/bannedGames',
   BAN_GAME: '/dbUser/banGame',
   UNBAN_GAME: '/dbUser/unbanGame',
+  GET_STATICTICS: '/dbUser/get/statistics',
 } as const;
 
 const REQUIRED_FIELDS: Record<CallUserParams['mode'], string[]> = {
@@ -24,6 +25,7 @@ const REQUIRED_FIELDS: Record<CallUserParams['mode'], string[]> = {
   GET_BANNED_GAMES: ['currentUserId'],
   BAN_GAME: ['currentUserId', 'steamapp_id'],
   UNBAN_GAME: ['currentUserId', 'gameId'],
+  GET_STATICTICS: ['queryType'],
 };
 
 const expressServerUrl = import.meta.env.VITE_SERVER_URL || 'https://localhost:8080';

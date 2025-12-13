@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { callServer } from '../../api/webClients/callServer.js';
 
+const CACHE_TTL = 60 * 60 * 1000;
 const PROFILE_CACHE_KEY = (steamId: string) =>
   `profileData:${steamId}`;
 
@@ -17,7 +18,6 @@ export const useProfileData = (steamId: string, dataLimit?: number) => {
   useEffect(() => {
     let isMounted = true;
     const cacheKey = PROFILE_CACHE_KEY(steamId);
-    const TTL = 60 * 60 * 1000;
 
     const cached = sessionStorage.getItem(cacheKey);
 
@@ -25,7 +25,7 @@ export const useProfileData = (steamId: string, dataLimit?: number) => {
       try {
         const parsed: CachedProfile = JSON.parse(cached);
 
-        if (Date.now() - parsed.timestamp < TTL) {
+        if (Date.now() - parsed.timestamp < CACHE_TTL) {
           setProfileData(parsed.data);
           setLoading(false);
           return;

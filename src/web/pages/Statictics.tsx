@@ -2,41 +2,31 @@ import ChartWrapper from '../components/charts/ChartWrapper';
 import GamesChart from '../components/charts/GamesChart';
 import GenreChart from '../components/charts/GenreChart';
 import PublisherChart from '../components/charts/PublisherChart';
+import LoadingOverlay from '../components/LoadingOverlay';
+import { useStatistics } from '../hooks/useStatictics';
 
 const StatisticsCharts = () => {
-  // const bestPublishers = useBigQueryData('bestPublishers', { limit: 30 });
-  // const bestGenres = useBigQueryData('mostRatedGenres');
-  // const bestReviewedGames = useBigQueryData('bestReviewedGames', { limit: 25 });
 
-  // const bestPublishersData: PublisherChartData[] = (bestPublishers.data ?? []).map(
-  //   ({ publisher, review_count, avg_score }) => ({ publisher, review_count, avg_score }),
-  // );
+  const { data: bestPublishers, loading: bestPublishersLoading } = useStatistics('bestPublishers');
+  const { data: mostRatedGenres, loading: mostRatedGenresLoading } = useStatistics('mostRatedGenres');
+  const { data: bestReviewedGames, loading: bestReviewedGamesLoading } = useStatistics('bestReviewedGames');
 
-  // const bestGenresData: GenreChartData[] = (bestGenres.data ?? []).map(
-  //   ({ genre, review_count, avg_score }) => ({ genre, review_count, avg_score }),
-  // );
-
-  // const bestReviewedGamesData: GamesChartData[] = (bestReviewedGames.data ?? []).map(
-  //   ({ steam_appid, review_count, upvotes, positive_ratio, name: steamAppName }) => ({
-  //     steam_appid,
-  //     name: steamAppName,
-  //     review_count,
-  //     upvotes,
-  //     positive_ratio,
-  //   }));
+  if (bestPublishersLoading || mostRatedGenresLoading || bestReviewedGamesLoading) {
+    return <LoadingOverlay info="statistics" />;
+  }
 
   return (
     <>
       <ChartWrapper title="Best publishers based on reviews">
-        <PublisherChart data={[]} />
+        <PublisherChart data={bestPublishers} />
       </ChartWrapper>
 
       <ChartWrapper title="Most rated genres">
-        <GenreChart data={[]} />
+        <GenreChart data={mostRatedGenres} />
       </ChartWrapper>
 
       <ChartWrapper title="Best reviewed games">
-        <GamesChart data={[]} />
+        <GamesChart data={bestReviewedGames} />
       </ChartWrapper>
     </>
   );

@@ -1,3 +1,4 @@
+export type QueryType = 'bestPublishers' | 'mostRatedGenres' | 'bestReviewedGames';
 export type Response = {
   success: true;
   message: string;
@@ -73,5 +74,11 @@ export type ParamsUserUnbanGame = {
   gameId: number;
 }
 
+export type ParamsGetStatictics= {
+  mode: 'GET_STATICTICS';
+  method: 'POST';
+  queryType: QueryType;
+}
+
 /*Union type for all possible parameter types*/
-export type CallUserParams = ParamsUserAdd | ParamsUserGetId | ParamsUserGetEmail | ParamsUserLogout | ParamsUserDelete | ParamsUserLogin | ParamsUserCheckUserSess | ParamsUserGetBannedGames | ParamsUserBanGame | ParamsUserUnbanGame;
+export type CallUserParams = ParamsUserAdd | ParamsUserGetId | ParamsUserGetEmail | ParamsUserLogout | ParamsUserDelete | ParamsUserLogin | ParamsUserCheckUserSess | ParamsUserGetBannedGames | ParamsUserBanGame | ParamsUserUnbanGame | ParamsGetStatictics;

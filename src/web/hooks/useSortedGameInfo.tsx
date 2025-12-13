@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { callServer } from '../../api/webClients/callServer';
 import { useBannedGamesWithInfo } from './useBannedGamesWithInfo';
 
+const CACHE_TTL = 60 * 60 * 1000;
 const SORTED_GAMES_CACHE_KEY = (
   currentUserId: number,
   quick?: boolean,
@@ -28,7 +29,6 @@ export const useSortedGameInfo = (
   useEffect(() => {
 
     let isMounted = true;
-    const TTL = 60 * 60 * 1000;
     const cacheKey = SORTED_GAMES_CACHE_KEY(
       currentUserId,
       quickRecommendations,
@@ -39,7 +39,7 @@ export const useSortedGameInfo = (
       try {
         const parsed: CachedGames = JSON.parse(cached);
 
-        if (Date.now() - parsed.timestamp < TTL) {
+        if (Date.now() - parsed.timestamp < CACHE_TTL) {
           setData(parsed.data);
           setLoading(false);
           return;

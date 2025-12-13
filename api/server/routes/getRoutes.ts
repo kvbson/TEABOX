@@ -19,6 +19,7 @@ import topmostTags from './utils/getTopmostTags.js';
 import bannedGames from './mysql/get/bannedGames.js';
 import banGame from './mysql/banGame.js';
 import unbanGame from './mysql/unbanGame.js';
+import statistics from './mysql/get/getStatistics.js';
 
 export function getRoutes() {
   const steamPrefix = '/api/steam';
@@ -44,6 +45,7 @@ export function getRoutes() {
     { route: bannedGames, prefix: mySQLPrefix },
     { route: banGame, prefix: mySQLPrefix },
     { route: unbanGame, prefix: mySQLPrefix },
+    { route: statistics, prefix: mySQLPrefix },
   ];
   return routes;
 }
