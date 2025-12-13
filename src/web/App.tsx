@@ -11,7 +11,7 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import PreferencesPage from './pages/Prefferences';
 import Recommendations from './pages/Recommendations';
-// import StatisticsCharts from './pages/Statictics';
+import StatisticsCharts from './pages/Statictics';
 import LoginPage from './pages/LoginPage';
 import { useAuth } from './hooks/useAuth';
 import RegisterPage from './pages/RegisterPage';
@@ -159,7 +159,7 @@ function App() {
                       />
                     }
                   />
-                  {/* <Route path="statistics" element={<StatisticsCharts />} /> */}
+                  <Route path="statistics" element={<StatisticsCharts />} />
                   <Route
                     path="bannedGames"
                     element={

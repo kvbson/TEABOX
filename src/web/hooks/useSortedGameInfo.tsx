@@ -88,7 +88,7 @@ export const useSortedGameInfo = (
     return () => {
       isMounted = false;
     };
-  }, [sidebarTags, bannedLoading, quickRecommendations]);
+  }, [sidebarTags, bannedLoading, quickRecommendations, currentUserId]);
 
   const filteredData = useMemo(() => {
     if (!bannedGames || bannedGames.length === 0) return data;
@@ -102,5 +102,5 @@ export const useSortedGameInfo = (
     );
   }, [data, bannedGames]);
 
-  return { data: filteredData, loading, error };
+  return { data: filteredData, loading: loading || bannedLoading, error };
 };
