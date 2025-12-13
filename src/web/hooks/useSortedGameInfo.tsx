@@ -3,10 +3,10 @@ import { callServer } from '../../api/webClients/callServer';
 import { useBannedGamesWithInfo } from './useBannedGamesWithInfo';
 
 const SORTED_GAMES_CACHE_KEY = (
-  tags: string[],
+  currentUserId: number,
   quick?: boolean,
 ) =>
-  `sortedGameInfo:${tags.sort().join('|')}:quick=${!!quick}`;
+  `sortedGameInfo:${currentUserId}:quick=${!!quick}`;
 
 type CachedGames = {
   data: any[];
@@ -26,17 +26,15 @@ export const useSortedGameInfo = (
     useBannedGamesWithInfo({ currentUserId });
 
   useEffect(() => {
-    if (sidebarTags.length === 0 || bannedLoading) return;
 
     let isMounted = true;
     const TTL = 60 * 60 * 1000;
     const cacheKey = SORTED_GAMES_CACHE_KEY(
-      sidebarTags,
+      currentUserId,
       quickRecommendations,
     );
 
     const cached = sessionStorage.getItem(cacheKey);
-
     if (cached) {
       try {
         const parsed: CachedGames = JSON.parse(cached);
@@ -51,6 +49,7 @@ export const useSortedGameInfo = (
       }
     }
 
+    if (sidebarTags.length === 0 || bannedLoading) return;
     const fetchGameInfo = async () => {
       setLoading(true);
       setError(null);
