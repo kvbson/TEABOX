@@ -45,7 +45,7 @@ export default function BannedGames({ currentUserId, handleBanGame }: BannedGame
       ) : (
         <Box sx={{ p: 15 }}>
           <Typography variant="h5" gutterBottom>
-          Lista zbanowanych gier
+          Banned games:
           </Typography>
 
           <TableContainer component={Paper} elevation={3}>
@@ -87,7 +87,7 @@ export default function BannedGames({ currentUserId, handleBanGame }: BannedGame
                 {games.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={3} align="center">
-                    Brak zbanowanych gier.
+                    No banned games (yet).
                     </TableCell>
                   </TableRow>
                 )}
