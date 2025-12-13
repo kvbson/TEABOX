@@ -1,44 +1,72 @@
 import { useEffect, useState } from 'react';
 import { callServer } from '../../api/webClients/callServer.js';
 
+const PROFILE_CACHE_KEY = (steamId: string) =>
+  `profileData:${steamId}`;
+
+type CachedProfile = {
+  data: any;
+  timestamp: number;
+};
+
 export const useProfileData = (steamId: string, dataLimit?: number) => {
-  const [profileData, setProfileData] = useState<
-    Record<string, unknown> | null | any[]
-  >(null);
+  const [profileData, setProfileData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    const cacheKey = PROFILE_CACHE_KEY(steamId);
+    const TTL = 60 * 60 * 1000;
+
+    const cached = sessionStorage.getItem(cacheKey);
+
+    if (cached) {
+      try {
+        const parsed: CachedProfile = JSON.parse(cached);
+
+        if (Date.now() - parsed.timestamp < TTL) {
+          setProfileData(parsed.data);
+          setLoading(false);
+          return;
+        }
+      } catch {
+        sessionStorage.removeItem(cacheKey);
+      }
+    }
+
     const fetchData = async () => {
       try {
-        // const loc = localStorage.getItem('profileData');
-        // console.log(loc);
-        // if (loc) {
-        //   return setProfileData(JSON.parse(loc));
-        // }
-
         const { data } = await callServer('profileData', {
           steamId,
           dataLimit: dataLimit || 200,
         });
-        console.log(data);
+
+        if (!isMounted) return;
 
         setProfileData(data);
-        // if (data?.response?.games && Array.isArray(data.response.games)) {
-        //   localStorage.setItem('profileData', JSON.stringify(data));
-        //   setProfileData(data);
-        // } else {
-        //   throw new Error('Invalid response format');
-        // }
+
+        sessionStorage.setItem(
+          cacheKey,
+          JSON.stringify({
+            data,
+            timestamp: Date.now(),
+          }),
+        );
       } catch (err) {
+        if (!isMounted) return;
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchData();
-  }, [steamId]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [steamId, dataLimit]);
 
   return { profileData, loading, error };
 };

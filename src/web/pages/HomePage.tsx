@@ -104,8 +104,7 @@ const HomePage: React.FC<{
   const navigate = useNavigate();
 
   const { profileData: rawProfileData, loading: profileLoading } =
-    // useProfileData(steamId, 1500); //High limit as hell but we want only legit data
-    useProfileData(steamId, 10); //High limit as hell but we want only legit data
+    useProfileData(steamId, 1500); //High limit as hell but we want only legit data
 
   const profileData = rawProfileData as SteamProfileData | null;
 
