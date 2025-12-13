@@ -8,7 +8,7 @@ meUser.get('/dbUser/me', (req, res) => {
     res.status(401).json({ error: 'Not authenticated' });
     return;
   }
-  res.json({ userId: session?.userId, login: session?.login });
+  res.json({ userId: session?.userId, steamId: session?.steamId, login: session?.login });
 });
 
 export default meUser;

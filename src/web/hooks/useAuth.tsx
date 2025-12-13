@@ -32,13 +32,16 @@ export const useAuth = (): UseAuthResult => {
         method: 'GET',
       });
       const userId = res.data?.userId;
+      const steamId = res.data?.steamId;
 
-      if (userId && res.success) {
+      if (userId && steamId && res.success) {
         setIsLoggedIn(true);
         setCurrentUserId(userId);
+        setCurrentUserSteamId(steamId);
       } else {
         setIsLoggedIn(false);
         setCurrentUserId(0);
+        setCurrentUserSteamId('');
         // setFiles([]);
       }
     } catch (err) {

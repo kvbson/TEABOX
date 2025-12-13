@@ -37,8 +37,6 @@ const getUserProfileData = async (steamId: string, dataLimit: number): Promise<U
       getUserSummary(steamId),
     ]);
 
-    console.log('!@#@!#@!#@!', userSummary);
-
     const allAppIds = [
       ...new Set<number>([
         ...(recentGames?.response.games?.map(g => g?.appid) ?? []),
