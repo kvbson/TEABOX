@@ -30,8 +30,9 @@ loginUser.post('/dbUser/login', async (req, res) => {
 
   sess.userId = user.id;
   sess.email = user.email;
+  sess.steamId = user.steamid;
 
-  res.json({ ok: true, userId: user.id });
+  res.json({ ok: true, userId: user.id, steamId: user.steamid });
 });
 
 export default loginUser;

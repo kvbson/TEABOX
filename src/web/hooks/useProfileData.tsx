@@ -16,6 +16,7 @@ export const useProfileData = (steamId: string, dataLimit?: number) => {
         // if (loc) {
         //   return setProfileData(JSON.parse(loc));
         // }
+
         const { data } = await callServer('profileData', {
           steamId,
           dataLimit: dataLimit || 200,

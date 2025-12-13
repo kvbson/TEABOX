@@ -14,7 +14,7 @@ const PATHS: Record<CallUserParams['mode'], string> = {
 } as const;
 
 const REQUIRED_FIELDS: Record<CallUserParams['mode'], string[]> = {
-  ADD_USER: ['email', 'password'],
+  ADD_USER: ['email', 'password', 'steamId'],
   LOGIN_USER: ['email', 'password'],
   GET_USER_BY_EMAIL: ['email'],
   GET_USER_BY_ID: ['userId'],

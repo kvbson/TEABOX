@@ -3,13 +3,13 @@ import { normalizeValue, parse10Int } from '../utils/functions.js';
 import { getOutId } from '../utils/getOutId.js';
 
 export type UserSchemaType = {
-    steam_appid: number | null;
-    email: string;
-    password_hash: string;
+  email: string;
+  password_hash: string;
+  steamId: string;
 }
 
 export async function insertUser(user: UserSchemaType) {
-  if (!user || user.email == null || user.password_hash == null) {
+  if (!user || user.email == null || user.password_hash == null || user.steamId == null) {
     console.warn('Skipping invalid user info:', user);
     return;
   }
@@ -18,9 +18,9 @@ export async function insertUser(user: UserSchemaType) {
   const response = await pool.query(
     'INSERT INTO users SET ?',
     [{
-      steam_appid: parse10Int(user.steam_appid),
       email: normalizeValue(user.email),
       password_hash: normalizeValue(user.password_hash),
+      steamId: parse10Int(user.steamId),
     }],
   );
   const outId = getOutId(response);

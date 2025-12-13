@@ -8,6 +8,7 @@ export interface LoginPageProps {
   handleLogin: (
     username: string,
     password: string,
+    steamId?: string,
     register?: boolean
   ) => Promise<void> | void;
 }

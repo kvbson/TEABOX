@@ -7,11 +7,13 @@ type LoginStatus = {
 };
 interface UseAuthResult {
   currentUserId: number;
+  currentUserSteamId: string;
   isLoggedIn: boolean;
   loginStatus: LoginStatus | null;
   handleLogin: (
     email: string,
     password: string,
+        steamId?: string, //Only in register
     isRegister?: boolean,
   ) => Promise<void>;
   handleLogout: () => void;
@@ -19,6 +21,7 @@ interface UseAuthResult {
 
 export const useAuth = (): UseAuthResult => {
   const [currentUserId, setCurrentUserId] = useState(0);
+  const [currentUserSteamId, setCurrentUserSteamId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loginStatus, setLoginStatus] = useState<LoginStatus | null>(null);
 
@@ -57,15 +60,14 @@ export const useAuth = (): UseAuthResult => {
     } finally {
       setIsLoggedIn(false);
       setCurrentUserId(0);
+      setCurrentUserSteamId('');
       setLoginStatus({ type: 'success', message: 'Logged out.' });
     }
   }, []);
 
   const handleLogin = useCallback(
-    async (email: string, password: string, isRegister?: boolean) => {
+    async (email: string, password: string, steamId?: string, isRegister?: boolean) => {
       if (!email || !password) return;
-
-      //       setLoginStatus('Logging in...');
 
       try {
         // Check if user exists
@@ -76,13 +78,14 @@ export const useAuth = (): UseAuthResult => {
         });
 
         const userNotFound = !userCheck.success || userCheck.data?.length === 0;
-        if (userNotFound && isRegister) {
+        if (userNotFound && isRegister && steamId) {
           setLoginStatus({ type: 'success', message: 'Creating user...' });
           await callUser({
             mode: 'ADD_USER',
             method: 'POST',
             email,
             password,
+            steamId,
           });
         }
 
@@ -94,11 +97,10 @@ export const useAuth = (): UseAuthResult => {
           password,
         });
 
-        console.log('$$', loginRes);
-
         if (loginRes.success) {
           setIsLoggedIn(true);
           setCurrentUserId(loginRes.data.userId);
+          setCurrentUserSteamId(loginRes.data.steamId);
           setLoginStatus({ type: 'success', message: 'Logged in.' });
         } else {
           setLoginStatus({
@@ -116,6 +118,7 @@ export const useAuth = (): UseAuthResult => {
 
   return {
     currentUserId,
+    currentUserSteamId,
     isLoggedIn,
     loginStatus,
     handleLogin,

@@ -14,54 +14,12 @@ import {
   Chip,
 } from '@mui/material';
 
-import game1_img from '../../../public/assets/images/game_image1.webp';
-import game2_img from '../../../public/assets/images/game_image2.jpg';
-import game3_img from '../../../public/assets/images/game_image3.png';
-import game4_img from '../../../public/assets/images/game_image_4.jpg';
-import game5_img from '../../../public/assets/images/game_image_5.png';
-import game6_img from '../../../public/assets/images/game_image_6.webp';
-import game7_img from '../../../public/assets/images/game_image_7.jpg';
 import { useProfileData } from '../hooks/useProfileData';
 import LoadingOverlay from '../components/LoadingOverlay';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
 import { useNavigate } from 'react-router-dom';
 
-const images = [
-  game1_img,
-  game2_img,
-  game3_img,
-  game4_img,
-  game5_img,
-  game6_img,
-];
-
 type GameItem = { id: string; title: string; cover?: string };
-
-const mockData = {
-  name: 'PlayerOne',
-  totalHours: 1280,
-  mostPlayed: 'Mystery Quest',
-  gamesInLibrary: 214,
-  uniqueTags: 48,
-  topTags: ['Adventure', 'RPG', 'Indie', 'Puzzle', 'Co-op'],
-  topGames: new Array(5).fill(0).map((_, i) => ({
-    id: `tg${i}`,
-    title: `Top Game ${i + 1}`,
-    cover: images[i],
-  })) as GameItem[],
-  quickRecs: new Array(7).fill(0).map((_, i) => ({
-    id: `qr${i}`,
-    title: `Rec ${i + 1}`,
-    cover: game7_img,
-  })) as GameItem[],
-  recent: new Array(6).fill(0).map((_, i) => ({
-    id: `r${i}`,
-    title: `Recent ${i + 1}`,
-    cover: images[i],
-  })) as GameItem[],
-  profileSummary:
-    'Casual explorer who loves short narrative experiences and puzzle-heavy mechanics. Prefers games with strong atmosphere.',
-};
 
 const StatItem: React.FC<{ label: string; value: React.ReactNode }> = ({
   label,
@@ -126,138 +84,138 @@ const HorizontalScroll: React.FC<{ children: React.ReactNode }> = ({
   </Box>
 );
 
-const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: string[] }> = ({
+const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: string[] }> = ({
   steamId,
   currentUserId,
   sidebarTags,
-}: {
-  steamId: string;
-  currentUserId: number;
-   sidebarTags: string[];
 }) => {
-  // const theme = useTheme();
   const navigate = useNavigate();
+  const { profileData: rawProfileData, loading: profileDataLoading } = useProfileData(steamId);
+  const { data: gameInfoData, loading: gameInfoLoading } = useSortedGameInfo(sidebarTags, currentUserId, true);
 
-  const { data, loading: gameInfoLoading } = useSortedGameInfo(sidebarTags, currentUserId, true);
-
-  const { profileData: rawProfileData, loading:profileDataLoading } = useProfileData(steamId);
   const steamProfileData = rawProfileData as Record<string, any>;
-  const gameInfoData = data as Record<string, any>;
-
-  console.log(gameInfoData);
-
   const processedGameInfoData = useMemo(() => {
-    let gameInfo: GameItem[] = [];
-    if (!data) return null;
-    gameInfo = data.map(gi => ({
+    if (!gameInfoData) return [];
+    return gameInfoData.map((gi: any) => ({
       id: `gameInfo_${gi.steam_appid}_${gi.name}`,
       title: gi.name,
       cover: gi.header_image,
     }));
-
-    return { gameInfo };
-
-  },[data]);
+  }, [gameInfoData]);
 
   const processedProfileData = useMemo(() => {
     if (!steamProfileData) return null;
 
     const ownedGames = steamProfileData.ownedGames as Record<string, any> | undefined;
-    const uniqueTags = steamProfileData.tags as string[] | undefined;
     const recentGamesData = steamProfileData.recentGames as Record<string, any> | undefined;
+    const playerData = steamProfileData.user as Record<string, any> | undefined;
+    const playerLevel = steamProfileData.badges?.player_level as number | undefined;
 
     let topFive: GameItem[] = [];
+    let gamesInLibrary = 0;
     let totalHours = 0;
     let mostPlayedGame = '';
     let topTags: string[] = [];
-    //
+    let uniqueTags = 0;
     let recentGames: GameItem[] = [];
 
     if (recentGamesData) {
-      const recentGamesArray = Object.values(recentGamesData).map(recentGame => ({
-        id: `recentGame_${recentGame.appid}_${recentGame.name}`,
-        title: recentGame.name,
-        cover: recentGame.gameDetails.data.header_image,
-      }));
-
-      recentGames = recentGamesArray.slice(0,10);
-
+      recentGames = Object.values(recentGamesData)
+        .map((g: any) => ({
+          id: `recentGame_${g.appid}_${g.name}`,
+          title: g.name,
+          cover: g.gameDetails.data.header_image,
+        }))
+        .slice(0, 10);
     }
 
     if (ownedGames) {
       const gamesArray = Object.values(ownedGames)
         .sort((a, b) => b.playtime_forever - a.playtime_forever)
-        .map(game => (
-
-          {
-            id: `game_${game.appid}_${game.name}`,
-            title: game.name,
-            cover: game.gameDetails.data.header_image,
-            playtime: game.playtime_forever,
-            genres: game.gameDetails.data.genres || [],
-          }));
+        .map((game: any) => ({
+          id: `game_${game.appid}_${game.name}`,
+          title: game.name,
+          cover: game.gameDetails.data.header_image,
+          playtime: game.playtime_forever,
+          genres: game.gameDetails.data.genres || [],
+        }));
 
       topFive = gamesArray.slice(0, 5);
-      totalHours = gamesArray.reduce((sum, game) => sum + (game.playtime || 0), 0) / 60;
+      gamesInLibrary = gamesArray.length;
+      totalHours = gamesArray.reduce((sum, g) => sum + (g.playtime || 0), 0) / 60;
       mostPlayedGame = gamesArray[0]?.title || '';
-      //
+
       const genreMap: Record<string, number> = {};
-      gamesArray.forEach(game => {
+      const uniqueTagsSet = new Set<string>();
+
+      gamesArray.forEach((game) => {
         game.genres.forEach((g: { description: string }) => {
           genreMap[g.description] = (genreMap[g.description] || 0) + (game.playtime || 0);
+          uniqueTagsSet.add(g.description);
         });
       });
 
       topTags = Object.entries(genreMap)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 5)
-        .map(([genre]) => genre);
+        .map(([tag]) => tag);
 
+      uniqueTags = uniqueTagsSet.size;
     }
 
     return {
       topFive,
       totalHours: Number(totalHours.toFixed(0)),
+      gamesInLibrary,
       mostPlayedGame,
-      uniqueTags: Array.isArray(uniqueTags) && uniqueTags.length > 0 ? uniqueTags.length : 0,
       topTags,
+      uniqueTags,
       recentGames,
+      playerData,
+      playerLevel,
     };
   }, [steamProfileData]);
 
-  const topGames = processedProfileData?.topFive;
-  const totalPlaytime = processedProfileData?.totalHours;
-  const mostPlayedGame = processedProfileData?.mostPlayedGame;
-  const uniqueTags = processedProfileData?.uniqueTags;
-  const topTags = processedProfileData?.topTags;
-  const recentGames = processedProfileData?.recentGames;
-  //
-  const quickRecommendations = processedGameInfoData?.gameInfo;
-
-  if (profileDataLoading || gameInfoLoading || !steamProfileData || !gameInfoData) {
-    return <LoadingOverlay />;
+  if (profileDataLoading || gameInfoLoading || !processedProfileData) {
+    return <LoadingOverlay info="profile" />;
   }
 
-  mockData.topGames = topGames ?? [];
-  mockData.totalHours = totalPlaytime ?? 0;
-  mockData.mostPlayed = mostPlayedGame ?? '';
-  mockData.uniqueTags = uniqueTags ?? 0;
-  mockData.topTags = topTags ?? [];
-  mockData.recent = recentGames ?? [];
-  mockData.quickRecs = quickRecommendations ?? [];
+  const {
+    topFive: topGames,
+    gamesInLibrary,
+    totalHours,
+    mostPlayedGame,
+    topTags,
+    uniqueTags,
+    recentGames,
+    playerData,
+    playerLevel,
+  } = processedProfileData;
 
   return (
     <Box sx={{ minHeight: '100vh', pb: 6, backgroundColor: 'var(--bg)' }}>
       <Container maxWidth="lg" sx={{ pt: 4 }}>
         {/* header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h3" sx={{ color: 'var(--primary)', fontWeight: 800 }}>
-            {mockData.name}
+          <Avatar
+            src={playerData?.avatarFull}
+            variant="rounded"
+            sx={{ width: 56, height: 56 }}
+          />
+          <Typography
+            variant="h3"
+            component="a"
+            href={playerData?.profileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ color: 'var(--primary)', fontWeight: 800, textDecoration: 'none' }}
+          >
+            {playerData?.name} lv. {playerLevel ?? 0}
           </Typography>
 
           <Stack direction="row" spacing={2} alignItems="center">
             <Chip
-              label={`${mockData.gamesInLibrary} games`}
+              label={`${gamesInLibrary} games`}
               size="small"
               sx={{
                 bgcolor: 'transparent',
@@ -285,11 +243,10 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
               <Stack spacing={2}>
                 <StatItem
                   label="Games in library"
-                  value={mockData.gamesInLibrary}
-                />
-                <StatItem label="Unique tags" value={mockData.uniqueTags} />
-                <StatItem label="Total hours" value={`${mockData.totalHours} h`} />
-                <StatItem label="Most played" value={mockData.mostPlayed} />
+                  value={gamesInLibrary} />
+                <StatItem label="Unique tags" value={uniqueTags} />
+                <StatItem label="Total hours" value={`${totalHours} h`} />
+                <StatItem label="Most played" value={mostPlayedGame} />
 
                 <Box>
                   <Typography
@@ -299,7 +256,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
                     Top tags
                   </Typography>
                   <Stack direction="row" spacing={1} flexWrap="wrap">
-                    {mockData.topTags.map((t) => (
+                    {topTags.map((t) => (
                       <Chip
                         key={t}
                         label={t}
@@ -332,7 +289,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
                 variant="body2"
                 sx={{ color: 'var(--text)' }}
               >
-                {mockData.profileSummary}
+                {'Byle co tu można wkleić.....................i się nie rozciąga'}
               </Typography>
             </Paper>
           </Grid>
@@ -342,7 +299,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
               Top 5 Most Played
             </Typography>
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-              {mockData.topGames.map((g) => (
+              {topGames.map((g) => (
                 <GameCard key={g.id} title={g.title} cover={g.cover} />
               ))}
             </Stack>
@@ -361,7 +318,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
               }}
             >
               <HorizontalScroll>
-                {mockData.quickRecs.map((r) => (
+                {processedGameInfoData.map((r) => (
                   <Box key={r.id} sx={{ minWidth: 160 }}>
                     <Card
                       sx={{
@@ -407,7 +364,7 @@ const HomePage: React.FC<{ steamId: string, currentUserId: number, sidebarTags: 
             </Typography>
 
             <Stack spacing={2}>
-              {mockData.recent.map((r) => (
+              {recentGames?.map((r) => (
                 <Paper
                   key={r.id}
                   elevation={0}

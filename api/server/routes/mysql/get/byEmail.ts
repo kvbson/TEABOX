@@ -6,7 +6,7 @@ const getUserWithEmail = Router();
 export async function getUserByEmail(email: string) {
   const pool = await getMySqlPool();
   const [rows] = await pool.execute(
-    'SELECT id, email, password_hash FROM users WHERE email = ?',
+    'SELECT id, email, password_hash, steamid FROM users WHERE email = ?',
     [email],
   );
   return Array.isArray(rows) ? rows[0] : rows ?? null;

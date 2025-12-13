@@ -16,6 +16,7 @@ export interface RegisterPageProps {
   handleLogin: (
     username: string,
     password: string,
+    steamId?: string,
     register?: boolean
   ) => Promise<void> | void;
 }
@@ -39,8 +40,10 @@ const inputStyles = {
 const RegisterPage: React.FC<RegisterPageProps> = ({ handleLogin }) => {
   const emailInputRef = useRef<HTMLInputElement | null>(null);
   const passwordInputRef = useRef<HTMLInputElement | null>(null);
+  const steamIdInputRef = useRef<HTMLInputElement | null>(null);
 
   const [email, setEmail] = useState('');
+  const [steamId, setSteamId] = useState('');
   const [password, setPassword] = useState('');
   const [repeat, setRepeat] = useState('');
   const passwordsMatch = password === repeat;
@@ -51,14 +54,15 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ handleLogin }) => {
   const isDisabled = email.length === 0 ||
     password.length === 0 ||
     repeat.length === 0 ||
-    !passwordsMatch;
+    !passwordsMatch || steamId.length <= 16 || steamId.length > 17;
 
   const navigate = useNavigate();
   const onLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const username = emailInputRef.current?.value || '';
     const password = passwordInputRef.current?.value || '';
-    await handleLogin(username, password, true);
+    const steamId = steamIdInputRef.current?.value || '';
+    await handleLogin(username, password, steamId, true);
     navigate('/user/home');
   };
 
@@ -112,11 +116,24 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ handleLogin }) => {
                 inputRef={emailInputRef}
                 placeholder="Email"
                 fullWidth
-                sx={inputStyles}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <FormHelperText error sx={{ height: '20px' }}>
-                {email.length > 0 && !isValidEmail(email) ? 'Niepoprawny adres e-mail' : ''}
+                {email.length > 0 && !isValidEmail(email) ? 'Invalid e-mail' : ''}
+              </FormHelperText>
+            </FormControl>
+
+            <FormControl fullWidth sx={{ ...inputStyles }}>
+              <TextField
+                inputRef={steamIdInputRef}
+                type="text"
+                placeholder="Steam ID (min/max 17)"
+                fullWidth
+                sx={inputStyles}
+                onChange={(e) => setSteamId(e.target.value)}
+              />
+              <FormHelperText error sx={{ height: '20px' }}>
+                {steamId.length > 17 || steamId.length <= 16 ? 'Invalid Steam ID' : ''}
               </FormHelperText>
             </FormControl>
 
@@ -138,7 +155,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ handleLogin }) => {
                 error={repeat.length > 0 && !passwordsMatch}
               />
               <FormHelperText error sx={{ height: '20px' }}>
-                {repeat.length > 0 && !passwordsMatch ? 'Hasła nie są takie same' : ''}
+                {repeat.length > 0 && !passwordsMatch ? 'Passwords are not the same' : ''}
               </FormHelperText>
             </FormControl>
 

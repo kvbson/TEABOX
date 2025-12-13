@@ -15,6 +15,7 @@ export type ParamsUserAdd = {
   method: 'POST';
   email: string;
   password: string;
+  steamId: string;
 }
 
 export type ParamsUserGetEmail = {

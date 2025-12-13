@@ -34,7 +34,7 @@ const toastProperties: ToastOptions = {
 };
 
 function App() {
-  const { isLoggedIn, loginStatus, handleLogin, handleLogout, currentUserId } =
+  const { isLoggedIn, loginStatus, handleLogin, handleLogout, currentUserId, currentUserSteamId } =
     useAuth();
   const { handleBanGame } = useBanGame();
   const { handleUnbanGame } = useUnbanGame();
@@ -46,8 +46,6 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [sidebarTags, setSidebarTags] = useState<string[]>(selectedTags);
-  const steamId = '76561198199623266';
-  // const steamId = '';
 
   const toggleMenu = () => setSidebarOpened((prev) => !prev);
 
@@ -56,7 +54,7 @@ function App() {
       currentUserId={currentUserId}
       sidebarOpened={sidebarOpened}
       setError={setError}
-      steamId={steamId}
+      steamId={currentUserSteamId}
       sidebarTags={sidebarTags}
       handleBanGame={handleBanGame}
     />
@@ -139,7 +137,7 @@ function App() {
                   setSidebarTags={setSidebarTags}
                 />
                 <Routes>
-                  <Route path="home" element={<HomePage steamId={steamId} currentUserId={currentUserId}
+                  <Route path="home" element={<HomePage steamId={currentUserSteamId} currentUserId={currentUserId}
                     sidebarTags={sidebarTags}/>} />
                   <Route
                     path="recommendations"
