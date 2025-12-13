@@ -13,13 +13,30 @@ import {
   Button,
   Chip,
 } from '@mui/material';
-
-import { useProfileData } from '../hooks/useProfileData';
-import LoadingOverlay from '../components/LoadingOverlay';
-import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
 import { useNavigate } from 'react-router-dom';
 
-type GameItem = { id: string; title: string; cover?: string };
+import { useProfileData } from '../hooks/useProfileData';
+import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
+import LoadingOverlay from '../components/LoadingOverlay';
+
+type GameItem = {
+  id: string;
+  title: string;
+  cover?: string;
+};
+
+type SteamProfileData = {
+  ownedGames?: Record<string, any>;
+  recentGames?: Record<string, any>;
+  user?: {
+    name?: string;
+    avatarFull?: string;
+    profileUrl?: string;
+  };
+  badges?: {
+    player_level?: number;
+  };
+};
 
 const StatItem: React.FC<{ label: string; value: React.ReactNode }> = ({
   label,
@@ -40,21 +57,15 @@ const GameCard: React.FC<{ title: string; cover?: string }> = ({
   cover,
 }) => (
   <Card
+    elevation={0}
     sx={{
-      width: 'auto',
       borderRadius: 2,
       overflow: 'hidden',
       background: 'rgba(255,255,255,0.02)',
       border: '1px solid rgba(227,209,170,0.06)',
     }}
-    elevation={0}
   >
-    <CardMedia
-      component="img"
-      image={cover}
-      alt={title}
-      sx={{ height: 'auto', objectFit: 'cover' }}
-    />
+    <CardMedia component="img" image={cover} alt={title} />
     <CardContent sx={{ p: 1 }}>
       <Typography variant="body2" sx={{ color: 'var(--text)' }} noWrap>
         {title}
@@ -84,16 +95,21 @@ const HorizontalScroll: React.FC<{ children: React.ReactNode }> = ({
   </Box>
 );
 
-const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: string[] }> = ({
-  steamId,
-  currentUserId,
-  sidebarTags,
-}) => {
+const HomePage: React.FC<{
+  steamId: string;
+  currentUserId: number;
+  sidebarTags: string[];
+}> = ({ steamId, currentUserId, sidebarTags }) => {
   const navigate = useNavigate();
-  const { profileData: rawProfileData, loading: profileDataLoading } = useProfileData(steamId);
-  const { data: gameInfoData, loading: gameInfoLoading } = useSortedGameInfo(sidebarTags, currentUserId, true);
 
-  const steamProfileData = rawProfileData as Record<string, any>;
+  const { profileData: rawProfileData, loading: profileLoading } =
+    useProfileData(steamId);
+
+  const profileData = rawProfileData as SteamProfileData | null;
+
+  const { data: gameInfoData, loading: gameInfoLoading } =
+    useSortedGameInfo(sidebarTags, currentUserId, true);
+
   const processedGameInfoData = useMemo(() => {
     if (!gameInfoData) return [];
     return gameInfoData.map((gi: any) => ({
@@ -104,12 +120,12 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
   }, [gameInfoData]);
 
   const processedProfileData = useMemo(() => {
-    if (!steamProfileData) return null;
+    if (!profileData) return null;
 
-    const ownedGames = steamProfileData.ownedGames as Record<string, any> | undefined;
-    const recentGamesData = steamProfileData.recentGames as Record<string, any> | undefined;
-    const playerData = steamProfileData.user as Record<string, any> | undefined;
-    const playerLevel = steamProfileData.badges?.player_level as number | undefined;
+    const ownedGames = profileData.ownedGames;
+    const recentGamesData = profileData.recentGames;
+    const playerData = profileData.user;
+    const playerLevel = profileData.badges?.player_level;
 
     let topFive: GameItem[] = [];
     let gamesInLibrary = 0;
@@ -122,36 +138,38 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
     if (recentGamesData) {
       recentGames = Object.values(recentGamesData)
         .map((g: any) => ({
-          id: `recentGame_${g.appid}_${g.name}`,
+          id: `recent_${g.appid}`,
           title: g.name,
-          cover: g.gameDetails.data.header_image,
+          cover: g.gameDetails?.data?.header_image,
         }))
         .slice(0, 10);
     }
 
     if (ownedGames) {
       const gamesArray = Object.values(ownedGames)
-        .sort((a, b) => b.playtime_forever - a.playtime_forever)
+        .sort((a: any, b: any) => b.playtime_forever - a.playtime_forever)
         .map((game: any) => ({
-          id: `game_${game.appid}_${game.name}`,
+          id: `game_${game.appid}`,
           title: game.name,
-          cover: game.gameDetails.data.header_image,
+          cover: game.gameDetails?.data?.header_image,
           playtime: game.playtime_forever,
-          genres: game.gameDetails.data.genres || [],
+          genres: game.gameDetails?.data?.genres || [],
         }));
 
       topFive = gamesArray.slice(0, 5);
       gamesInLibrary = gamesArray.length;
-      totalHours = gamesArray.reduce((sum, g) => sum + (g.playtime || 0), 0) / 60;
-      mostPlayedGame = gamesArray[0]?.title || '';
+      totalHours =
+        gamesArray.reduce((sum: number, g: any) => sum + g.playtime, 0) / 60;
+      mostPlayedGame = gamesArray[0]?.title ?? '';
 
       const genreMap: Record<string, number> = {};
-      const uniqueTagsSet = new Set<string>();
+      const uniqueSet = new Set<string>();
 
-      gamesArray.forEach((game) => {
-        game.genres.forEach((g: { description: string }) => {
-          genreMap[g.description] = (genreMap[g.description] || 0) + (game.playtime || 0);
-          uniqueTagsSet.add(g.description);
+      gamesArray.forEach((game: any) => {
+        game.genres.forEach((g: any) => {
+          genreMap[g.description] =
+            (genreMap[g.description] || 0) + game.playtime;
+          uniqueSet.add(g.description);
         });
       });
 
@@ -160,13 +178,13 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
         .slice(0, 5)
         .map(([tag]) => tag);
 
-      uniqueTags = uniqueTagsSet.size;
+      uniqueTags = uniqueSet.size;
     }
 
     return {
       topFive,
-      totalHours: Number(totalHours.toFixed(0)),
       gamesInLibrary,
+      totalHours: Math.round(totalHours),
       mostPlayedGame,
       topTags,
       uniqueTags,
@@ -174,14 +192,14 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
       playerData,
       playerLevel,
     };
-  }, [steamProfileData]);
+  }, [profileData]);
 
-  if (profileDataLoading || gameInfoLoading || !processedProfileData) {
+  if (profileLoading || gameInfoLoading || !processedProfileData) {
     return <LoadingOverlay info="profile" />;
   }
 
   const {
-    topFive: topGames,
+    topFive,
     gamesInLibrary,
     totalHours,
     mostPlayedGame,
@@ -195,55 +213,54 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
   return (
     <Box sx={{ minHeight: '100vh', pb: 6, backgroundColor: 'var(--bg)' }}>
       <Container maxWidth="lg" sx={{ pt: 4 }}>
-        {/* header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Avatar
-            src={playerData?.avatarFull}
-            variant="rounded"
-            sx={{ width: 56, height: 56 }}
-          />
-          <Typography
-            variant="h3"
-            component="a"
-            href={playerData?.profileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: 'var(--primary)', fontWeight: 800, textDecoration: 'none' }}
-          >
-            {playerData?.name} lv. {playerLevel ?? 0}
-          </Typography>
-
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Chip
-              label={`${gamesInLibrary} games`}
-              size="small"
-              sx={{
-                bgcolor: 'transparent',
-                color: 'var(--primary)',
-                border: '1px dashed rgba(216,53,87,0.12)',
-              }}
-            />
-            <Button variant="text" sx={{ color: 'var(--primary)' }}>
-              Preferences
-            </Button>
-          </Stack>
-        </Box>
-
-        <Grid container spacing={3}>
-          <Grid size={12} display="flex" gap={2}>
+        <Grid container columns={12} spacing={3}>
+          <Grid size={{ xs: 12, md: 'auto' }}>
             <Paper
               elevation={0}
               sx={{
+                minWidth: 320,
                 p: 2.5,
                 borderRadius: 2,
                 backgroundColor: 'rgba(255,255,255,0.02)',
                 border: '1px solid rgba(227,209,170,0.04)',
               }}
             >
+              <Box sx={{ display: 'flex', gap: 3, mb: 3, alignItems: 'flex-start' }}>
+                <Avatar
+                  src={playerData?.avatarFull}
+                  variant="rounded"
+                  sx={{ width: 100, height: 100 }}
+                />
+
+                <Box sx={{ flex: 1 }}>
+                  <Typography
+                    variant="h4"
+                    component="a"
+                    href={playerData?.profileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{
+                      color: 'var(--primary)',
+                      fontWeight: 800,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    {playerData?.name}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      textAlign: 'right',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    lv. {playerLevel ?? 0}
+                  </Typography>
+                </Box>
+              </Box>
+
               <Stack spacing={2}>
-                <StatItem
-                  label="Games in library"
-                  value={gamesInLibrary} />
+                <StatItem label="Games in library" value={gamesInLibrary} />
                 <StatItem label="Unique tags" value={uniqueTags} />
                 <StatItem label="Total hours" value={`${totalHours} h`} />
                 <StatItem label="Most played" value={mostPlayedGame} />
@@ -272,24 +289,30 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
                 </Box>
               </Stack>
             </Paper>
+          </Grid>
 
+          <Grid size={{ xs: 12, md: 'grow' }}>
             <Paper
               elevation={0}
               sx={{
                 p: 2,
+                height: '100%',
                 borderRadius: 2,
                 backgroundColor: 'rgba(255,255,255,0.02)',
                 border: '1px solid rgba(227,209,170,0.04)',
               }}
             >
-              <Typography variant="subtitle1" sx={{ color: 'var(--primary)', mb: 1 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{ color: 'var(--primary)', mb: 1 }}
+              >
                 Profile Summary
               </Typography>
               <Typography
                 variant="body2"
-                sx={{ color: 'var(--text)' }}
+                sx={{ color: 'var(--text)', wordBreak: 'break-word' }}
               >
-                {'Byle co tu można wkleić.....................i się nie rozciąga'}
+                Byle co tu można wkleić
               </Typography>
             </Paper>
           </Grid>
@@ -299,7 +322,7 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
               Top 5 Most Played
             </Typography>
             <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
-              {topGames.map((g) => (
+              {topFive.map((g) => (
                 <GameCard key={g.id} title={g.title} cover={g.cover} />
               ))}
             </Stack>
@@ -313,7 +336,7 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
               sx={{
                 p: 1,
                 borderRadius: 2,
-                backgroundColor: 'transparent',
+                background: 'transparent',
                 border: '1px solid rgba(227,209,170,0.03)',
               }}
             >
@@ -332,7 +355,7 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
                         component="img"
                         image={r.cover}
                         alt={r.title}
-                        sx={{ height: 120, objectFit: 'cover' }}
+                        sx={{ height: 120 }}
                       />
                       <CardContent sx={{ p: 1 }}>
                         <Typography
@@ -346,7 +369,9 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
                           size="small"
                           variant="contained"
                           sx={{ mt: 1, bgcolor: 'var(--primary)' }}
-                          onClick={() => navigate('/user/recommendations')}
+                          onClick={() =>
+                            navigate('/user/recommendations')
+                          }
                         >
                           View
                         </Button>
@@ -362,9 +387,8 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
             <Typography variant="h6" sx={{ color: 'var(--text)', mb: 1 }}>
               Recently played
             </Typography>
-
             <Stack spacing={2}>
-              {recentGames?.map((r) => (
+              {recentGames.map((r) => (
                 <Paper
                   key={r.id}
                   elevation={0}
@@ -383,20 +407,12 @@ const HomePage: React.FC<{ steamId: string; currentUserId: number; sidebarTags: 
                     variant="rounded"
                     sx={{ width: 56, height: 56 }}
                   />
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      sx={{ color: 'var(--text)' }}
-                    >
-                      {r.title}
-                    </Typography>
-                    {/* <Typography
-                      variant="caption"
-                      sx={{ color: ''var(--text)' }}
-                    >
-                      Played 3 days ago
-                    </Typography> */}
-                  </Box>
+                  <Typography
+                    variant="body1"
+                    sx={{ color: 'var(--text)' }}
+                  >
+                    {r.title}
+                  </Typography>
                 </Paper>
               ))}
             </Stack>
