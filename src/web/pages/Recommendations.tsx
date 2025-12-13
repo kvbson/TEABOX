@@ -28,7 +28,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sideba
     }
   }, [error, setError]);
 
-  const startIndex = 'selectedGameId' in state ? Number(state.selectedGameId) : 0;
+  const startIndex = state && 'selectedGameId' in state ? Number(state.selectedGameId) : 0;
   const [selectedGameIndex, setSelectedGameIndex] = useState(startIndex);
 
   const handleNext = () => {
