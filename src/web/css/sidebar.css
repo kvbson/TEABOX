@@ -10,15 +10,15 @@
   display: flex;
   flex-direction: column;
   line-height: 1.2;
-  box-shadow: var(--shadow);
-  font-family: var(--font-archivo);
-  background-color: var(--color-bg);
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.7);
+  font-family: "Archivo", sans-serif;
   transition: transform 0.3s ease, opacity 0.3s ease;
   transform: translateX(0);
   opacity: 1;
   z-index: 1000;
+  background: var(--paper);
+  color: var(--text);
 }
-
 
 .sidebar.hide {
   transform: translateX(100%);
@@ -38,27 +38,29 @@
   width: 158px;
   padding: 12px 15px;
   text-align: center;
-  font-size: var(--f-medium);
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 700;
   cursor: grab;
   user-select: none;
-  background-color: var(--color-primary);
-  color: var(--color-bg);
+  background-color: var(--primary);
+  color: var(--bg);
   text-transform: uppercase;
   touch-action: none;
-  user-select: none;
   -webkit-user-drag: none;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
 }
 
 .sidebar h3 {
-  font-size: var(--f-large);
+  font-size: 1.25rem;
   margin-bottom: 15px;
-  color: var(--color-primary);
+  color: var(--primary);
   line-height: 1.1;
 }
 
 .sidebar p {
-  font-size: var(--f-large);
+  font-size: 1rem;
+  color: var(--text);
 }
 
 .swapy-container {

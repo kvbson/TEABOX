@@ -1,4 +1,4 @@
-import { GameInfoSchemaType } from "../../../db/models/GameInfo.js";
+import { GameInfoSchemaType } from "../../../db/mongoDB/models/GameInfo.js";
 
 export function sortGameInfo(games: GameInfoSchemaType[], userTags: string[]) {
 

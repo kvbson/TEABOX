@@ -5,12 +5,18 @@ import { BadgeStats, getUserBadges } from './GetBadges.js';
 import { getUserOwnedGames } from './GetOwnedGames.js';
 import { getUserRecentGames } from './GetRecentGames.js';
 import { GamesObj } from '../../../types/gameInfo.types.js';
+import { getUserSummary } from './GetUserSummary.js';
 
 export type UserProfileData = {
     recentGames: GamesObj;
     ownedGames: GamesObj;
     tags: string[];
     badges: BadgeStats['response'];
+      user?: {
+    name: string;
+    avatarFull: string;
+    profileUrl: string;
+  };
     errors: any[];
 }
 
@@ -25,10 +31,14 @@ const getUserProfileData = async (steamId: string, dataLimit: number): Promise<U
       errors: [],
       badges: {},
     };
-    const [recentGames, ownedGames] = await Promise.all([
+    const [recentGames, ownedGames, userSummary] = await Promise.all([
       getUserRecentGames(steamId),
       getUserOwnedGames(steamId),
+      getUserSummary(steamId),
     ]);
+
+    console.log('!@#@!#@!#@!', userSummary);
+
     const allAppIds = [
       ...new Set<number>([
         ...(recentGames?.response.games?.map(g => g?.appid) ?? []),
@@ -62,6 +72,14 @@ const getUserProfileData = async (steamId: string, dataLimit: number): Promise<U
           name: possibleOwnedGame.name,
         };
       }
+    }
+
+    if (userSummary) {
+      profileData.user = {
+        name: userSummary.personaname,
+        avatarFull: userSummary.avatarfull,
+        profileUrl: userSummary.profileurl,
+      };
     }
 
     //tags

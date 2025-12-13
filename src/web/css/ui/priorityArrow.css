@@ -1,4 +1,3 @@
-/* Strzałka nie wpływa na layout */
 .priority-arrow {
   position: absolute;
   left: -17px;
@@ -10,13 +9,13 @@
   justify-content: space-between;
   gap: 10px;
   pointer-events: none;
-
 }
 
-.priority-arrow span{
-  color: var(--color-text);
-  font-family: var(--font-archivo);
-  font-size: var(--f-large);
+.priority-arrow span {
+  color: var(--text);
+  font-family: "Archivo", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .priority-arrow .top,
@@ -26,7 +25,7 @@
 }
 
 .priority-arrow-svg {
-  color: var(--color-primary) !important;
+  color: var(--primary) !important;
   display: block;
   width: 100%;
   height: 100%;

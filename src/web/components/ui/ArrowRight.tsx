@@ -9,7 +9,7 @@ interface ArrowRightProps {
 }
 
 const ArrowRight: React.FC<ArrowRightProps> = ({
-  color = 'var(--color-primary)',
+  color = 'var(--primary)',
   className = '',
   width = 42,
   height = 16,

@@ -1,4 +1,4 @@
-import { ExtendedGameInfo } from '../../../types/gameInfo.types.js';
+import { ExtendedGameInfo } from '../../../../types/gameInfo.types.js';
 import { GameInfoSchemaType } from '../../models/GameInfo.js';
 
 export const parseGameData = (game: ExtendedGameInfo | GameInfoSchemaType, mode: 'db' | 'app') => {

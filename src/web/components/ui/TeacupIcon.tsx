@@ -6,13 +6,17 @@ interface TeacupIconProps {
   className?: string;
   width?: number;
   height?: number;
+  style?: React.CSSProperties;       // <-- dodane
+  sx?: React.CSSProperties;          // <-- opcjonalne pole jak w MUI
 }
 
 const TeacupIcon: React.FC<TeacupIconProps> = ({
-  color = 'var(--color-primary)',
+  color = 'var(--primary)',
   className = 'logo',
   width = 64,
   height = 62,
+  style,
+  sx,
 }) => {
   return (
     <svg
@@ -22,6 +26,7 @@ const TeacupIcon: React.FC<TeacupIconProps> = ({
       viewBox="0 0 64 62"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      style={{ ...style, ...sx }}   // <-- umożliwia pozycjonowanie
     >
       <g clipPath="url(#clip0_52_4364)">
         <path

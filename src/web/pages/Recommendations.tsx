@@ -5,14 +5,19 @@ import LoadingOverlay from '../components/LoadingOverlay';
 import { useSortedGameInfo } from '../hooks/useSortedGameInfo';
 
 interface RecommendationsProps {
+  currentUserId: number;
   sidebarOpened: boolean;
   setError: React.Dispatch<React.SetStateAction<string | Error | null>>;
   steamId: string;
   sidebarTags: string[];
+  handleBanGame: ({ currentUserId, steamapp_id }: {
+    currentUserId: number;
+    steamapp_id: number;
+}) => Promise<void>
 }
 
-const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setError, sidebarTags }) => {
-  const { data, error, loading } = useSortedGameInfo(sidebarTags);
+const Recommendations: React.FC<RecommendationsProps> = ({ currentUserId, sidebarOpened, setError, sidebarTags, handleBanGame }) => {
+  const { data, error, loading } = useSortedGameInfo(sidebarTags, currentUserId);
 
   useEffect(() => {
     if (error) {
@@ -20,7 +25,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
     }
   }, [error, setError]);
 
-  const [selectedGameIndex, setSelectedGameIndex] = useState(1); //changed to 1 for now, cuz theres a bugged game at beggining
+  const [selectedGameIndex, setSelectedGameIndex] = useState(0);
 
   const handleNext = () => {
     setSelectedGameIndex((prev) => (prev + 1) % data.length);
@@ -31,6 +36,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
       prev === 0 ? data.length - 1 : prev - 1,
     );
   };
+
   const currentAppDetails = data[selectedGameIndex];
 
   if (loading || data.length === 0) return <LoadingOverlay />;
@@ -40,11 +46,13 @@ const Recommendations: React.FC<RecommendationsProps> = ({ sidebarOpened, setErr
     <div className="mt-10">
       {currentAppDetails && (
         <GamesShowcase
+          currentUserId={currentUserId}
           appDetails={currentAppDetails}
           isLoading={loading}
           onNext={handleNext}
           onPrev={handlePrev}
           sidebarOpened={sidebarOpened}
+          handleBanGame={handleBanGame}
         />
       )}
     </div>

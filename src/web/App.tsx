@@ -1,22 +1,43 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from 'react-router-dom';
-import { Bounce, ToastContainer } from 'react-toastify';
+import { Bounce, ToastContainer, ToastOptions, toast } from 'react-toastify';
 import { callServer } from '../api/webClients/callServer';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
-import ToastError from './components/ToastError';
-import ToastSuccess from './components/ToastSuccess';
 import PreferencesPage from './pages/Prefferences';
 import Recommendations from './pages/Recommendations';
 import StatisticsCharts from './pages/Statictics';
 import LoginPage from './pages/LoginPage';
+import { useAuth } from './hooks/useAuth';
+import RegisterPage from './pages/RegisterPage';
+import HomePage from './pages/HomePage';
+import 'react-toastify/dist/ReactToastify.css';
+import BannedGamesTable from './pages/BannedGames';
+import { useBanGame } from './hooks/useBanGame';
+import { useUnbanGame } from './hooks/useUnbanGame';
+import ProtectedRoute from './components/ProtectedRoute';
+
+const toastProperties: ToastOptions = {
+  position: 'bottom-left',
+  autoClose: 4000,
+  hideProgressBar: true,
+  closeOnClick: false,
+  pauseOnHover: true,
+  draggable: true,
+  transition: Bounce,
+  theme: 'dark',
+};
 
 function App() {
+  const { isLoggedIn, loginStatus, handleLogin, handleLogout, currentUserId, currentUserSteamId } =
+    useAuth();
+  const { handleBanGame } = useBanGame();
+  const { handleUnbanGame } = useUnbanGame();
   const [sidebarOpened, setSidebarOpened] = useState(false);
   const [error, setError] = useState<string | Error | null>(null);
   const [successSave, setSuccessSave] = useState<string | null>(null);
@@ -25,64 +46,90 @@ function App() {
     return saved ? JSON.parse(saved) : [];
   });
   const [sidebarTags, setSidebarTags] = useState<string[]>(selectedTags);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const steamId = '76561198199623266';
 
   const toggleMenu = () => setSidebarOpened((prev) => !prev);
 
   const recommendationsComponents = (
     <Recommendations
+      currentUserId={currentUserId}
       sidebarOpened={sidebarOpened}
       setError={setError}
-      steamId={steamId}
+      steamId={currentUserSteamId}
       sidebarTags={sidebarTags}
+      handleBanGame={handleBanGame}
     />
   );
 
-  console.log('!@#!@#!@', isLoggedIn);
+  const showSuccessToast = useCallback((message: string) => {
+    toast.success(message, toastProperties);
+  }, []);
+
+  const showErrorToast = useCallback((message: string) => {
+    toast.error(message, toastProperties);
+  }, []);
+
+  useEffect(() => {
+    if (successSave) {
+      showSuccessToast(successSave);
+      setSuccessSave(null);
+    }
+  }, [successSave, showSuccessToast]);
+
+  useEffect(() => {
+    if (error) {
+      showErrorToast(error instanceof Error ? error.message : String(error));
+      setError(null);
+    }
+  }, [error, showErrorToast]);
+
+  useEffect(() => {
+    if (loginStatus) {
+      if (loginStatus.type === 'success') {
+        showSuccessToast(loginStatus.message);
+      } else if (loginStatus.type === 'error') {
+        showErrorToast(loginStatus.message);
+      }
+    }
+  }, [loginStatus, showSuccessToast, showErrorToast]);
 
   return (
     <Router>
-      <ToastContainer
-        position="bottom-left"
-        autoClose={4000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
-        theme="dark"
-        transition={Bounce}
-      />
-      {successSave && <ToastSuccess success={successSave} />}
-      {error && (
-        <ToastError
-          error={error instanceof Error ? error.message : String(error)}
-        />
-      )}
+      <ToastContainer />
 
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
         <Route
-          path="/"
+          path="/login"
           element={
             isLoggedIn ? (
-              <Navigate to="/user/recommendations" />
+              <Navigate to="/user/home" replace />
             ) : (
-              <LoginPage onLogin={() => setIsLoggedIn(true)} />
+              <LoginPage handleLogin={handleLogin} />
             )
           }
         />
-        {isLoggedIn && (
-          <Route
-            path="/user/*"
-            element={
+
+        <Route
+          path="/register"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/user/home" replace />
+            ) : (
+              <RegisterPage handleLogin={handleLogin} />
+            )
+          }
+        />
+
+        <Route
+          path="/user/*"
+          element={
+            <ProtectedRoute isLoggedIn={isLoggedIn}>
               <div>
                 <Header
                   onToggleMenu={toggleMenu}
                   sidebarOpened={sidebarOpened}
-                  onLogout={() => setIsLoggedIn(false)}
+                  onLogout={handleLogout}
                 />
                 <Sidebar
                   sidebarOpened={sidebarOpened}
@@ -90,6 +137,8 @@ function App() {
                   setSidebarTags={setSidebarTags}
                 />
                 <Routes>
+                  <Route path="home" element={<HomePage steamId={currentUserSteamId} currentUserId={currentUserId}
+                    sidebarTags={sidebarTags}/>} />
                   <Route
                     path="recommendations"
                     element={recommendationsComponents}
@@ -111,11 +160,20 @@ function App() {
                     }
                   />
                   <Route path="statistics" element={<StatisticsCharts />} />
+                  <Route
+                    path="bannedGames"
+                    element={
+                      <BannedGamesTable
+                        currentUserId={currentUserId}
+                        handleBanGame={handleUnbanGame}
+                      />
+                    }
+                  />
                 </Routes>
               </div>
-            }
-          />
-        )}
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

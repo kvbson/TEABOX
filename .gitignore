@@ -28,5 +28,7 @@ app.yaml
 #Certs
 localhost-key.pem
 localhost.crt
-firestore-acc.json
-bigquery-acc.json
+./api/certs/aiven-ca.crt
+aiven-ca.crt
+
+

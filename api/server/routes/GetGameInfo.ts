@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { checkAppId } from './utils/checkAppId.js';
-import { handleFailedAppId } from '../../db/models/other/MissingAppIds.js';
+import { handleFailedAppId } from '../../db/mongoDB/models/other/MissingAppIds.js';
 import { ExtendedGameInfo, GameDetailsResponse, GamesObj } from '../../types/gameInfo.types.js';
 import { SteamReviewsResponse } from '../../types/reviews.types.js';
 import steamStoreApi from '../clients/steamClients/steamStoreApiClient.js';

@@ -1,45 +1,33 @@
 import { useState, useCallback, useEffect } from 'react';
-import { callServer } from '../../api/clients/callServer';
+import { callUser } from '../../api/webClients/callUser';
 
+type LoginStatus = {
+  type: 'success' | 'error';
+  message: string;
+};
 interface UseAuthResult {
   currentUserId: number;
+  currentUserSteamId: string;
   isLoggedIn: boolean;
-  loginStatus: string;
-  files: string[];
+  loginStatus: LoginStatus | null;
   handleLogin: (
-    username: string,
+    email: string,
     password: string,
-    isRegister?: boolean
+        steamId?: string, //Only in register
+    isRegister?: boolean,
   ) => Promise<void>;
-  fetchFiles: () => Promise<void>;
+  handleLogout: () => void;
 }
 
 export const useAuth = (): UseAuthResult => {
   const [currentUserId, setCurrentUserId] = useState(0);
+  const [currentUserSteamId, setCurrentUserSteamId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loginStatus, setLoginStatus] = useState('');
-  const [files, setFiles] = useState<string[]>([]);
-
-  const fetchFiles = useCallback(async () => {
-    if (!isLoggedIn) {
-      setFiles([]);
-      return;
-    }
-
-    try {
-      const response = await callServer({ mode: 'LIST_FILES', method: 'GET' });
-      console.log(response);
-      if (response.success && Array.isArray(response.data.params.files)) {
-        setFiles(response.data.params.files);
-      }
-    } catch (error) {
-      console.error('Failed to fetch files:', error);
-    }
-  }, [isLoggedIn]);
+  const [loginStatus, setLoginStatus] = useState<LoginStatus | null>(null);
 
   const checkSession = useCallback(async () => {
     try {
-      const res = await callServer({
+      const res = await callUser({
         mode: 'CHECK_USER_SESSION',
         method: 'GET',
       });
@@ -51,7 +39,7 @@ export const useAuth = (): UseAuthResult => {
       } else {
         setIsLoggedIn(false);
         setCurrentUserId(0);
-        setFiles([]);
+        // setFiles([]);
       }
     } catch (err) {
       console.error('Session check failed', err);
@@ -60,78 +48,80 @@ export const useAuth = (): UseAuthResult => {
     }
   }, []);
 
+  useEffect(() => {
+    checkSession();
+  }, [checkSession]);
+
+  const handleLogout = useCallback(async () => {
+    try {
+      await callUser({ mode: 'LOGOUT_USER', method: 'GET' });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoggedIn(false);
+      setCurrentUserId(0);
+      setCurrentUserSteamId('');
+      setLoginStatus({ type: 'success', message: 'Logged out.' });
+    }
+  }, []);
+
   const handleLogin = useCallback(
-    async (username: string, password: string, isRegister?: boolean) => {
-      if (isLoggedIn) {
-        // Logout
-        await callServer({ mode: 'LOGOUT_USER', method: 'GET' });
-        setIsLoggedIn(false);
-        setCurrentUserId(0);
-        setLoginStatus('✅ Logged out.');
-        setFiles([]);
-        return;
-      }
-
-      if (!username || !password) return;
-
-      setLoginStatus('Logging in...');
+    async (email: string, password: string, steamId?: string, isRegister?: boolean) => {
+      if (!email || !password) return;
 
       try {
         // Check if user exists
-        const userCheck = await callServer({
-          mode: 'GET_USER',
+        const userCheck = await callUser({
+          mode: 'GET_USER_BY_EMAIL',
           method: 'POST',
-          login: username,
+          email,
         });
 
         const userNotFound = !userCheck.success || userCheck.data?.length === 0;
-
-        if (userNotFound && isRegister) {
-          setLoginStatus('Creating user...');
-          await callServer({
+        if (userNotFound && isRegister && steamId) {
+          setLoginStatus({ type: 'success', message: 'Creating user...' });
+          await callUser({
             mode: 'ADD_USER',
             method: 'POST',
-            login: username,
+            email,
             password,
+            steamId,
           });
         }
 
         // Login
-        const loginRes = await callServer({
+        const loginRes = await callUser({
           mode: 'LOGIN_USER',
           method: 'POST',
-          login: username,
+          email,
           password,
         });
 
         if (loginRes.success) {
           setIsLoggedIn(true);
           setCurrentUserId(loginRes.data.userId);
-          setLoginStatus('✅ Logged in.');
+          setCurrentUserSteamId(loginRes.data.steamId);
+          setLoginStatus({ type: 'success', message: 'Logged in.' });
         } else {
-          setLoginStatus(
-            '❌ Login failed.' +
-              (loginRes.status === 401 ? ' Incorrect credentials.' : '')
-          );
+          setLoginStatus({
+            type: 'error',
+            message: 'Login failed.' + (loginRes.status === 401 ? ' Incorrect credentials.' : ''),
+          });
         }
       } catch (err) {
         console.error(err);
-        setLoginStatus('❌ Unexpected error');
+        setLoginStatus({ type: 'error', message: 'Unexpected error' });
       }
     },
-    [isLoggedIn]
+    [],
   );
-
-  useEffect(() => {
-    checkSession();
-  }, [checkSession]);
 
   return {
     currentUserId,
+    currentUserSteamId,
     isLoggedIn,
     loginStatus,
-    files,
     handleLogin,
-    fetchFiles,
+    handleLogout,
   };
 };
